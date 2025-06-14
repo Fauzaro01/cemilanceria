@@ -1,0 +1,8 @@
+.customer_card {
+    box-shadow: 3px 5px rgba(129, 116, 115, 0.2);
+}
+
+.customer_card:hover {
+    box-shadow: 5px 8px #ff5b45bf;
+    transform: translateY(-4px);
+}
