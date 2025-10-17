@@ -1,0 +1,26 @@
+{
+  "name": "cemilanceria",
+  "version": "1.0.0",
+  "description": "Website jualan menggunakan express",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fauzaro01/cemilanceria.git"
+  },
+  "author": "fauzaro01",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Fauzaro01/cemilanceria/issues"
+  },
+  "homepage": "https://github.com/Fauzaro01/cemilanceria#readme",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
