@@ -14,9 +14,6 @@ app.get('/', (req, res) => {
     res.render('index');
 })
 
-app.ge
-
-
 
 
 
@@ -29,4 +26,5 @@ app.get('/login', (req, res) => {
 
 app.listen(port, () => {
     console.log("Server sudah berjalan pada port 3000")
+
 })
