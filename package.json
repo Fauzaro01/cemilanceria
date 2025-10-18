@@ -4,7 +4,10 @@
   "description": "Website jualan menggunakan express",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon index.js"
+    "test": "nodemon index.js",
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "tailwind": "npx tailwindcss -i ./public/css/tailwind.css -o ./public/css/style.css --watch"
   },
   "repository": {
     "type": "git",
@@ -17,8 +20,10 @@
   },
   "homepage": "https://github.com/Fauzaro01/cemilanceria#readme",
   "dependencies": {
+    "@tailwindcss/cli": "^4.1.14",
     "ejs": "^3.1.10",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "tailwindcss": "^4.1.14"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
