@@ -4,6 +4,7 @@
   "description": "Website jualan menggunakan express",
   "main": "index.js",
   "scripts": {
+    "postinstall": "npx prisma generate && COPY .env.example .env && npx prisma db push",
     "test": "nodemon index.js",
     "dev": "nodemon index.js",
     "start": "node index.js",
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/Fauzaro01/cemilanceria#readme",
   "dependencies": {
+    "@prisma/client": "^6.17.1",
     "@tailwindcss/cli": "^4.1.14",
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
@@ -28,6 +30,7 @@
     "tailwindcss": "^4.1.14"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "prisma": "^6.17.1"
   }
 }
