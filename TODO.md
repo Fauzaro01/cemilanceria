@@ -1,6 +1,0 @@
-- [x] Clean up checkout.ejs by removing duplicate JavaScript script block (keep the qty-handling one)
-- [x] Add /pesanan route in index.js to render pesanan.ejs
-- [x] Create views/pesanan.ejs to display order confirmation
-- [x] Fix navbar.ejs updateCart to use totalQty instead of cart.length
-- [x] Fix produkcireng.ejs: correct data-product for Basreng, remove add-to-cart class from "Coming Soon" buttons
-- [x] Test the cart flow after fixes
