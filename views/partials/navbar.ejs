@@ -75,7 +75,7 @@
   };
 
   // Keranjang
-  let cart = JSON.parse(localStorage.cart || "[]");
+  let cart = JSON.parse(localStorage.getItem('cart') || "[]");
   const updateCart = () => {
     count.textContent = cart.length;
     tip.textContent = cart.length ? `${cart.length} produk dalam keranjang` : "Belum ada produk";

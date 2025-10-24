@@ -14,9 +14,20 @@ app.get('/', (req, res) => {
     res.render('index');
 })
 
-/* <halamanlogin */
-app.get('/login', (req, res) => {
-    res.render('login');
+app.get('/checkout', (req, res) => {
+    res.render('checkout');
+});
+
+app.post('/checkout', (req, res) => {
+    const { name, email, phone, address } = req.body;
+    console.log('Order received:', { name, email, phone, address });
+    res.send(`
+        <script>
+            localStorage.removeItem('cart');
+            alert('Pesanan berhasil! Terima kasih telah berbelanja.');
+            window.location.href = '/';
+        </script>
+    `);
 });
 
 app.listen(port, () => {

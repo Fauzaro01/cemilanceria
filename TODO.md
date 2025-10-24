@@ -1,0 +1,4 @@
+- [x] Add JavaScript to produk.ejs to handle adding products to cart on button click
+- [x] Update navbar.ejs to update cart count and tooltip when cart changes
+- [x] Modify checkout.ejs to display cart items from localStorage
+- [x] Add POST route for /checkout in index.js to handle form submission

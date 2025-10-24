@@ -46,7 +46,7 @@
           </div>
 
           <!-- Tombol -->
-          <button class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105">
+          <button class="add-to-cart w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105" data-product="Puding Cokelat" data-price="6000">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" class="w-4 h-4">
               <path d="M8 1a.5.5 0 0 1 .5.5V4h2.5a.5.5 0 0 1 0 1H8.5v2.5a.5.5 0 0 1-1 0V5H5a.5.5 0 0 1 0-1h2.5V1.5A.5.5 0 0 1 8 1z"/>
               <path d="M3 3h10a1 1 0 0 1 1 1v9.5a1.5 1.5 0 0 1-1.5 1.5H3.5A1.5 1.5 0 0 1 2 13.5V4a1 1 0 0 1 1-1z"/>
@@ -90,7 +90,7 @@
           </div>
 
           <!-- Tombol -->
-          <button class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105">
+          <button class="add-to-cart w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105" data-product="Puding Stroberi" data-price="6000">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" class="w-4 h-4">
               <path d="M8 1a.5.5 0 0 1 .5.5V4h2.5a.5.5 0 0 1 0 1H8.5v2.5a.5.5 0 0 1-1 0V5H5a.5.5 0 0 1 0-1h2.5V1.5A.5.5 0 0 1 8 1z"/>
               <path d="M3 3h10a1 1 0 0 1 1 1v9.5a1.5 1.5 0 0 1-1.5 1.5H3.5A1.5 1.5 0 0 1 2 13.5V4a1 1 0 0 1 1-1z"/>
@@ -133,15 +133,40 @@
           </div>
 
           <!-- Tombol -->
-          <button class="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105">
+          <button class="add-to-cart w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105" data-product="Puding Mangga" data-price="7000">
             <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" class="w-4 h-4">
               <path d="M8 1a.5.5 0 0 1 .5.5V4h2.5a.5.5 0 0 1 0 1H8.5v2.5a.5.5 0 0 1-1 0V5H5a.5.5 0 0 1 0-1h2.5V1.5A.5.5 0 0 1 8 1z"/>
               <path d="M3 3h10a1 1 0 0 1 1 1v9.5a1.5 1.5 0 0 1-1.5 1.5H3.5A1.5 1.5 0 0 1 2 13.5V4a1 1 0 0 1 1-1z"/>
             </svg>
-            Coming Soon
+            Tambah ke Keranjang
           </button>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
+    addToCartButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const product = this.getAttribute('data-product');
+        const price = parseInt(this.getAttribute('data-price'));
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        cart.push({ product, price });
+        localStorage.setItem('cart', JSON.stringify(cart));
+        alert(`${product} telah ditambahkan ke keranjang!`);
+        // Update cart count in navbar
+        const cartCount = document.getElementById('cartCount');
+        if (cartCount) {
+          cartCount.textContent = cart.length;
+        }
+        const cartTooltip = document.getElementById('cartTooltip');
+        if (cartTooltip) {
+          cartTooltip.textContent = cart.length ? `${cart.length} produk dalam keranjang` : "Belum ada produk";
+        }
+      });
+    });
+  });
+</script>
