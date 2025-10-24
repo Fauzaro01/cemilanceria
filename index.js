@@ -18,6 +18,7 @@ app.get('/checkout', (req, res) => {
     res.render('checkout');
 });
 
+
 app.post('/checkout', (req, res) => {
     const { name, email, phone, address } = req.body;
     console.log('Order received:', { name, email, phone, address });
