@@ -154,19 +154,6 @@
         const product = this.getAttribute('data-product');
         const price = parseInt(this.getAttribute('data-price'));
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-<<<<<<< Updated upstream
-        cart.push({ product, price });
-        localStorage.setItem('cart', JSON.stringify(cart));
-        alert(`${product} telah ditambahkan ke keranjang!`);
-        // Update cart count in navbar
-        const cartCount = document.getElementById('cartCount');
-        if (cartCount) {
-          cartCount.textContent = cart.length;
-        }
-        const cartTooltip = document.getElementById('cartTooltip');
-        if (cartTooltip) {
-          cartTooltip.textContent = cart.length ? `${cart.length} produk dalam keranjang` : "Belum ada produk";
-=======
 
         // Jika produk sudah ada, tambahkan qty, jika belum buat item baru
         const existing = cart.find(item => item.product === product);
@@ -187,7 +174,6 @@
         const cartTooltip = document.getElementById('cartTooltip');
         if (cartTooltip) {
           cartTooltip.textContent = totalQty ? `${totalQty} produk dalam keranjang` : "Belum ada produk";
->>>>>>> Stashed changes
         }
       });
     });
