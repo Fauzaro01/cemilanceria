@@ -65,17 +65,21 @@
                 cartItems.innerHTML = '<p class="text-gray-500">Keranjang Anda kosong.</p>';
             } else {
                 cart.forEach((item, index) => {
-                    total += item.price;
+                    const qty = item.qty || 1;
+                    total += item.price * qty;
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'flex justify-between items-center border-b pb-2';
                     itemDiv.innerHTML = `
                         <div>
-                            <h3 class="font-medium">${item.product}</h3>
-                            <p class="text-sm text-gray-600">Rp ${item.price.toLocaleString()}</p>
+                            <h3 class="font-medium">${item.product} ${qty > 1 ? `<span class="text-sm text-gray-500">(${qty}x)</span>` : ''}</h3>
+                            <p class="text-sm text-gray-600">Rp ${(item.price * qty).toLocaleString()}</p>
                         </div>
-                        <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm text-gray-600">Rp ${item.price.toLocaleString()}</span>
+                            <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
                     `;
                     cartItems.appendChild(itemDiv);
                 });
@@ -90,45 +94,6 @@
             localStorage.setItem('cart', JSON.stringify(cart));
             location.reload();
         }
-            document.addEventListener('DOMContentLoaded', function() {
-                const cartItems = document.getElementById('cart-items');
-                const totalPrice = document.getElementById('total-price');
-                const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-                let total = 0;
-
-                if (cart.length === 0) {
-                    cartItems.innerHTML = '<p class="text-gray-500">Keranjang Anda kosong.</p>';
-                } else {
-                    cart.forEach((item, index) => {
-                        const qty = item.qty || 1;
-                        total += item.price * qty;
-                        const itemDiv = document.createElement('div');
-                        itemDiv.className = 'flex justify-between items-center border-b pb-2';
-                        itemDiv.innerHTML = `
-                            <div>
-                                <h3 class="font-medium">${item.product} ${qty > 1 ? `<span class="text-sm text-gray-500">(${qty}x)</span>` : ''}</h3>
-                                <p class="text-sm text-gray-600">Rp ${(item.price * qty).toLocaleString()}</p>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <span class="text-sm text-gray-600">Rp ${item.price.toLocaleString()}</span>
-                                <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                        `;
-                        cartItems.appendChild(itemDiv);
-                    });
-                }
-
-                totalPrice.textContent = `Rp ${total.toLocaleString()}`;
-            });
-
-            function removeFromCart(index) {
-                let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-                cart.splice(index, 1);
-                localStorage.setItem('cart', JSON.stringify(cart));
-                location.reload();
-            }
     </script>
 </body>
 </html>

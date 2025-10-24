@@ -68,8 +68,8 @@
 
 
   <%- include('partials/navbar') %>
-
-  <section class="flex flex-col md:flex-row items-center justify-between max-w-6xl mx-auto px-6 py-16">
+<section class="flex flex-col md:flex-row items-center justify-between max-w-6xl mx-auto px-6 py-16">
+  <!-- Bagian teks -->
   <div class="text-center md:text-left md:w-1/2">
     <h1 class="text-4xl font-bold text-gray-800 mb-4">
       Cita Rasa <span class="text-primary">Yang Tak Terlupakan</span>
@@ -81,19 +81,73 @@
       Coba Sekarang
     </a>
   </div>
-  <div class="mt-10 md:mt-0 md:w-1/2 flex justify-center">
-    <img src="/img/pudingutama.png" alt="Produk Utama" class="w-80 rounded-2xl shadow-lg">
+
+  <!-- Bagian gambar carousel -->
+  <div class="relative mt-10 md:mt-0 md:w-1/2 flex justify-center">
+    <div class="overflow-hidden w-60 rounded-2xl shadow-3xl relative ">
+      <div id="carousel" class="flex transition-transform duration-700 ease-in-out">
+        <img src="https://i.pinimg.com/736x/cf/95/2c/cf952c0bb7fee5b59c8bb0a94ac8b58b.jpg" class="w-60 aspect-square object-cover flex-shrink-0">
+        <img src="https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg" class="w-60 aspect-square object-cover flex-shrink-0">
+        <img src="https://i.pinimg.com/1200x/2a/8b/4c/2a8b4c995f0cce056d5240cbb6d94744.jpg" class="w-60 aspect-square object-cover flex-shrink-0">
+      </div>
+    </div>
+    <button id="prev" class="absolute left-0 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2">❮</button>
+    <button id="next" class="absolute right-0 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2">❯</button>
   </div>
 </section>
 
 
 
-  <%- include('partials/produk') %>
+
+  <%- include('partials/produkpuding') %>
 
 
 
 
   <%- include('partials/footer') %>
 
+
+
+
+  
+<script>
+
+  //catatan kalo ada yg mau ubah js nya 
+
+  
+  // Ambil elemen utama carousel
+  const carousel = document.getElementById('carousel');
+
+  // Hitung jumlah gambar di dalam carousel
+  const totalSlides = carousel.children.length;
+
+  // Variabel posisi gambar yang sedang tampil
+  let index = 0;
+
+  // Fungsi untuk menggeser carousel ke gambar tertentu
+  function showSlide() {
+    carousel.style.transform = `translateX(-${index * 100}%)`;
+  }
+
+  // Tombol next → maju ke gambar berikutnya
+  document.getElementById('next').onclick = () => {
+    index = (index + 1) % totalSlides; // kalau sudah di akhir, balik ke awal
+    showSlide();
+  };
+
+  // Tombol prev → kembali ke gambar sebelumnya
+  document.getElementById('prev').onclick = () => {
+    index = (index - 1 + totalSlides) % totalSlides; // kalau di awal, lompat ke akhir
+    showSlide();
+  };
+
+  // Geser otomatis setiap 4 detik
+  setInterval(() => {
+    index = (index + 1) % totalSlides;
+    showSlide();
+  }, 4000);
+
+
+</script>
 </body>
 </html>

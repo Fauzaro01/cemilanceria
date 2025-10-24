@@ -1,4 +1,6 @@
-- [x] Add JavaScript to produk.ejs to handle adding products to cart on button click
-- [x] Update navbar.ejs to update cart count and tooltip when cart changes
-- [x] Modify checkout.ejs to display cart items from localStorage
-- [x] Add POST route for /checkout in index.js to handle form submission
+- [x] Clean up checkout.ejs by removing duplicate JavaScript script block (keep the qty-handling one)
+- [x] Add /pesanan route in index.js to render pesanan.ejs
+- [x] Create views/pesanan.ejs to display order confirmation
+- [x] Fix navbar.ejs updateCart to use totalQty instead of cart.length
+- [x] Fix produkcireng.ejs: correct data-product for Basreng, remove add-to-cart class from "Coming Soon" buttons
+- [x] Test the cart flow after fixes
