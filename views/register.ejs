@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Cemilanceria</title>
+</head>
+<body>
+    <div>
+        <h1>Daftar Akun Baru</h1>
+        
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div style="color: red; margin-bottom: 10px;">
+                <%= error %>
+            </div>
+        <% } %>
+
+        <% if (typeof success !== 'undefined' && success) { %>
+            <div style="color: green; margin-bottom: 10px;">
+                <%= success %>
+            </div>
+        <% } %>
+
+        <form action="/register" method="POST">
+            <div>
+                <label for="name">Nama Lengkap:</label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    required 
+                    placeholder="Masukkan nama lengkap Anda"
+                    value="<%= typeof formData !== 'undefined' ? formData.name || '' : '' %>"
+                >
+            </div>
+            
+            <div>
+                <label for="email">Email:</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    required 
+                    placeholder="Masukkan email Anda"
+                    value="<%= typeof formData !== 'undefined' ? formData.email || '' : '' %>"
+                >
+            </div>
+            
+            <div>
+                <label for="password">Password:</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    required 
+                    placeholder="Masukkan password (min. 6 karakter)"
+                    minlength="6"
+                >
+            </div>
+            
+            <div>
+                <label for="confirmPassword">Konfirmasi Password:</label>
+                <input 
+                    type="password" 
+                    id="confirmPassword" 
+                    name="confirmPassword" 
+                    required 
+                    placeholder="Ulangi password Anda"
+                    minlength="6"
+                >
+            </div>
+            
+            <div>
+                <label for="phone">Nomor Telepon:</label>
+                <input 
+                    type="tel" 
+                    id="phone" 
+                    name="phone" 
+                    placeholder="Masukkan nomor telepon (opsional)"
+                    value="<%= typeof formData !== 'undefined' ? formData.phone || '' : '' %>"
+                >
+            </div>
+            
+            <div>
+                <label for="address">Alamat:</label>
+                <textarea 
+                    id="address" 
+                    name="address" 
+                    placeholder="Masukkan alamat lengkap (opsional)"
+                    rows="3"
+                ><%= typeof formData !== 'undefined' ? formData.address || '' : '' %></textarea>
+            </div>
+            
+            <div>
+                <button type="submit">Daftar</button>
+            </div>
+        </form>
+        
+        <div>
+            <p>
+                Sudah punya akun? 
+                <a href="/login">Login di sini</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

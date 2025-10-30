@@ -8,11 +8,94 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model product {
+// Model untuk sistem authentication pengguna
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String   // Akan di-hash sebelum disimpan
+  name      String
+  phone     String?
+  address   String?
+  role      UserRole @default(USER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relasi ke Order
+  orders    Order[]
+  
+  @@map("users")
+}
+
+// Enum untuk role pengguna
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model Product {
   id          Int      @id @default(autoincrement())
   name        String
   description String?
   price       Float
+  stock       Int      @default(0) // Menambahkan stock produk
+  category    String?
+  imageUrl    String?
+  isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  
+  // Relasi ke OrderItem
+  orderItems  OrderItem[]
+  
+  @@map("products")
+}
+
+// Model untuk pesanan
+model Order {
+  id           Int         @id @default(autoincrement())
+  orderNumber  String      @unique // Nomor pesanan unik
+  userId       Int         // Foreign key ke User
+  status       OrderStatus @default(PENDING)
+  totalAmount  Float
+  shippingAddress String?
+  notes        String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  
+  // Relasi ke User
+  user         User        @relation(fields: [userId], references: [id])
+  
+  // Relasi ke OrderItem
+  orderItems   OrderItem[]
+  
+  @@map("orders")
+}
+
+// Enum untuk status pesanan
+enum OrderStatus {
+  PENDING    // Menunggu konfirmasi
+  CONFIRMED  // Dikonfirmasi
+  PROCESSING // Sedang diproses
+  SHIPPED    // Dikirim
+  DELIVERED  // Diterima
+  CANCELLED  // Dibatalkan
+}
+
+// Model untuk item pesanan (detail produk per pesanan)
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int      // Foreign key ke Order
+  productId Int      // Foreign key ke Product
+  quantity  Int
+  price     Float    // Harga pada saat pemesanan
+  subtotal  Float    // quantity * price
+  createdAt DateTime @default(now())
+  
+  // Relasi ke Order dan Product
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+  
+  @@map("order_items")
+  @@unique([orderId, productId]) // Mencegah duplikasi produk dalam satu pesanan
 }
