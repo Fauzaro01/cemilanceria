@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesanan Berhasil</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <%- include('partials/navbar') %>
+
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-md p-6 text-center">
+            <div class="text-green-500 mb-4">
+                <i class="bi bi-check-circle-fill text-6xl"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">Pesanan Anda Berhasil!</h1>
+            <p class="text-gray-600 mb-6">Terima kasih telah berbelanja di Cemilan Ceria. Pesanan Anda telah diterima dan sedang diproses.</p>
+
+            <div id="order-details" class="text-left bg-gray-50 p-4 rounded-lg mb-6">
+                <!-- Detail pesanan akan dimuat di sini melalui JavaScript -->
+            </div>
+
+            <a href="/" class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 px-6 rounded-md transition duration-300">
+                Kembali ke Beranda
+            </a>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const orderDetails = document.getElementById('order-details');
+            const orderData = JSON.parse(localStorage.getItem('currentOrder') || '{}');
+
+            if (orderData.name) {
+                let total = 0;
+                const itemsHtml = orderData.cart.map(item => {
+                    const qty = item.qty || 1;
+                    const itemTotal = item.price * qty;
+                    total += itemTotal;
+                    return `<li class="flex justify-between py-1"><span>${item.product} (${qty}x)</span><span>Rp ${itemTotal.toLocaleString()}</span></li>`;
+                }).join('');
+
+                orderDetails.innerHTML = `
+                    <h3 class="font-semibold text-lg mb-2">Detail Pesanan</h3>
+                    <p><strong>Nama:</strong> ${orderData.name}</p>
+                    <p><strong>Email:</strong> ${orderData.email}</p>
+                    <p><strong>Telepon:</strong> ${orderData.phone}</p>
+                    <p><strong>Alamat:</strong> ${orderData.address}</p>
+                    <h4 class="font-semibold mt-4 mb-2">Produk:</h4>
+                    <ul class="list-disc list-inside">${itemsHtml}</ul>
+                    <p class="font-semibold mt-2"><strong>Total: Rp ${total.toLocaleString()}</strong></p>
+                `;
+            } else {
+                orderDetails.innerHTML = '<p class="text-gray-500">Tidak ada detail pesanan.</p>';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!-- Navbar -->
+<nav class="bg-white shadow-lg sticky top-0 z-50 transition-all duration-500">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16 items-center">
+
+      <!-- Logo -->
+      <a href="/" class="flex items-center space-x-2 group">
+        <div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center transform transition-transform duration-300 group-hover:rotate-6">
+          <img src="" alt="Logo" class="w-6 h-6">
+        </div>
+        <span class="text-2xl font-bold text-gray-800">Cemilanceria</span>
+      </a>
+
+      <!-- Menu Desktop -->
+      <div class="hidden md:flex items-center space-x-8">
+        <a href="/" class="text-gray-700 hover:text-amber-500 font-medium">Beranda</a>
+        <a href="/halamanproduk" class="text-gray-700 hover:text-amber-500 font-medium">Produk</a>
+        <a href="/about" class="text-gray-700 hover:text-amber-500 font-medium">Tentang Kami</a>
+        <a href="/contact" class="text-gray-700 hover:text-amber-500 font-medium">Kontak</a>
+      </div>
+
+      <!-- Right Section -->
+      <div class="flex items-center space-x-5">
+        <!-- Keranjang (tampil di semua layar) -->
+        <div class="relative cursor-pointer group">
+          <i class="bi bi-cart3 text-gray-700 text-xl group-hover:text-amber-500 transition-all"></i>
+          <span id="cartCount" class="absolute -top-2 -right-2 bg-amber-500 text-white text-xs font-semibold rounded-full px-1.5 py-0.5">0</span>
+
+          <!-- Tooltip -->
+          <div class="absolute top-9 right-0 w-56 bg-white shadow-lg rounded-lg p-3 opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-300">
+            <p class="text-sm text-gray-700 font-medium mb-1">Keranjang Anda</p>
+            <hr class="my-2">
+            <p id="cartTooltip" class="text-gray-500 text-sm">Belum ada produk</p>
+            <div class="mt-3 flex gap-2">
+              <a href="/checkout" class="flex-1 bg-amber-500 text-white text-center py-1 rounded-full text-sm font-medium hover:bg-amber-600 transition-all">Lihat Keranjang</a>
+              <button onclick="clearCart()" class="bg-red-500 text-white px-2 py-1 rounded-full text-sm font-medium hover:bg-red-600 transition-all">Kosongkan</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tombol Login (hanya desktop) -->
+        <a href="/login" class="hidden md:block bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-full font-medium transition-all">Masuk</a>
+
+        <!-- Tombol Hamburger (mobile only) -->
+        <button id="mobile-menu-button" class="md:hidden text-gray-700 hover:text-amber-500 transition-transform duration-300">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div id="mobile-menu" class="md:hidden hidden bg-white border-t shadow-inner">
+    <div class="px-2 pt-2 pb-3 space-y-1 animate-fade-slide-down">
+      <a href="/" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 font-medium">Beranda</a>
+      <a href="/halamanproduk" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 font-medium">Produk</a>
+      <a href="/about" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 font-medium">Tentang Kami</a>
+      <a href="/contact" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100 font-medium">Kontak</a>
+      <a href="/login" class="block bg-amber-500 text-white px-4 py-2 rounded-full text-center font-medium hover:bg-amber-600 transition-all">Masuk</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Script -->
+<script>
+  const menuBtn = document.getElementById("mobile-menu-button"),
+        menu = document.getElementById("mobile-menu"),
+        count = document.getElementById("cartCount"),
+        tip = document.getElementById("cartTooltip");
+
+  // Toggle menu
+  menuBtn.onclick = () => {
+    menu.classList.toggle("hidden");
+    menu.classList.add(menu.classList.contains("hidden") ? "animate-fade-slide-up" : "animate-fade-slide-down");
+    setTimeout(() => menu.classList.remove("animate-fade-slide-up"), 250);
+  };
+
+  // Keranjang
+  let cart = JSON.parse(localStorage.getItem('cart') || "[]");
+  const updateCart = () => {
+    const totalQty = cart.reduce((sum, it) => sum + (it.qty || 1), 0);
+    count.textContent = totalQty;
+    tip.textContent = totalQty ? `${totalQty} produk dalam keranjang` : "Belum ada produk";
+  };
+  document.addEventListener("DOMContentLoaded", updateCart);
+
+  function clearCart() {
+    localStorage.removeItem('cart');
+    cart = [];
+    updateCart();
+  }
+</script>
+
+<style>
+  @keyframes fade-slide-down { from{opacity:0;transform:translateY(-10px);} to{opacity:1;transform:translateY(0);} }
+  @keyframes fade-slide-up { from{opacity:1;transform:translateY(0);} to{opacity:0;transform:translateY(-10px);} }
+  .animate-fade-slide-down{animation:fade-slide-down .25s ease-out;}
+  .animate-fade-slide-up{animation:fade-slide-up .25s ease-in;}
+</style>
