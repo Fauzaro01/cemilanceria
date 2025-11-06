@@ -49,9 +49,71 @@ app.get('/pesanan', (req, res) => {
     res.render('pesanan');
 });
 
+app.get('/admin/dashboard', (req, res) => {
+  res.render('admin/dashboard', {
+    user: { name: 'Admin Cemilan' },
+    activeMenu: 'dashboard'
+  });
+});
 
+app.get('/admin/products', (req, res) => {
+  res.render('admin/products', {
+    user: { name: 'Admin Cemilan' },
+    activeMenu: 'products'
+  });
+});
 
+app.get('/admin/orders', (req, res) => {
+  res.render('admin/orders', {
+    user: { name: 'Admin Cemilan' },
+    activeMenu: 'orders'
+  });
+});
 
+app.get('/admin/users', (req, res) => {
+  res.render('admin/users', {
+    user: { name: 'Admin Cemilan' },
+    activeMenu: 'users'
+  });
+});
+
+app.get('/admin/settings', (req, res) => {
+  res.render('admin/settings', {
+    user: { name: 'Admin Cemilan' },
+    activeMenu: 'settings'
+  });
+});
+
+// Placeholder API routes for backend integration (to be implemented by friend)
+app.get('/api/users', (req, res) => {
+  // Placeholder: Return empty array or mock data
+  res.json([]);
+});
+
+app.get('/api/orders', (req, res) => {
+  // Placeholder: Return empty array or mock data
+  res.json([]);
+});
+
+app.get('/api/products', (req, res) => {
+  // Placeholder: Return empty array or mock data
+  res.json([]);
+});
+
+app.post('/api/users', (req, res) => {
+  // Placeholder: Handle user creation
+  res.status(501).json({ message: 'Not implemented yet' });
+});
+
+app.post('/api/orders', (req, res) => {
+  // Placeholder: Handle order creation
+  res.status(501).json({ message: 'Not implemented yet' });
+});
+
+app.post('/api/products', (req, res) => {
+  // Placeholder: Handle product creation
+  res.status(501).json({ message: 'Not implemented yet' });
+});
 
 app.listen(port, () => {
     console.log("Server sudah berjalan pada port 3000")

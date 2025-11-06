@@ -79,12 +79,14 @@
 
   // Keranjang
   let cart = JSON.parse(localStorage.getItem('cart') || "[]");
-  const updateCart = () => {
+  window.updateCart = () => {
+    cart = JSON.parse(localStorage.getItem('cart') || "[]");
     const totalQty = cart.reduce((sum, it) => sum + (it.qty || 1), 0);
     count.textContent = totalQty;
     tip.textContent = totalQty ? `${totalQty} produk dalam keranjang` : "Belum ada produk";
   };
-  document.addEventListener("DOMContentLoaded", updateCart);
+document.addEventListener("DOMContentLoaded", () => window.updateCart());
+
 
   function clearCart() {
     localStorage.removeItem('cart');

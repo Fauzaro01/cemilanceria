@@ -69,5 +69,39 @@
     <%- include('partials/produkcireng') %>
     <%- include('partials/footer') %>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
+    addToCartButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const product = this.getAttribute('data-product');
+        const price = parseInt(this.getAttribute('data-price'));
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+        // Jika produk sudah ada, tambahkan qty, jika belum buat item baru
+        const existing = cart.find(item => item.product === product);
+        if (existing) {
+          existing.qty = (existing.qty || 0) + 1;
+        } else {
+          cart.push({ product, price, qty: 1 });
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+
+        // Update quantity di navbar
+        const totalQty = cart.reduce((sum, it) => sum + (it.qty || 1), 0);
+        const cartCount = document.getElementById('cartCount');
+        if (cartCount) {
+          cartCount.textContent = totalQty;
+        }
+        const cartTooltip = document.getElementById('cartTooltip');
+        if (cartTooltip) {
+          cartTooltip.textContent = totalQty ? `${totalQty} produk dalam keranjang` : "Belum ada produk";
+        }
+      });
+    });
+  });
+</script>
+
 </body>
 </html>

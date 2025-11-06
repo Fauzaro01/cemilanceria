@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Users | Cemilan Ceria</title>
+
+  <!-- 🔗 Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#FF7F00',
+              light: '#FFA756',
+              dark: '#CC6600',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- 🎨 Font & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Source Sans Pro', system-ui, sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar (include partial) -->
+    <%- include('../partials/sidebars.ejs', {activeMenu: activeMenu}) %>
+
+    <!-- Main Content -->
+    <div class="flex flex-col flex-1">
+      <!-- Top Header -->
+      <header class="bg-white shadow-sm">
+        <div class="px-6 py-4">
+          <h1 class="text-2xl font-bold text-gray-800">Kelola Pengguna</h1>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="flex-1 p-6 overflow-auto">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+          <div class="p-6">
+            <table class="w-full text-sm text-left">
+              <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3">ID Pengguna</th>
+                  <th scope="col" class="px-6 py-3">Nama</th>
+                  <th scope="col" class="px-6 py-3">Email</th>
+                  <th scope="col" class="px-6 py-3">Tanggal Bergabung</th>
+                </tr>
+              </thead>
+              <tbody id="usersTable">
+                <!-- Users will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="bg-white border-t border-gray-200 py-4 px-6 text-sm text-gray-600">
+        <strong>&copy; 2025 <a href="#" class="text-primary font-medium hover:underline">Cemilan Ceria</a>.</strong>
+        All rights reserved.
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    let users = JSON.parse(localStorage.getItem('users') || '[]');
+
+    function renderUsers() {
+      const tbody = document.getElementById('usersTable');
+      tbody.innerHTML = '';
+      users.forEach(user => {
+        const row = `
+          <tr class="bg-white border-b">
+            <td class="px-6 py-4 font-medium text-gray-900">#${user.id}</td>
+            <td class="px-6 py-4">${user.name}</td>
+            <td class="px-6 py-4">${user.email}</td>
+            <td class="px-6 py-4">${user.joined}</td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
+
+    renderUsers();
+  </script>
+
+</body>
+</html>

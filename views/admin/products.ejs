@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Products | Cemilan Ceria</title>
+
+  <!-- 🔗 Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#FF7F00',
+              light: '#FFA756',
+              dark: '#CC6600',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- 🎨 Font & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Source Sans Pro', system-ui, sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar (include partial) -->
+    <%- include('../partials/sidebars.ejs', {activeMenu: activeMenu}) %>
+
+    <!-- Main Content -->
+    <div class="flex flex-col flex-1">
+      <!-- Top Header -->
+      <header class="bg-white shadow-sm">
+        <div class="px-6 py-4 flex justify-between items-center">
+          <h1 class="text-2xl font-bold text-gray-800">Kelola Produk</h1>
+          <button id="addProductBtn" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition">
+            <i class="fas fa-plus mr-2"></i>Tambah Produk
+          </button>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="flex-1 p-6 overflow-auto">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+          <div class="p-6">
+            <table class="w-full text-sm text-left">
+              <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3">Nama Produk</th>
+                  <th scope="col" class="px-6 py-3">Harga</th>
+                  <th scope="col" class="px-6 py-3">Stok</th>
+                  <th scope="col" class="px-6 py-3">Status</th>
+                  <th scope="col" class="px-6 py-3">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="productsTable">
+                <!-- Products will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="bg-white border-t border-gray-200 py-4 px-6 text-sm text-gray-600">
+        <strong>&copy; 2025 <a href="#" class="text-primary font-medium hover:underline">Cemilan Ceria</a>.</strong>
+        All rights reserved.
+      </footer>
+    </div>
+  </div>
+
+  <!-- Modal for Add/Edit Product -->
+  <div id="productModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+      <div class="mt-3">
+        <h3 class="text-lg font-medium text-gray-900" id="modalTitle">Tambah Produk</h3>
+        <form id="productForm" class="mt-4">
+          <input type="hidden" id="productId">
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Nama Produk</label>
+            <input type="text" id="productName" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Harga</label>
+            <input type="number" id="productPrice" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Stok</label>
+            <input type="number" id="productStock" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
+          </div>
+          <div class="mb-4">
+            <label class="flex items-center">
+              <input type="checkbox" id="productActive" class="mr-2">
+              <span class="text-gray-700 text-sm font-bold">Aktif</span>
+            </label>
+          </div>
+          <div class="flex items-center justify-between">
+            <button type="submit" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition">Simpan</button>
+            <button type="button" id="cancelBtn" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 transition">Batal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let products = JSON.parse(localStorage.getItem('products') || '[]');
+
+    function renderProducts() {
+      const tbody = document.getElementById('productsTable');
+      tbody.innerHTML = '';
+      products.forEach(product => {
+        const row = `
+          <tr class="bg-white border-b">
+            <td class="px-6 py-4 font-medium text-gray-900">${product.name}</td>
+            <td class="px-6 py-4">Rp ${product.price.toLocaleString('id-ID')}</td>
+            <td class="px-6 py-4">${product.stock}</td>
+            <td class="px-6 py-4">
+              <span class="px-2 py-1 text-xs font-medium rounded-full ${product.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                ${product.active ? 'Aktif' : 'Tidak Aktif'}
+              </span>
+            </td>
+            <td class="px-6 py-4">
+              <button onclick="editProduct(${product.id})" class="text-blue-600 hover:text-blue-900 mr-2">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button onclick="deleteProduct(${product.id})" class="text-red-600 hover:text-red-900">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
+
+    function editProduct(id) {
+      const product = products.find(p => p.id === id);
+      if (product) {
+        document.getElementById('productId').value = product.id;
+        document.getElementById('productName').value = product.name;
+        document.getElementById('productPrice').value = product.price;
+        document.getElementById('productStock').value = product.stock;
+        document.getElementById('productActive').checked = product.active;
+        document.getElementById('modalTitle').textContent = 'Edit Produk';
+        document.getElementById('productModal').classList.remove('hidden');
+      }
+    }
+
+    function deleteProduct(id) {
+      if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
+        products = products.filter(p => p.id !== id);
+        localStorage.setItem('products', JSON.stringify(products));
+        renderProducts();
+      }
+    }
+
+    document.getElementById('addProductBtn').addEventListener('click', () => {
+      document.getElementById('productId').value = '';
+      document.getElementById('productName').value = '';
+      document.getElementById('productPrice').value = '';
+      document.getElementById('productStock').value = '';
+      document.getElementById('productActive').checked = true;
+      document.getElementById('modalTitle').textContent = 'Tambah Produk';
+      document.getElementById('productModal').classList.remove('hidden');
+    });
+
+    document.getElementById('cancelBtn').addEventListener('click', () => {
+      document.getElementById('productModal').classList.add('hidden');
+    });
+
+    document.getElementById('productForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = document.getElementById('productId').value;
+      const name = document.getElementById('productName').value;
+      const price = parseInt(document.getElementById('productPrice').value);
+      const stock = parseInt(document.getElementById('productStock').value);
+      const active = document.getElementById('productActive').checked;
+
+      if (id) {
+        // Edit
+        const index = products.findIndex(p => p.id == id);
+        if (index !== -1) {
+          products[index] = { ...products[index], name, price, stock, active };
+        }
+      } else {
+        // Add
+        const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+        products.push({ id: newId, name, price, stock, active });
+      }
+
+      localStorage.setItem('products', JSON.stringify(products));
+      document.getElementById('productModal').classList.add('hidden');
+      renderProducts();
+    });
+
+    renderProducts();
+  </script>
+
+</body>
+</html>
