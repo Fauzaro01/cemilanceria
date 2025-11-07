@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Halaman Utama</title>
+  <title>Halaman Produk | Cemilan Ceria</title>
   <link 
-  rel="stylesheet" 
-  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-/>
+    rel="stylesheet" 
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+  />
 
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            'primary': '#f59e0b', // amber-500
-            'primary-dark': '#d97706', // amber-600
+            'primary': '#f59e0b',
+            'primary-dark': '#d97706',
           }
         }
       }
@@ -25,26 +25,15 @@
   </script>
 
   <style>
-    /* --- Animasi untuk transisi --- */
     @keyframes fadeSlideDown {
       0% { opacity: 0; transform: translateY(-10px); }
       100% { opacity: 1; transform: translateY(0); }
     }
-
-    @keyframes fadeSlideUp {
-      0% { opacity: 0; transform: translateY(10px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
     .animate-fade-slide-down {
-      animation: fadeSlideDown 0.3s ease-out forwards;
+      animation: fadeSlideDown 0.4s ease-out forwards;
     }
 
-    .animate-fade-slide-up {
-      animation: fadeSlideUp 0.3s ease-out forwards;
-    }
-
-    /* Hover underline*/
+    /* Hover underline efek link (global) */
     .link-underline {
       position: relative;
     }
@@ -63,45 +52,76 @@
     }
   </style>
 </head>
-<body>
-    <%- include('partials/navbar') %>
+
+<body class="bg-gray-50">
+  <%- include('partials/navbar') %>
+
+  <!-- 🔍 Bagian Pencarian Produk -->
+  <section class="py-12 bg-gradient-to-r from-amber-50 to-white text-center shadow-inner animate-fade-slide-down">
+    <div class="max-w-2xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-3">Temukan Produk Favoritmu</h2>
+      <p class="text-gray-500 mb-6 max-w-md mx-auto">
+        Cari berbagai pilihan <span class="text-amber-500 font-semibold">puding</span> dan <span class="text-amber-500 font-semibold">cemilan</span> lezat dari kami.
+      </p>
+      <div class="relative max-w-md mx-auto">
+        <input 
+          type="text" 
+          id="searchInput"
+          placeholder="Ketik nama produk (contoh: Puding, Cireng)..."
+          class="w-full border border-gray-300 bg-white rounded-full px-5 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-sm transition placeholder-gray-400"
+        >
+        <i class="bi bi-search absolute right-5 top-3.5 text-gray-400 text-lg"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- Produk -->
+  <div id="productSection" class="animate-fade-slide-down">
     <%- include('partials/produkpuding') %>
     <%- include('partials/produkcireng') %>
-    <%- include('partials/footer') %>
+  </div>
 
-<!-- <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const addToCartButtons = document.querySelectorAll('.add-to-cart');
-    addToCartButtons.forEach(button => {
-      button.addEventListener('click', function() {
-        const product = this.getAttribute('data-product');
-        const price = parseInt(this.getAttribute('data-price'));
-        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  <!-- Pesan jika produk tidak ditemukan -->
+  <div id="noResultMessage" class="hidden py-16 text-center text-gray-500 text-lg">
+    <i class="bi bi-emoji-frown text-4xl text-amber-400 mb-3 block"></i>
+    <p>Oops! Produk yang kamu cari tidak ditemukan.</p>
+    <p class="text-sm text-gray-400 mt-1">Coba ketik nama lain, misalnya “Puding Stroberi” atau “Cireng”.</p>
+  </div>
 
-        // Jika produk sudah ada, tambahkan qty, jika belum buat item baru
-        const existing = cart.find(item => item.product === product);
-        if (existing) {
-          existing.qty = (existing.qty || 0) + 1;
+  <%- include('partials/footer') %>
+
+  <!-- 🔍 Script Filter Produk -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const searchInput = document.getElementById('searchInput');
+      const productTitles = document.querySelectorAll('h3.text-xl.font-bold');
+      const noResultMessage = document.getElementById('noResultMessage');
+
+      searchInput.addEventListener('keyup', () => {
+        const searchValue = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        productTitles.forEach(title => {
+          const card = title.closest('.bg-white.rounded-xl');
+          const name = title.textContent.toLowerCase();
+
+          if (name.includes(searchValue) || searchValue === '') {
+            card.style.display = '';
+            visibleCount++;
+          } else {
+            card.style.display = 'none';
+          }
+        });
+
+        // Tampilkan pesan "tidak ditemukan" jika tidak ada hasil
+        if (visibleCount === 0) {
+          noResultMessage.classList.remove('hidden');
         } else {
-          cart.push({ product, price, qty: 1 });
-        }
-
-        localStorage.setItem('cart', JSON.stringify(cart));
-
-        // Update quantity di navbar
-        const totalQty = cart.reduce((sum, it) => sum + (it.qty || 1), 0);
-        const cartCount = document.getElementById('cartCount');
-        if (cartCount) {
-          cartCount.textContent = totalQty;
-        }
-        const cartTooltip = document.getElementById('cartTooltip');
-        if (cartTooltip) {
-          cartTooltip.textContent = totalQty ? `${totalQty} produk dalam keranjang` : "Belum ada produk";
+          noResultMessage.classList.add('hidden');
         }
       });
     });
-  });
-</script> -->
+  </script>
 
 </body>
 </html>
