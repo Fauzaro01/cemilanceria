@@ -1,1 +1,44 @@
-[]
+[
+  {
+    "id": 1762507417802,
+    "createdAt": "2025-11-07T09:23:37.802Z",
+    "name": "",
+    "email": "",
+    "phone": "",
+    "address": "",
+    "cart": [
+      {
+        "product": "Puding Cokelat",
+        "price": 6000,
+        "qty": 4
+      },
+      {
+        "product": "Puding Stroberi",
+        "price": 6000,
+        "qty": 1
+      }
+    ],
+    "paymentMethod": "cod"
+  },
+  {
+    "id": 1762507418171,
+    "createdAt": "2025-11-07T09:23:38.171Z",
+    "name": "",
+    "email": "",
+    "phone": "",
+    "address": "",
+    "cart": [
+      {
+        "product": "Puding Cokelat",
+        "price": 6000,
+        "qty": 4
+      },
+      {
+        "product": "Puding Stroberi",
+        "price": 6000,
+        "qty": 1
+      }
+    ],
+    "paymentMethod": "cod"
+  }
+]

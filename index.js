@@ -9,11 +9,11 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs')
 
-// ensure data folder exists
-const dataDir = path.join(__dirname, 'data');
-if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
-const ordersFile = path.join(dataDir, 'orders.json');
-if (!fs.existsSync(ordersFile)) fs.writeFileSync(ordersFile, '[]');
+// // ensure data folder exists
+// const dataDir = path.join(__dirname, 'data');
+// if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
+// const ordersFile = path.join(dataDir, 'orders.json');
+// if (!fs.existsSync(ordersFile)) fs.writeFileSync(ordersFile, '[]');
 
 
 // utama
@@ -43,7 +43,7 @@ app.get('/pesanan', (req, res) => {
 
 app.post('/checkout', (req, res) => {
   try {
-    const { name, email, phone, address, cart } = req.body;
+    const { cart } = req.body;
 
     let parsedCart = [];
     if (cart) {
@@ -63,17 +63,19 @@ app.post('/checkout', (req, res) => {
     const order = {
       id: Date.now(),
       createdAt: new Date().toISOString(),
-      name: name || '',
-      email: email || '',
-      phone: phone || '',
-      address: address || '',
-      cart: parsedCart
+      // Informasi pengirim dihilangkan dari checkout untuk sekarang
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      cart: parsedCart,
+      paymentMethod: req.body.paymentMethod || 'cod'
     };
 
-    // Simpan ke file orders.json
-    const existing = JSON.parse(fs.readFileSync(ordersFile, 'utf8') || '[]');
-    existing.push(order);
-    fs.writeFileSync(ordersFile, JSON.stringify(existing, null, 2));
+    // // Simpan ke file orders.json
+    // const existing = JSON.parse(fs.readFileSync(ordersFile, 'utf8') || '[]');
+    // existing.push(order);
+    // fs.writeFileSync(ordersFile, JSON.stringify(existing, null, 2));
 
     // Render halaman pesanan dengan data order (server-side)
     return res.render('pesanan', { order });

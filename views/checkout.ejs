@@ -17,25 +17,12 @@
 
         <form action="/checkout" method="POST" class="bg-white rounded-lg shadow-md p-6">
             <input type="hidden" name="cart" id="cartInput">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Informasi Pengiriman</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
-                    <input type="text" id="name" name="name" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
-                </div>
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" id="email" name="email" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
-                </div>
-                <div>
-                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon</label>
-                    <input type="tel" id="phone" name="phone" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500">
-                </div>
-                <div>
-                    <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Alamat</label>
-                    <textarea id="address" name="address" rows="3" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
-                </div>
-            </div>
+            <input type="hidden" name="paymentMethod" value="cod">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">Metode Pembayaran</h2>
+            <p class="mb-4 text-gray-700">Pembayaran: <strong>COD (Bayar di Tempat)</strong></p>
+
+            <!-- Informasi pengirim dihilangkan dari halaman checkout — akan ditangani nanti -->
+
             <div class="mt-6 flex gap-3">
                 <a href="/cart" class="flex-1 text-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-4 rounded-md transition duration-300">Kembali ke Keranjang</a>
                 <button type="submit" id="submitOrderBtn" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 px-4 rounded-md transition duration-300">

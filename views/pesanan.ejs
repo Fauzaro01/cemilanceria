@@ -20,23 +20,34 @@
 
             <div id="order-details" class="text-left bg-gray-50 p-4 rounded-lg mb-6">
                 <!-- Jika server mengirim data order, render di server; kalau tidak, fallback ke localStorage -->
-                <% if (typeof order !== 'undefined' && order) { %>
-                    <h3 class="font-semibold text-lg mb-2">Detail Pesanan</h3>
-                    <p><strong>Nama:</strong> <%= order.name %></p>
-                    <p><strong>Email:</strong> <%= order.email %></p>
-                    <p><strong>Telepon:</strong> <%= order.phone %></p>
-                    <p><strong>Alamat:</strong> <%= order.address %></p>
-                    <h4 class="font-semibold mt-4 mb-2">Produk:</h4>
-                    <ul class="list-disc list-inside">
-                        <% let totalServer = 0; order.cart.forEach(function(item){ %>
-                            <% const qty = item.qty || 1; const itemTotal = (item.price || 0) * qty; totalServer += itemTotal; %>
-                            <li class="flex justify-between py-1"><span><%= item.product %> (<%= qty %>x)</span><span>Rp <%= itemTotal.toLocaleString() %></span></li>
-                        <% }); %>
-                    </ul>
-                    <p class="font-semibold mt-2"><strong>Total: Rp <%= totalServer.toLocaleString() %></strong></p>
-                <% } else { %>
-                    <!-- fallback: client-side rendering -->
-                <% } %>
+                    <% if (typeof order !== 'undefined' && order) { %>
+                        <h3 class="font-semibold text-lg mb-2">Detail Pesanan</h3>
+                                                <% if (order.name) { %>
+                                                    <p><strong>Nama:</strong> <%= order.name %></p>
+                                                <% } %>
+                                                <% if (order.email) { %>
+                                                    <p><strong>Email:</strong> <%= order.email %></p>
+                                                <% } %>
+                                                <% if (order.phone) { %>
+                                                    <p><strong>Telepon:</strong> <%= order.phone %></p>
+                                                <% } %>
+                                                <% if (order.address) { %>
+                                                    <p><strong>Alamat:</strong> <%= order.address %></p>
+                                                <% } %>
+                        <% if (order.paymentMethod) { %>
+                          <p><strong>Metode Pembayaran:</strong> <%= order.paymentMethod %></p>
+                        <% } %>
+                        <h4 class="font-semibold mt-4 mb-2">Produk:</h4>
+                        <ul class="list-disc list-inside">
+                            <% let totalServer = 0; order.cart.forEach(function(item){ %>
+                                <% var qty = item.qty || 1; var itemTotal = (item.price || 0) * qty; totalServer += itemTotal; %>
+                                <li class="flex justify-between py-1"><span><%= item.product %> (<%= qty %>x)</span><span>Rp <%= itemTotal.toLocaleString() %></span></li>
+                            <% }); %>
+                        </ul>
+                        <p class="font-semibold mt-2"><strong>Total: Rp <%= totalServer.toLocaleString() %></strong></p>
+                    <% } else { %>
+                        <!-- fallback: client-side rendering -->
+                    <% } %>
             </div>
 
             <a href="/" class="inline-block bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 px-6 rounded-md transition duration-300">
@@ -49,34 +60,45 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Jika server tidak mengirim order, gunakan fallback localStorage (lama)
-            <% if (typeof order === 'undefined' || !order) { %>
-            const orderDetails = document.getElementById('order-details');
-            const orderData = JSON.parse(localStorage.getItem('currentOrder') || '{}');
+            // serverHasOrder diisi dari server: true jika server mengirim order, false jika tidak
+            const serverHasOrder = <%- JSON.stringify((typeof order !== 'undefined' && order) ? true : false) %>;
 
-            if (orderData.name) {
-                let total = 0;
-                const itemsHtml = orderData.cart.map(item => {
-                    const qty = item.qty || 1;
-                    const itemTotal = item.price * qty;
-                    total += itemTotal;
-                    return `<li class="flex justify-between py-1"><span>${item.product} (${qty}x)</span><span>Rp ${itemTotal.toLocaleString()}</span></li>`;
-                }).join('');
+            if (!serverHasOrder) {
+                const orderDetails = document.getElementById('order-details');
+                const orderData = JSON.parse(localStorage.getItem('currentOrder') || '{}');
 
-                orderDetails.innerHTML = `
-                    <h3 class="font-semibold text-lg mb-2">Detail Pesanan</h3>
-                    <p><strong>Nama:</strong> ${orderData.name}</p>
-                    <p><strong>Email:</strong> ${orderData.email}</p>
-                    <p><strong>Telepon:</strong> ${orderData.phone}</p>
-                    <p><strong>Alamat:</strong> ${orderData.address}</p>
-                    <h4 class="font-semibold mt-4 mb-2">Produk:</h4>
-                    <ul class="list-disc list-inside">${itemsHtml}</ul>
-                    <p class="font-semibold mt-2"><strong>Total: Rp ${total.toLocaleString()}</strong></p>
-                `;
+                if (orderData.name) {
+                    let total = 0;
+                    const itemsHtml = (orderData.cart || []).map(item => {
+                        const qty = item.qty || 1;
+                        const itemTotal = item.price * qty;
+                        total += itemTotal;
+                        return `<li class="flex justify-between py-1"><span>${item.product} (${qty}x)</span><span>Rp ${itemTotal.toLocaleString()}</span></li>`;
+                    }).join('');
+
+                    orderDetails.innerHTML = `
+                        <h3 class="font-semibold text-lg mb-2">Detail Pesanan</h3>
+                        <p><strong>Nama:</strong> ${orderData.name}</p>
+                        <p><strong>Email:</strong> ${orderData.email}</p>
+                        <p><strong>Telepon:</strong> ${orderData.phone}</p>
+                        <p><strong>Alamat:</strong> ${orderData.address}</p>
+                        <h4 class="font-semibold mt-4 mb-2">Produk:</h4>
+                        <ul class="list-disc list-inside">${itemsHtml}</ul>
+                        <p class="font-semibold mt-2"><strong>Total: Rp ${total.toLocaleString()}</strong></p>
+                    `;
+                } else {
+                    orderDetails.innerHTML = '<p class="text-gray-500">Tidak ada detail pesanan.</p>';
+                }
             } else {
-                orderDetails.innerHTML = '<p class="text-gray-500">Tidak ada detail pesanan.</p>';
+                // Jika server men-render order, bersihkan localStorage cart dan simpan currentOrder untuk fallback/riwayat
+                try {
+                    const serverOrder = <%- JSON.stringify(typeof order !== 'undefined' ? order : {}) %>;
+                    localStorage.setItem('currentOrder', JSON.stringify(serverOrder));
+                    localStorage.removeItem('cart');
+                } catch (e) {
+                    // ignore
+                }
             }
-            <% } %>
         });
     </script>
 </body>
