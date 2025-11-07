@@ -145,13 +145,14 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const addToCartButtons = document.querySelectorAll('.add-to-cart');
+    
     addToCartButtons.forEach(button => {
       button.addEventListener('click', function() {
         const product = this.getAttribute('data-product');
         const price = parseInt(this.getAttribute('data-price'));
         let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-        // Jika produk sudah ada, tambahkan qty, jika belum buat item baru
+        // Jika produk sudah ada, tambahkan qty
         const existing = cart.find(item => item.product === product);
         if (existing) {
           existing.qty = (existing.qty || 1) + 1;
@@ -159,19 +160,45 @@
           cart.push({ product, price, qty: 1 });
         }
 
+        // Simpan ke localStorage
         localStorage.setItem('cart', JSON.stringify(cart));
 
-        // Update quantity di navbar
+        // Update total qty di navbar
         const totalQty = cart.reduce((sum, it) => sum + (it.qty || 1), 0);
         const cartCount = document.getElementById('cartCount');
         if (cartCount) {
           cartCount.textContent = totalQty;
         }
+
         const cartTooltip = document.getElementById('cartTooltip');
         if (cartTooltip) {
           cartTooltip.textContent = totalQty ? `${totalQty} produk dalam keranjang` : "Belum ada produk";
         }
+
+        // --- Efek klik halus ---
+        button.classList.add('scale-95', 'bg-amber-600');
+        setTimeout(() => {
+          button.classList.remove('scale-95', 'bg-amber-600');
+        }, 150);
+
+        // --- Notifikasi kecil (toast) ---
+        const notif = document.createElement('div');
+        notif.textContent = `${product} ditambahkan ke keranjang!`;
+        notif.className = `
+          fixed bottom-6 right-6 bg-amber-500 text-white px-4 py-2 
+          rounded-lg shadow-lg text-sm z-50 opacity-0 transition-opacity duration-300
+        `;
+        document.body.appendChild(notif);
+
+        // Muncul perlahan
+        setTimeout(() => notif.classList.add('opacity-100'), 50);
+        // Hilang otomatis
+        setTimeout(() => {
+          notif.classList.remove('opacity-100');
+          setTimeout(() => notif.remove(), 300);
+        }, 1500);
       });
     });
   });
 </script>
+
