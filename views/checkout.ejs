@@ -13,20 +13,10 @@
     <div class="max-w-4xl mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold text-gray-800 mb-6">Checkout</h1>
 
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Keranjang Anda</h2>
-            <div id="cart-items" class="space-y-4">
-                <!-- Item keranjang akan dimuat di sini melalui JavaScript -->
-            </div>
-            <div class="border-t pt-4 mt-4">
-                <div class="flex justify-between items-center text-lg font-semibold">
-                    <span>Total:</span>
-                    <span id="total-price">Rp 0</span>
-                </div>
-            </div>
-        </div>
+        <!-- Halaman checkout hanya menampilkan form. Daftar item pindah ke halaman Keranjang -->
 
         <form action="/checkout" method="POST" class="bg-white rounded-lg shadow-md p-6">
+            <input type="hidden" name="cart" id="cartInput">
             <h2 class="text-xl font-semibold text-gray-800 mb-4">Informasi Pengiriman</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -46,9 +36,12 @@
                     <textarea id="address" name="address" rows="3" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
                 </div>
             </div>
-            <button type="submit" class="mt-6 w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 px-4 rounded-md transition duration-300">
-                Pesan Sekarang
-            </button>
+            <div class="mt-6 flex gap-3">
+                <a href="/cart" class="flex-1 text-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-4 rounded-md transition duration-300">Kembali ke Keranjang</a>
+                <button type="submit" id="submitOrderBtn" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 px-4 rounded-md transition duration-300">
+                    Pesan Sekarang
+                </button>
+            </div>
         </form>
     </div>
 
@@ -56,44 +49,24 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const cartItems = document.getElementById('cart-items');
-            const totalPrice = document.getElementById('total-price');
+            const cartInput = document.getElementById('cartInput');
+            const form = document.querySelector('form[action="/checkout"]');
+            const submitBtn = form.querySelector('button[type="submit"]');
             const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            let total = 0;
 
+            // Sertakan data keranjang sebagai input tersembunyi agar server menerima item jika diperlukan
+            cartInput.value = JSON.stringify(cart);
+
+            // Jika keranjang kosong, nonaktifkan tombol submit dan beri petunjuk singkat
             if (cart.length === 0) {
-                cartItems.innerHTML = '<p class="text-gray-500">Keranjang Anda kosong.</p>';
-            } else {
-                cart.forEach((item, index) => {
-                    const qty = item.qty || 1;
-                    total += item.price * qty;
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'flex justify-between items-center border-b pb-2';
-                    itemDiv.innerHTML = `
-                        <div>
-                            <h3 class="font-medium">${item.product} ${qty > 1 ? `<span class="text-sm text-gray-500">(${qty}x)</span>` : ''}</h3>
-                            <p class="text-sm text-gray-600">Rp ${(item.price * qty).toLocaleString()}</p>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-sm text-gray-600">Rp ${item.price.toLocaleString()}</span>
-                            <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    `;
-                    cartItems.appendChild(itemDiv);
-                });
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50','cursor-not-allowed');
+                const note = document.createElement('p');
+                note.className = 'text-sm text-gray-500 mb-4';
+                note.textContent = 'Keranjang kosong — tambahkan produk terlebih dahulu.';
+                form.insertBefore(note, form.firstChild);
             }
-
-            totalPrice.textContent = `Rp ${total.toLocaleString()}`;
         });
-
-        function removeFromCart(index) {
-            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            cart.splice(index, 1);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            location.reload();
-        }
     </script>
 </body>
 </html>
