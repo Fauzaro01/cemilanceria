@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String   
+  name      String
+  phone     String?
+  address   String?
+  role      UserRole @default(USER)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  orders    Order[]
+  
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+  stock       Int      @default(0)
+  category    String?
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  orderItems  OrderItem[]
+  
+  @@map("products")
+}
+
+model Order {
+  id           Int         @id @default(autoincrement())
+  orderNumber  String      @unique
+  userId       Int
+  status       OrderStatus @default(PENDING)
+  totalAmount  Float
+  shippingAddress String?
+  notes        String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  
+
+  user         User        @relation(fields: [userId], references: [id])
+  
+  orderItems   OrderItem[]
+  
+  @@map("orders")
+}
+
+enum OrderStatus {
+  PENDING    // Menunggu konfirmasi
+  CONFIRMED  // Dikonfirmasi
+  PROCESSING // Sedang diproses
+  SHIPPED    // Dikirim
+  DELIVERED  // Diterima
+  CANCELLED  // Dibatalkan
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int     
+  productId Int      
+  quantity  Int
+  price     Float    
+  subtotal  Float    
+  createdAt DateTime @default(now())
+  
+
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+  
+  @@map("order_items")
+  @@unique([orderId, productId]) 
+}

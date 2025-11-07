@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Cemilanceria</title>
+</head>
+<body>
+    <div>
+        <h1>Login</h1>
+        
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div style="color: red; margin-bottom: 10px;">
+                <%= error %>
+            </div>
+        <% } %>
+
+        <form action="/login" method="POST">
+            <div>
+                <label for="email">Email:</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    required 
+                    placeholder="Masukkan email Anda"
+                    value="<%= typeof email !== 'undefined' ? email : '' %>"
+                >
+            </div>
+            
+            <div>
+                <label for="password">Password:</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    required 
+                    placeholder="Masukkan password Anda"
+                >
+            </div>
+            
+            <div>
+                <button type="submit">Login</button>
+            </div>
+        </form>
+        
+        <div>
+            <p>
+                Belum punya akun? 
+                <a href="/register">Daftar di sini</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
