@@ -1,13 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Halaman utama</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <!-- Contoh tautan ke file Tailwind CSS -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Halaman Utama</title>
+  <link 
+  rel="stylesheet" 
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
+/>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'primary': '#f59e0b', // amber-500
+            'primary-dark': '#d97706', // amber-600
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* --- Animasi untuk transisi --- */
+    @keyframes fadeSlideDown {
+      0% { opacity: 0; transform: translateY(-10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeSlideUp {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-slide-down {
+      animation: fadeSlideDown 0.3s ease-out forwards;
+    }
+
+    .animate-fade-slide-up {
+      animation: fadeSlideUp 0.3s ease-out forwards;
+    }
+
+    /* Hover underline*/
+    .link-underline {
+      position: relative;
+    }
+    .link-underline::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background-color: #f59e0b;
+      transition: width 0.3s ease;
+    }
+    .link-underline:hover::after {
+      width: 100%;
+    }
+  </style>
 </head>
-<body>
-    <h1 class="text-3xl font-bold text-emerald-500">Selamat datang di halaman utama</h1>
+
+<body class="bg-gray-50">
+
+
+  <%- include('partials/navbar') %>
+<section class="flex flex-col md:flex-row items-center justify-between max-w-6xl mx-auto px-6 py-16">
+  <!-- Bagian teks -->
+  <div class="text-center md:text-left md:w-1/2">
+    <h1 class="text-4xl font-bold text-gray-800 mb-4">
+      Cita Rasa <span class="text-primary">Yang Tak Terlupakan</span>
+    </h1>
+    <p class="text-gray-600 mb-6">
+      Setiap gigitan membawa kebahagiaan. Dibuat dengan bahan alami dan cinta.
+    </p>
+    <a href="#produk" class="bg-primary text-white px-5 py-3 rounded-full hover:bg-primary-dark transition">
+      Coba Sekarang
+    </a>
+  </div>
+
+  <!-- Bagian gambar carousel -->
+  <div class="relative mt-10 md:mt-0 md:w-1/2 flex justify-center">
+    <div class="overflow-hidden w-60 rounded-2xl shadow-3xl relative ">
+      <div id="carousel" class="flex transition-transform duration-700 ease-in-out">
+        <img src="https://i.pinimg.com/736x/cf/95/2c/cf952c0bb7fee5b59c8bb0a94ac8b58b.jpg" class="w-60 aspect-square object-cover flex-shrink-0">
+        <img src="https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg" class="w-60 aspect-square object-cover flex-shrink-0">
+        <img src="https://i.pinimg.com/1200x/2a/8b/4c/2a8b4c995f0cce056d5240cbb6d94744.jpg" class="w-60 aspect-square object-cover flex-shrink-0">
+      </div>
+    </div>
+    <button id="prev" class="absolute left-0 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2">❮</button>
+    <button id="next" class="absolute right-0 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2">❯</button>
+  </div>
+</section>
+
+
+
+
+  <%- include('partials/produkpuding') %>
+
+
+
+
+  <%- include('partials/footer') %>
+
+
+
+
+  
+<script>
+
+  //catatan kalo ada yg mau ubah js nya 
+
+  
+  // Ambil elemen utama carousel
+  const carousel = document.getElementById('carousel');
+
+  // Hitung jumlah gambar di dalam carousel
+  const totalSlides = carousel.children.length;
+
+  // Variabel posisi gambar yang sedang tampil
+  let index = 0;
+
+  // Fungsi untuk menggeser carousel ke gambar tertentu
+  function showSlide() {
+    carousel.style.transform = `translateX(-${index * 100}%)`;
+  }
+
+  // Tombol next → maju ke gambar berikutnya
+  document.getElementById('next').onclick = () => {
+    index = (index + 1) % totalSlides; // kalau sudah di akhir, balik ke awal
+    showSlide();
+  };
+
+  // Tombol prev → kembali ke gambar sebelumnya
+  document.getElementById('prev').onclick = () => {
+    index = (index - 1 + totalSlides) % totalSlides; // kalau di awal, lompat ke akhir
+    showSlide();
+  };
+
+  // Geser otomatis setiap 4 detik
+  setInterval(() => {
+    index = (index + 1) % totalSlides;
+    showSlide();
+  }, 4000);
+
+
+</script>
 </body>
 </html>

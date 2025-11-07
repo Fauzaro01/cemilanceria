@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <%- include('partials/navbar') %>
+
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Checkout</h1>
+
+        <!-- Halaman checkout hanya menampilkan form. Daftar item pindah ke halaman Keranjang -->
+
+        <form action="/checkout" method="POST" class="bg-white rounded-lg shadow-md p-6">
+            <input type="hidden" name="cart" id="cartInput">
+            <input type="hidden" name="paymentMethod" value="cod">
+            <h2 class="text-xl font-semibold text-gray-800 mb-2">Metode Pembayaran</h2>
+            <p class="mb-4 text-gray-700">Pembayaran: <strong>COD (Bayar di Tempat)</strong></p>
+
+            <!-- Informasi pengirim dihilangkan dari halaman checkout — akan ditangani nanti -->
+
+            <div class="mt-6 flex gap-3">
+                <a href="/cart" class="flex-1 text-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-4 rounded-md transition duration-300">Kembali ke Keranjang</a>
+                <button type="submit" id="submitOrderBtn" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 px-4 rounded-md transition duration-300">
+                    Pesan Sekarang
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <%- include('partials/footer') %>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartInput = document.getElementById('cartInput');
+            const form = document.querySelector('form[action="/checkout"]');
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+            // Sertakan data keranjang sebagai input tersembunyi agar server menerima item jika diperlukan
+            cartInput.value = JSON.stringify(cart);
+
+            // Jika keranjang kosong, nonaktifkan tombol submit dan beri petunjuk singkat
+            if (cart.length === 0) {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-50','cursor-not-allowed');
+                const note = document.createElement('p');
+                note.className = 'text-sm text-gray-500 mb-4';
+                note.textContent = 'Keranjang kosong — tambahkan produk terlebih dahulu.';
+                form.insertBefore(note, form.firstChild);
+            }
+        });
+    </script>
+</body>
+</html>

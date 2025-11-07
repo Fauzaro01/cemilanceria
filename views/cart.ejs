@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <%- include('partials/navbar') %>
+
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Keranjang</h1>
+
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Menu yang disimpan</h2>
+            <div id="cart-items" class="space-y-4">
+                <!-- Item keranjang akan dimuat di sini melalui JavaScript -->
+            </div>
+            <div class="border-t pt-4 mt-4">
+                <div class="flex justify-between items-center text-lg font-semibold">
+                    <span>Total:</span>
+                    <span id="total-price">Rp 0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex gap-3">
+            <a id="checkout-link" href="/checkout" class="flex-1 text-center bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 px-4 rounded-md transition duration-300">Pesan</a>
+            <button id="clear-btn" class="bg-red-500 hover:bg-red-600 text-white font-medium py-3 px-4 rounded-md transition duration-300">Kosongkan</button>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartItems = document.getElementById('cart-items');
+            const totalPrice = document.getElementById('total-price');
+            const checkoutLink = document.getElementById('checkout-link');
+            const clearBtn = document.getElementById('clear-btn');
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+            function render() {
+                cartItems.innerHTML = '';
+                let total = 0;
+                if (cart.length === 0) {
+                    cartItems.innerHTML = '<p class="text-gray-500">Keranjang Anda kosong.</p>';
+                    checkoutLink.classList.add('opacity-50','pointer-events-none','cursor-not-allowed');
+                    clearBtn.classList.add('opacity-50','pointer-events-none','cursor-not-allowed');
+                    totalPrice.textContent = 'Rp 0';
+                    return;
+                }
+
+                cart.forEach((item, index) => {
+                    const qty = item.qty || 1;
+                    total += item.price * qty;
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'flex justify-between items-center border-b pb-2';
+                    itemDiv.innerHTML = `
+                        <div>
+                            <h3 class="font-medium">${item.product} ${qty > 1 ? `<span class="text-sm text-gray-500">(${qty}x)</span>` : ''}</h3>
+                            <p class="text-sm text-gray-600">Rp ${(item.price * qty).toLocaleString()}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="text-sm text-gray-600">Rp ${item.price.toLocaleString()}</span>
+                            <button data-index="${index}" class="text-red-500 hover:text-red-700 remove-btn">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    `;
+                    cartItems.appendChild(itemDiv);
+                });
+
+                totalPrice.textContent = `Rp ${total.toLocaleString()}`;
+                checkoutLink.classList.remove('opacity-50','pointer-events-none','cursor-not-allowed');
+                clearBtn.classList.remove('opacity-50','pointer-events-none','cursor-not-allowed');
+            }
+
+            document.addEventListener('click', function(e){
+                if(e.target.matches('.remove-btn') || e.target.closest('.remove-btn')){
+                    const btn = e.target.matches('.remove-btn') ? e.target : e.target.closest('.remove-btn');
+                    const idx = parseInt(btn.getAttribute('data-index'));
+                    cart.splice(idx,1);
+                    localStorage.setItem('cart', JSON.stringify(cart));
+                    render();
+                    // update navbar count if exists
+                    if(window.updateCart) window.updateCart();
+                }
+            });
+
+            clearBtn.addEventListener('click', function(){
+                localStorage.removeItem('cart');
+                cart = [];
+                render();
+                if(window.updateCart) window.updateCart();
+            });
+
+            render();
+        });
+    </script>
+</body>
+</html>

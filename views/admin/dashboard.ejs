@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | Cemilan Ceria</title>
+
+  <!-- 🔗 Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#FF7F00',
+              light: '#FFA756',
+              dark: '#CC6600',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- 🎨 Font & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Source Sans Pro', system-ui, sans-serif;
+    }
+    /* Smooth scroll & layout */
+    html { scroll-behavior: smooth; }
+    .sidebar-link {
+      @apply flex items-center w-full px-4 py-3 rounded-lg text-gray-700 hover:bg-orange-50 hover:text-primary-dark transition;
+    }
+    .sidebar-link.active {
+      @apply bg-orange-50 text-primary-dark border-l-3 border-primary;
+    }
+    .sidebar-link i {
+      @apply w-6 text-center mr-3 text-gray-500;
+    }
+    .sidebar-link.active i,
+    .sidebar-link:hover i {
+      @apply text-primary;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar (include partial) -->
+    <%- include('../partials/sidebars.ejs', {activeMenu: activeMenu}) %>
+
+    <!-- Main Content -->
+    <div class="flex flex-col flex-1">
+      <!-- Top Header -->
+      <header class="bg-white shadow-sm">
+        <div class="px-6 py-4">
+          <h1 class="text-2xl font-bold text-gray-800">Dashboard</h1>
+        </div>
+      </header>
+
+  <!-- Content -->
+      <main class="flex-1 p-6 overflow-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Card 1 -->
+          <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center">
+              <div class="p-3 rounded-lg bg-blue-100 text-blue-600">
+                <i class="fas fa-cookie-bite text-xl"></i>
+              </div>
+              <div class="ml-4">
+                <p class="text-gray-500 text-sm">Produk Aktif</p>
+                <p class="text-2xl font-bold text-gray-800" id="produkAktif">0</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center">
+              <div class="p-3 rounded-lg bg-green-100 text-green-600">
+                <i class="fas fa-receipt text-xl"></i>
+              </div>
+              <div class="ml-4">
+                <p class="text-gray-500 text-sm">Pesanan Hari Ini</p>
+                <p class="text-2xl font-bold text-gray-800" id="pesananHariIni">0</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center">
+              <div class="p-3 rounded-lg bg-red-100 text-red-600">
+                <i class="fas fa-coins text-xl"></i>
+              </div>
+              <div class="ml-4">
+                <p class="text-gray-500 text-sm">Pendapatan Hari Ini</p>
+                <p class="text-xl font-bold text-gray-800" id="pendapatanHariIni">Rp 0</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Isi dashboard lain bisa ditambah di sini -->
+      </main>
+
+      <script>
+        // Initialize data if not present
+        if (!localStorage.getItem('products')) {
+          const initialProducts = [
+            { id: 1, name: 'Puding Cokelat', price: 6000, stock: 50, active: true },
+            { id: 2, name: 'Puding Stroberi', price: 6000, stock: 40, active: true },
+            { id: 3, name: 'Cireng Ayam Suir', price: 3000, stock: 30, active: true }
+          ];
+          localStorage.setItem('products', JSON.stringify(initialProducts));
+        }
+
+        if (!localStorage.getItem('orders')) {
+          const initialOrders = [
+            { id: 1, customer: 'John Doe', email: 'john@example.com', total: 25000, status: 'pending', date: new Date().toISOString().split('T')[0] },
+            { id: 2, customer: 'Jane Smith', email: 'jane@example.com', total: 18000, status: 'completed', date: new Date().toISOString().split('T')[0] }
+          ];
+          localStorage.setItem('orders', JSON.stringify(initialOrders));
+        }
+
+
+
+        // Update stats
+        function updateStats() {
+          const products = JSON.parse(localStorage.getItem('products') || '[]');
+          const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+          const users = JSON.parse(localStorage.getItem('users') || '[]');
+
+          const activeProducts = products.filter(p => p.active).length;
+          const todayOrders = orders.filter(o => o.date === new Date().toISOString().split('T')[0]).length;
+          const newUsers = users.filter(u => u.joined === new Date().toISOString().split('T')[0]).length;
+          const todayRevenue = orders.filter(o => o.date === new Date().toISOString().split('T')[0] && o.status === 'completed').reduce((sum, o) => sum + o.total, 0);
+
+          document.getElementById('produkAktif').textContent = activeProducts;
+          document.getElementById('pesananHariIni').textContent = todayOrders;
+          document.getElementById('pelangganBaru').textContent = newUsers;
+          document.getElementById('pendapatanHariIni').textContent = 'Rp ' + todayRevenue.toLocaleString('id-ID');
+        }
+
+        updateStats();
+      </script>
+
+      <!-- Footer -->
+      <footer class="bg-white border-t border-gray-200 py-4 px-6 text-sm text-gray-600">
+        <strong>&copy; 2025 <a href="#" class="text-primary font-medium hover:underline">Cemilan Ceria</a>.</strong>
+        All rights reserved.
+      </footer>
+    </div>
+  </div>
+
+</body>
+</html>
