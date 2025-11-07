@@ -9,50 +9,40 @@ const { ensureAuthenticated } = require('./middleware/auth');
 
 const app = express();
 
-// Middleware untuk parsing body dan static files
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(logger('dev'));
 app.set('view engine', 'ejs');
 
-// Session configuration
 app.use(session({
     secret: process.env.SESSION_SECRET || 'cemilanceria-secret-key-change-in-production',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: false, // Set to true jika menggunakan HTTPS
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        maxAge: 24 * 60 * 60 * 1000
     }
 }));
 
-// Flash messages
 app.use(flash());
 
-// Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Middleware untuk menyediakan user info di semua template
 app.use((req, res, next) => {
     res.locals.user = req.user || null;
     res.locals.isAuthenticated = req.isAuthenticated();
     next();
 });
 
-// Routes
 app.use('/', require('./route/auth'));
 app.use('/api', require('./route/api'));
 
-// Route utama
 app.get('/', (req, res) => {
     res.render('index');
 });
 
-// Route yang membutuhkan authentication
 app.get('/keranjang', ensureAuthenticated, (req, res) => {
-    // Redirect ke keranjang untuk user biasa
     if (req.user.role === 'ADMIN') {
         return res.redirect('/dashboard');
     }
@@ -60,7 +50,6 @@ app.get('/keranjang', ensureAuthenticated, (req, res) => {
 });
 
 app.get('/dashboard', ensureAuthenticated, (req, res) => {
-    // Hanya admin yang bisa akses dashboard
     if (req.user.role !== 'ADMIN') {
         return res.redirect('/keranjang');
     }

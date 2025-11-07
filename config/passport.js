@@ -5,15 +5,13 @@ const { PrismaClient } = require('../generated/prisma');
 
 const prisma = new PrismaClient();
 
-// Konfigurasi Local Strategy
 passport.use(new LocalStrategy(
     {
-        usernameField: 'email', // Menggunakan email sebagai username
+        usernameField: 'email',
         passwordField: 'password'
     },
     async (email, password, done) => {
         try {
-            // Cari user berdasarkan email
             const user = await prisma.user.findUnique({
                 where: { email: email }
             });
@@ -22,12 +20,10 @@ passport.use(new LocalStrategy(
                 return done(null, false, { message: 'Email tidak ditemukan' });
             }
 
-            // Cek apakah user aktif
             if (!user.isActive) {
                 return done(null, false, { message: 'Akun tidak aktif' });
             }
 
-            // Verifikasi password
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
                 return done(null, false, { message: 'Password salah' });
@@ -40,12 +36,10 @@ passport.use(new LocalStrategy(
     }
 ));
 
-// Serialize user untuk session
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
 
-// Deserialize user dari session
 passport.deserializeUser(async (id, done) => {
     try {
         const user = await prisma.user.findUnique({

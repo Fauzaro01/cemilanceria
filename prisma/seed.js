@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 async function createAdminUser() {
     try {
-        // Cek apakah admin sudah ada
         const existingAdmin = await prisma.user.findFirst({
             where: { role: 'ADMIN' }
         });
@@ -15,10 +14,8 @@ async function createAdminUser() {
             return;
         }
 
-        // Hash password untuk admin
         const hashedPassword = await bcrypt.hash('admin123', 12);
 
-        // Buat admin user
         const adminUser = await prisma.user.create({
             data: {
                 name: 'Administrator',
@@ -34,10 +31,30 @@ async function createAdminUser() {
         console.log('Admin user berhasil dibuat:');
         console.log('Email: admin@cemilanceria.com');
         console.log('Password: admin123');
-        console.log('ID:', adminUser.id);
 
     } catch (error) {
         console.error('Error membuat admin user:', error);
+    } finally {
+        await prisma.$disconnect();
+    }
+}
+
+async function createProduct() {
+    try {
+        const product = await prisma.product.create({
+            data: {
+                name: 'Product Name',
+                price: 10000,
+                description: 'Product Description',
+                stock: 10,
+            }
+        });
+
+        console.log('Product berhasil dibuat:');
+        console.log('ID:', product.id);
+        console.log('Name:', product.name);
+    } catch (error) {
+        console.error('Error membuat product:', error);
     } finally {
         await prisma.$disconnect();
     }

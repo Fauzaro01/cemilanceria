@@ -8,6 +8,7 @@
     "test": "nodemon index.js",
     "dev": "nodemon index.js",
     "start": "node index.js",
+    "db:seed": "node prisma/seed.js",
     "tailwind": "npx tailwindcss -i ./public/css/tailwind.css -o ./public/css/style.css --watch"
   },
   "repository": {

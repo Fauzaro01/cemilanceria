@@ -7,7 +7,6 @@ const { ensureNotAuthenticated } = require('../middleware/auth');
 
 const prisma = new PrismaClient();
 
-// Route untuk menampilkan halaman login
 router.get('/login', ensureNotAuthenticated, (req, res) => {
     res.render('login', { 
         error: req.flash('error')[0] || null,
@@ -15,7 +14,6 @@ router.get('/login', ensureNotAuthenticated, (req, res) => {
     });
 });
 
-// Route untuk menampilkan halaman register
 router.get('/register', ensureNotAuthenticated, (req, res) => {
     res.render('register', { 
         error: req.flash('error')[0] || null,
@@ -24,7 +22,6 @@ router.get('/register', ensureNotAuthenticated, (req, res) => {
     });
 });
 
-// Route untuk handle login POST
 router.post('/login', ensureNotAuthenticated, (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) {
@@ -42,7 +39,6 @@ router.post('/login', ensureNotAuthenticated, (req, res, next) => {
                 return next(err);
             }
             
-            // Redirect berdasarkan role
             if (user.role === 'ADMIN') {
                 return res.redirect('/dashboard');
             } else {
@@ -52,12 +48,10 @@ router.post('/login', ensureNotAuthenticated, (req, res, next) => {
     })(req, res, next);
 });
 
-// Route untuk handle register POST
 router.post('/register', ensureNotAuthenticated, async (req, res) => {
     try {
         const { name, email, password, confirmPassword, phone, address } = req.body;
         
-        // Validasi input
         if (!name || !email || !password) {
             req.flash('error', 'Nama, email, dan password wajib diisi');
             req.flash('formData', { name, email, phone, address });
@@ -76,7 +70,6 @@ router.post('/register', ensureNotAuthenticated, async (req, res) => {
             return res.redirect('/register');
         }
         
-        // Cek apakah email sudah digunakan
         const existingUser = await prisma.user.findUnique({
             where: { email }
         });
@@ -87,11 +80,9 @@ router.post('/register', ensureNotAuthenticated, async (req, res) => {
             return res.redirect('/register');
         }
         
-        // Hash password
         const saltRounds = 12;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         
-        // Buat user baru
         const newUser = await prisma.user.create({
             data: {
                 name,
@@ -99,7 +90,7 @@ router.post('/register', ensureNotAuthenticated, async (req, res) => {
                 password: hashedPassword,
                 phone: phone || null,
                 address: address || null,
-                role: 'USER' // Default role adalah USER
+                role: 'USER'
             }
         });
         
@@ -114,7 +105,6 @@ router.post('/register', ensureNotAuthenticated, async (req, res) => {
     }
 });
 
-// Route untuk logout
 router.post('/logout', (req, res) => {
     req.logout((err) => {
         if (err) {
@@ -125,7 +115,6 @@ router.post('/logout', (req, res) => {
     });
 });
 
-// Route untuk logout via GET (untuk kemudahan)
 router.get('/logout', (req, res) => {
     req.logout((err) => {
         if (err) {
