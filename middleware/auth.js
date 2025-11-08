@@ -26,9 +26,9 @@ const ensureAdmin = (req, res, next) => {
 const redirectByRole = (req, res, next) => {
     if (req.isAuthenticated()) {
         if (req.user.role === 'ADMIN') {
-            return res.redirect('/dashboard');
+            return res.redirect('/admin');
         } else {
-            return res.redirect('/keranjang');
+            return res.redirect('/dashboard');
         }
     }
     next();

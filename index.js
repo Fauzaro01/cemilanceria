@@ -37,6 +37,7 @@ app.use((req, res, next) => {
 
 app.use('/', require('./route/auth'));
 app.use('/api', require('./route/api'));
+app.use('/admin', require('./route/admin'));
 
 // // ensure data folder exists
 // const dataDir = path.join(__dirname, 'data');
@@ -131,41 +132,6 @@ app.post('/checkout', (req, res) => {
 
 app.get('/pesanan', (req, res) => {
     res.render('pesanan');
-});
-
-app.get('/admin/dashboard', (req, res) => {
-  res.render('admin/dashboard', {
-    user: { name: 'Admin Cemilan' },
-    activeMenu: 'dashboard'
-  });
-});
-
-app.get('/admin/products', (req, res) => {
-  res.render('admin/products', {
-    user: { name: 'Admin Cemilan' },
-    activeMenu: 'products'
-  });
-});
-
-app.get('/admin/orders', (req, res) => {
-  res.render('admin/orders', {
-    user: { name: 'Admin Cemilan' },
-    activeMenu: 'orders'
-  });
-});
-
-app.get('/admin/users', (req, res) => {
-  res.render('admin/users', {
-    user: { name: 'Admin Cemilan' },
-    activeMenu: 'users'
-  });
-});
-
-app.get('/admin/settings', (req, res) => {
-  res.render('admin/settings', {
-    user: { name: 'Admin Cemilan' },
-    activeMenu: 'settings'
-  });
 });
 
 // Placeholder API routes for backend integration (to be implemented by friend)
