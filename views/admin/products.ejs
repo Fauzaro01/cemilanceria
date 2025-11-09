@@ -28,6 +28,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
     body {
@@ -103,6 +106,18 @@
             <input type="number" id="productStock" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
           </div>
           <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Deskripsi</label>
+            <textarea id="productDescription" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" rows="3"></textarea>
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Kategori</label>
+            <input type="text" id="productCategory" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          </div>
+          <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Gambar</label>
+            <input type="file" id="productImage" accept="image/*" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+          </div>
+          <div class="mb-4">
             <label class="flex items-center">
               <input type="checkbox" id="productActive" class="mr-2">
               <span class="text-gray-700 text-sm font-bold">Aktif</span>
@@ -118,7 +133,24 @@
   </div>
 
   <script>
-    let products = JSON.parse(localStorage.getItem('products') || '[]');
+    let products = [];
+
+    async function loadProducts() {
+      try {
+        const response = await fetch('/api/products');
+        const data = await response.json();
+        products = data.products;
+        renderProducts();
+      } catch (error) {
+        console.error('Error loading products:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Gagal memuat data produk!',
+          confirmButtonColor: '#FF7F00'
+        });
+      }
+    }
 
     function renderProducts() {
       const tbody = document.getElementById('productsTable');
@@ -126,12 +158,15 @@
       products.forEach(product => {
         const row = `
           <tr class="bg-white border-b">
-            <td class="px-6 py-4 font-medium text-gray-900">${product.name}</td>
+            <td class="px-6 py-4 font-medium text-gray-900">
+              ${product.imageUrl ? `<img src="${product.imageUrl}" alt="${product.name}" class="w-8 h-8 object-cover rounded inline mr-2">` : ''}
+              ${product.name}
+            </td>
             <td class="px-6 py-4">Rp ${product.price.toLocaleString('id-ID')}</td>
             <td class="px-6 py-4">${product.stock}</td>
             <td class="px-6 py-4">
-              <span class="px-2 py-1 text-xs font-medium rounded-full ${product.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
-                ${product.active ? 'Aktif' : 'Tidak Aktif'}
+              <span class="px-2 py-1 text-xs font-medium rounded-full ${product.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                ${product.isActive ? 'Aktif' : 'Tidak Aktif'}
               </span>
             </td>
             <td class="px-6 py-4">
@@ -155,17 +190,67 @@
         document.getElementById('productName').value = product.name;
         document.getElementById('productPrice').value = product.price;
         document.getElementById('productStock').value = product.stock;
-        document.getElementById('productActive').checked = product.active;
+        document.getElementById('productDescription').value = product.description || '';
+        document.getElementById('productCategory').value = product.category || '';
+        document.getElementById('productActive').checked = product.isActive;
         document.getElementById('modalTitle').textContent = 'Edit Produk';
         document.getElementById('productModal').classList.remove('hidden');
       }
     }
 
-    function deleteProduct(id) {
-      if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
-        products = products.filter(p => p.id !== id);
-        localStorage.setItem('products', JSON.stringify(products));
-        renderProducts();
+    async function deleteProduct(id) {
+      const result = await Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: "Data produk akan dihapus permanen!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal'
+      });
+
+      if (result.isConfirmed) {
+        try {
+          // Show loading
+          Swal.fire({
+            title: 'Menghapus...',
+            allowOutsideClick: false,
+            didOpen: () => {
+              Swal.showLoading();
+            }
+          });
+
+          const response = await fetch(`/api/products/${id}`, {
+            method: 'DELETE'
+          });
+          const data = await response.json();
+          
+          if (response.ok) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Berhasil!',
+              text: data.msg,
+              confirmButtonColor: '#FF7F00'
+            });
+            loadProducts();
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Gagal!',
+              text: data.msg || 'Error menghapus produk',
+              confirmButtonColor: '#FF7F00'
+            });
+          }
+        } catch (error) {
+          console.error('Error deleting product:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Terjadi kesalahan saat menghapus produk!',
+            confirmButtonColor: '#FF7F00'
+          });
+        }
       }
     }
 
@@ -174,6 +259,9 @@
       document.getElementById('productName').value = '';
       document.getElementById('productPrice').value = '';
       document.getElementById('productStock').value = '';
+      document.getElementById('productDescription').value = '';
+      document.getElementById('productCategory').value = '';
+      document.getElementById('productImage').value = '';
       document.getElementById('productActive').checked = true;
       document.getElementById('modalTitle').textContent = 'Tambah Produk';
       document.getElementById('productModal').classList.remove('hidden');
@@ -183,32 +271,92 @@
       document.getElementById('productModal').classList.add('hidden');
     });
 
-    document.getElementById('productForm').addEventListener('submit', (e) => {
+    document.getElementById('productForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      
       const id = document.getElementById('productId').value;
       const name = document.getElementById('productName').value;
-      const price = parseInt(document.getElementById('productPrice').value);
-      const stock = parseInt(document.getElementById('productStock').value);
-      const active = document.getElementById('productActive').checked;
+      const price = document.getElementById('productPrice').value;
+      const stock = document.getElementById('productStock').value;
+      const description = document.getElementById('productDescription').value;
+      const category = document.getElementById('productCategory').value;
+      const isActive = document.getElementById('productActive').checked;
+      const imageFile = document.getElementById('productImage').files[0];
 
-      if (id) {
-        // Edit
-        const index = products.findIndex(p => p.id == id);
-        if (index !== -1) {
-          products[index] = { ...products[index], name, price, stock, active };
-        }
-      } else {
-        // Add
-        const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-        products.push({ id: newId, name, price, stock, active });
+      // Validation
+      if (!name || !price || !stock) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Data tidak lengkap!',
+          text: 'Nama produk, harga, dan stok wajib diisi.',
+          confirmButtonColor: '#FF7F00'
+        });
+        return;
       }
 
-      localStorage.setItem('products', JSON.stringify(products));
-      document.getElementById('productModal').classList.add('hidden');
-      renderProducts();
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('price', price);
+      formData.append('stock', stock);
+      formData.append('description', description);
+      formData.append('category', category);
+      formData.append('isActive', isActive);
+      
+      if (imageFile) {
+        formData.append('image', imageFile);
+      }
+
+      try {
+        // Show loading
+        Swal.fire({
+          title: id ? 'Mengupdate produk...' : 'Menyimpan produk...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        const url = id ? `/api/products/${id}` : '/api/products';
+        const method = id ? 'PUT' : 'POST';
+        
+        const response = await fetch(url, {
+          method: method,
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: data.msg,
+            confirmButtonColor: '#FF7F00'
+          }).then(() => {
+            document.getElementById('productModal').classList.add('hidden');
+            loadProducts();
+          });
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: data.msg || 'Error menyimpan produk',
+            confirmButtonColor: '#FF7F00'
+          });
+        }
+      } catch (error) {
+        console.error('Error saving product:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Terjadi kesalahan saat menyimpan produk!',
+          confirmButtonColor: '#FF7F00'
+        });
+      }
     });
 
-    renderProducts();
+    // Load products when page loads
+    loadProducts();
   </script>
 
 </body>

@@ -51,18 +51,8 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
-app.get('/keranjang', ensureAuthenticated, (req, res) => {
-    if (req.user.role === 'ADMIN') {
-        return res.redirect('/dashboard');
-    }
-    res.send('<h1>Halaman Keranjang</h1><p>Selamat datang di keranjang belanja, ' + req.user.name + '!</p><a href="/logout">Logout</a>');
-});
-
 app.get('/dashboard', ensureAuthenticated, (req, res) => {
-    if (req.user.role !== 'ADMIN') {
-        return res.redirect('/keranjang');
-    }
-    res.send('<h1>Dashboard Admin</h1><p>Selamat datang di dashboard, ' + req.user.name + '!</p><a href="/logout">Logout</a>');
+    res.send('<h1>Dashboard Admin</h1><p>Selamat datang di dashboard, ' + req.user.name + '!</p><a href="/admin/products">Kelola Produk</a> | <a href="/logout">Logout</a>');
 });
 
 app.get('/checkout', (req, res) => {
@@ -73,8 +63,8 @@ app.get('/cart', (req, res) => {
   res.render('cart');
 });
 
-app.get('/halamanproduk', (req, res) => {
-    res.render('halamanproduk');
+app.get('/products', (req, res) => {
+    res.render('products');
 });
 
 app.get('/pesanan', (req, res) => {

@@ -10,9 +10,9 @@ const ensureNotAuthenticated = (req, res, next) => {
         return next();
     }
     if (req.user.role === 'ADMIN') {
-        res.redirect('/dashboard');
+        res.redirect('/admin');
     } else {
-        res.redirect('/keranjang');
+        res.redirect('/dashboard');
     }
 };
 
