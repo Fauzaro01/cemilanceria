@@ -118,12 +118,14 @@ app.get('/admin/users', (req, res) => {
   });
 });
 
-app.get('/admin/settings', (req, res) => {
-  res.render('admin/settings', {
-    user: { name: 'Admin Cemilan' },
-    activeMenu: 'settings'
-  });
-});
+// app.get('/admin/settings', (req, res) => {
+//   res.render('admin/settings', {
+//     user: { name: 'Admin Cemilan' },
+//     activeMenu: 'settings'
+//   });
+// });
+
+app
 
 // Placeholder API routes for backend integration (to be implemented by friend)
 app.get('/api/users', (req, res) => {
