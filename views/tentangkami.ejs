@@ -1,0 +1,61 @@
+<!-- <--------halaman Tentang kami---------->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tentang Kami | Cemilan Ceria</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'primary': '#f59e0b',
+            'primary-dark': '#d97706',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @keyframes fadeSlideDown {
+      0% { opacity: 0; transform: translateY(-10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-slide-down {
+      animation: fadeSlideDown 0.4s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <%- include('partials/navbar') %>
+
+  <!-- Bagian Tentang Kami -->
+  <section class="py-16 bg-white animate-fade-slide-down">
+    <div class="container mx-auto px-6 md:px-12 lg:px-20">
+      <h1 class="text-4xl font-bold text-gray-900 mb-6 text-center">Tentang Kami</h1>
+      <p class="text-lg text-gray-700 leading-relaxed mb-6">
+        Selamat datang di Cemilan Ceria! Kami adalah penyedia camilan enak, sehat, dan berkualitas untuk keluarga Indonesia. 
+        Misi kami adalah menghadirkan kebahagiaan melalui camilan yang tidak hanya lezat tetapi juga menyehatkan.
+      </p>
+        <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Didirikan pada tahun 2020, Cemilan Ceria berkomitmen untuk menggunakan bahan-bahan alami terbaik dalam setiap produk kami. 
+            Kami percaya bahwa camilan yang baik dapat membawa keceriaan dan energi positif bagi setiap orang.
+        </p>
+        <p class="text-lg text-gray-700 leading-relaxed mb-6">
+            Kami bangga dengan berbagai produk camilan kami, mulai dari puding segar hingga cireng gurih, yang semuanya dibuat dengan penuh cinta dan perhatian terhadap kualitas. 
+            Tim kami terdiri dari para ahli kuliner yang berdedikasi untuk menciptakan inovasi rasa yang memanjakan lidah Anda.
+        </p>
+        <p class="text-lg text-gray-700 leading-relaxed">
+            Terima kasih telah memilih Cemilan Ceria sebagai teman setia Anda dalam menikmati camilan. 
+            Kami berharap dapat terus melayani Anda dengan produk-produk terbaik kami dan menjadi bagian dari momen-momen bahagia Anda.
+        </p>
+    </div>
+    </section>
+    <%- include('partials/footer') %>
+</body>
+</html>

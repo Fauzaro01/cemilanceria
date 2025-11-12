@@ -242,6 +242,9 @@
   }
 }
 @layer utilities {
+  .pointer-events-none {
+    pointer-events: none;
+  }
   .invisible {
     visibility: hidden;
   }
@@ -526,9 +529,6 @@
   .max-w-2xl {
     max-width: var(--container-2xl);
   }
-  .max-w-3xl {
-    max-width: var(--container-3xl);
-  }
   .max-w-4xl {
     max-width: var(--container-4xl);
   }
@@ -538,14 +538,8 @@
   .max-w-7xl {
     max-width: var(--container-7xl);
   }
-  .max-w-lg {
-    max-width: var(--container-lg);
-  }
   .max-w-md {
     max-width: var(--container-md);
-  }
-  .max-w-sm {
-    max-width: var(--container-sm);
   }
   .min-w-0 {
     min-width: calc(var(--spacing) * 0);
@@ -623,9 +617,6 @@
   }
   .gap-3 {
     gap: calc(var(--spacing) * 3);
-  }
-  .gap-4 {
-    gap: calc(var(--spacing) * 4);
   }
   .gap-6 {
     gap: calc(var(--spacing) * 6);
@@ -798,6 +789,9 @@
       background-color: color-mix(in oklab, var(--color-gray-50) 50%, transparent);
     }
   }
+  .bg-gray-200 {
+    background-color: var(--color-gray-200);
+  }
   .bg-gray-300 {
     background-color: var(--color-gray-300);
   }
@@ -952,9 +946,6 @@
   .py-4 {
     padding-block: calc(var(--spacing) * 4);
   }
-  .py-5 {
-    padding-block: calc(var(--spacing) * 5);
-  }
   .py-8 {
     padding-block: calc(var(--spacing) * 8);
   }
@@ -1015,10 +1006,6 @@
   .text-6xl {
     font-size: var(--text-6xl);
     line-height: var(--tw-leading, var(--text-6xl--line-height));
-  }
-  .text-base {
-    font-size: var(--text-base);
-    line-height: var(--tw-leading, var(--text-base--line-height));
   }
   .text-lg {
     font-size: var(--text-lg);
@@ -1144,6 +1131,9 @@
   }
   .opacity-0 {
     opacity: 0%;
+  }
+  .opacity-50 {
+    opacity: 50%;
   }
   .opacity-100 {
     opacity: 100%;
@@ -1298,6 +1288,13 @@
       }
     }
   }
+  .hover\:bg-gray-300 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-gray-300);
+      }
+    }
+  }
   .hover\:bg-gray-400 {
     &:hover {
       @media (hover: hover) {
@@ -1356,10 +1353,24 @@
       }
     }
   }
+  .hover\:text-green-500 {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-green-500);
+      }
+    }
+  }
   .hover\:text-orange-700 {
     &:hover {
       @media (hover: hover) {
         color: var(--color-orange-700);
+      }
+    }
+  }
+  .hover\:text-red-500 {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-red-500);
       }
     }
   }
@@ -1408,25 +1419,10 @@
       --tw-ring-color: var(--color-amber-400);
     }
   }
-  .focus\:ring-amber-500 {
-    &:focus {
-      --tw-ring-color: var(--color-amber-500);
-    }
-  }
   .focus\:outline-none {
     &:focus {
       --tw-outline-style: none;
       outline-style: none;
-    }
-  }
-  .sm\:top-3\.5 {
-    @media (width >= 40rem) {
-      top: calc(var(--spacing) * 3.5);
-    }
-  }
-  .sm\:max-w-lg {
-    @media (width >= 40rem) {
-      max-width: var(--container-lg);
     }
   }
   .sm\:grid-cols-2 {
@@ -1434,42 +1430,9 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
-  .sm\:gap-8 {
-    @media (width >= 40rem) {
-      gap: calc(var(--spacing) * 8);
-    }
-  }
   .sm\:px-6 {
     @media (width >= 40rem) {
       padding-inline: calc(var(--spacing) * 6);
-    }
-  }
-  .sm\:py-3 {
-    @media (width >= 40rem) {
-      padding-block: calc(var(--spacing) * 3);
-    }
-  }
-  .sm\:py-14 {
-    @media (width >= 40rem) {
-      padding-block: calc(var(--spacing) * 14);
-    }
-  }
-  .sm\:text-3xl {
-    @media (width >= 40rem) {
-      font-size: var(--text-3xl);
-      line-height: var(--tw-leading, var(--text-3xl--line-height));
-    }
-  }
-  .sm\:text-base {
-    @media (width >= 40rem) {
-      font-size: var(--text-base);
-      line-height: var(--tw-leading, var(--text-base--line-height));
-    }
-  }
-  .sm\:text-lg {
-    @media (width >= 40rem) {
-      font-size: var(--text-lg);
-      line-height: var(--tw-leading, var(--text-lg--line-height));
     }
   }
   .md\:mt-0 {
@@ -1507,6 +1470,11 @@
       flex-direction: row;
     }
   }
+  .md\:px-12 {
+    @media (width >= 48rem) {
+      padding-inline: calc(var(--spacing) * 12);
+    }
+  }
   .md\:text-left {
     @media (width >= 48rem) {
       text-align: left;
@@ -1539,9 +1507,9 @@
       padding-inline: calc(var(--spacing) * 8);
     }
   }
-  .lg\:px-10 {
+  .lg\:px-20 {
     @media (width >= 64rem) {
-      padding-inline: calc(var(--spacing) * 10);
+      padding-inline: calc(var(--spacing) * 20);
     }
   }
 }

@@ -34,71 +34,102 @@
 
     <%- include('partials/footer') %>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const cartItems = document.getElementById('cart-items');
-            const totalPrice = document.getElementById('total-price');
-            const checkoutLink = document.getElementById('checkout-link');
-            const clearBtn = document.getElementById('clear-btn');
-            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cartItems = document.getElementById('cart-items');
+    const totalPrice = document.getElementById('total-price');
+    const checkoutLink = document.getElementById('checkout-link');
+    const clearBtn = document.getElementById('clear-btn');
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-            function render() {
-                cartItems.innerHTML = '';
-                let total = 0;
-                if (cart.length === 0) {
-                    cartItems.innerHTML = '<p class="text-gray-500">Keranjang Anda kosong.</p>';
-                    checkoutLink.classList.add('opacity-50','pointer-events-none','cursor-not-allowed');
-                    clearBtn.classList.add('opacity-50','pointer-events-none','cursor-not-allowed');
-                    totalPrice.textContent = 'Rp 0';
-                    return;
-                }
+    function render() {
+        cartItems.innerHTML = '';
+        let total = 0;
 
-                cart.forEach((item, index) => {
-                    const qty = item.qty || 1;
-                    total += item.price * qty;
-                    const itemDiv = document.createElement('div');
-                    itemDiv.className = 'flex justify-between items-center border-b pb-2';
-                    itemDiv.innerHTML = `
-                        <div>
-                            <h3 class="font-medium">${item.product} ${qty > 1 ? `<span class="text-sm text-gray-500">(${qty}x)</span>` : ''}</h3>
-                            <p class="text-sm text-gray-600">Rp ${(item.price * qty).toLocaleString()}</p>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-sm text-gray-600">Rp ${item.price.toLocaleString()}</span>
-                            <button data-index="${index}" class="text-red-500 hover:text-red-700 remove-btn">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </div>
-                    `;
-                    cartItems.appendChild(itemDiv);
-                });
+        if (cart.length === 0) {
+            cartItems.innerHTML = '<p class="text-gray-500">Keranjang Anda kosong.</p>';
+            checkoutLink.classList.add('opacity-50','pointer-events-none','cursor-not-allowed');
+            clearBtn.classList.add('opacity-50','pointer-events-none','cursor-not-allowed');
+            totalPrice.textContent = 'Rp 0';
+            return;
+        }
 
-                totalPrice.textContent = `Rp ${total.toLocaleString()}`;
-                checkoutLink.classList.remove('opacity-50','pointer-events-none','cursor-not-allowed');
-                clearBtn.classList.remove('opacity-50','pointer-events-none','cursor-not-allowed');
-            }
+        cart.forEach((item, index) => {
+            const qty = item.qty || 1;
+            total += item.price * qty;
 
-            document.addEventListener('click', function(e){
-                if(e.target.matches('.remove-btn') || e.target.closest('.remove-btn')){
-                    const btn = e.target.matches('.remove-btn') ? e.target : e.target.closest('.remove-btn');
-                    const idx = parseInt(btn.getAttribute('data-index'));
-                    cart.splice(idx,1);
-                    localStorage.setItem('cart', JSON.stringify(cart));
-                    render();
-                    // update navbar count if exists
-                    if(window.updateCart) window.updateCart();
-                }
-            });
-
-            clearBtn.addEventListener('click', function(){
-                localStorage.removeItem('cart');
-                cart = [];
-                render();
-                if(window.updateCart) window.updateCart();
-            });
-
-            render();
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'flex justify-between items-center border-b pb-2';
+            itemDiv.innerHTML = `
+                <div>
+                    <h3 class="font-medium">${item.product}</h3>
+                    <p class="text-sm text-gray-600">Rp ${(item.price * qty).toLocaleString()}</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center border rounded-md">
+                        <button data-index="${index}" class="qty-minus px-2 py-1 text-gray-700 hover:text-red-500">−</button>
+                        <span class="px-3 text-gray-800 font-medium">${qty}</span>
+                        <button data-index="${index}" class="qty-plus px-2 py-1 text-gray-700 hover:text-green-500">+</button>
+                    </div>
+                    <button data-index="${index}" class="text-red-500 hover:text-red-700 remove-btn">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            `;
+            cartItems.appendChild(itemDiv);
         });
-    </script>
+
+        totalPrice.textContent = `Rp ${total.toLocaleString()}`;
+        checkoutLink.classList.remove('opacity-50','pointer-events-none','cursor-not-allowed');
+        clearBtn.classList.remove('opacity-50','pointer-events-none','cursor-not-allowed');
+    }
+
+    // Tombol tambah quantity
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('qty-plus')) {
+            const idx = parseInt(e.target.getAttribute('data-index'));
+            cart[idx].qty = (cart[idx].qty || 1) + 1;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            render();
+            if (window.updateCart) window.updateCart();
+        }
+    });
+
+    // Tombol kurang quantity
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('qty-minus')) {
+            const idx = parseInt(e.target.getAttribute('data-index'));
+            cart[idx].qty = (cart[idx].qty || 1) - 1;
+            if (cart[idx].qty <= 0) cart.splice(idx, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            render();
+            if (window.updateCart) window.updateCart();
+        }
+    });
+
+    // Hapus item
+    document.addEventListener('click', function(e) {
+        if(e.target.matches('.remove-btn') || e.target.closest('.remove-btn')) {
+            const btn = e.target.matches('.remove-btn') ? e.target : e.target.closest('.remove-btn');
+            const idx = parseInt(btn.getAttribute('data-index'));
+            cart.splice(idx, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            render();
+            if (window.updateCart) window.updateCart();
+        }
+    });
+
+    // Kosongkan semua
+    clearBtn.addEventListener('click', function() {
+        localStorage.removeItem('cart');
+        cart = [];
+        render();
+        if (window.updateCart) window.updateCart();
+    });
+
+    render();
+});
+</script>
+
 </body>
 </html>
