@@ -1,107 +1,52 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Cemilanceria</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div>
-        <h1>Daftar Akun Baru</h1>
-        
-        <% if (typeof error !== 'undefined' && error) { %>
-            <div style="color: red; margin-bottom: 10px;">
-                <%= error %>
-            </div>
-        <% } %>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
 
-        <% if (typeof success !== 'undefined' && success) { %>
-            <div style="color: green; margin-bottom: 10px;">
-                <%= success %>
-            </div>
-        <% } %>
+  <div class="w-full max-w-sm bg-white rounded-2xl shadow-lg p-8">
+    <h1 class="text-2xl font-semibold text-center text-gray-800 mb-6">Masuk ke Akun Anda</h1>
 
-        <form action="/register" method="POST">
-            <div>
-                <label for="name">Nama Lengkap:</label>
-                <input 
-                    type="text" 
-                    id="name" 
-                    name="name" 
-                    required 
-                    placeholder="Masukkan nama lengkap Anda"
-                    value="<%= typeof formData !== 'undefined' ? formData.name || '' : '' %>"
-                >
-            </div>
-            
-            <div>
-                <label for="email">Email:</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    required 
-                    placeholder="Masukkan email Anda"
-                    value="<%= typeof formData !== 'undefined' ? formData.email || '' : '' %>"
-                >
-            </div>
-            
-            <div>
-                <label for="password">Password:</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    required 
-                    placeholder="Masukkan password (min. 6 karakter)"
-                    minlength="6"
-                >
-            </div>
-            
-            <div>
-                <label for="confirmPassword">Konfirmasi Password:</label>
-                <input 
-                    type="password" 
-                    id="confirmPassword" 
-                    name="confirmPassword" 
-                    required 
-                    placeholder="Ulangi password Anda"
-                    minlength="6"
-                >
-            </div>
-            
-            <div>
-                <label for="phone">Nomor Telepon:</label>
-                <input 
-                    type="tel" 
-                    id="phone" 
-                    name="phone" 
-                    placeholder="Masukkan nomor telepon (opsional)"
-                    value="<%= typeof formData !== 'undefined' ? formData.phone || '' : '' %>"
-                >
-            </div>
-            
-            <div>
-                <label for="address">Alamat:</label>
-                <textarea 
-                    id="address" 
-                    name="address" 
-                    placeholder="Masukkan alamat lengkap (opsional)"
-                    rows="3"
-                ><%= typeof formData !== 'undefined' ? formData.address || '' : '' %></textarea>
-            </div>
-            
-            <div>
-                <button type="submit">Daftar</button>
-            </div>
-        </form>
-        
-        <div>
-            <p>
-                Sudah punya akun? 
-                <a href="/login">Login di sini</a>
-            </p>
-        </div>
-    </div>
+    <form class="space-y-5">
+      <div>
+        <label class="block text-gray-700 mb-2" for="email">Email</label>
+        <input type="email" id="email" name="email" required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
+      </div>
+
+      <div>
+        <label class="block text-gray-700 mb-2" for="password">Kata Sandi</label>
+        <input type="password" id="password" name="password" required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
+      </div>
+
+      <div>
+        <label class="block text-gray-700 mb-2" for="nama">Nama</label>
+        <input type="nama" id="nama" name="nama" required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
+      </div>
+
+      <div>
+        <label class="block text-gray-700 mb-2" for="notelf">Nomor telfon (opsional)</label>
+        <input type="notelf" id="notelf" name="notelf" required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
+      </div>
+
+       <div>
+        <label class="block text-gray-700 mb-2" for="alamat">Alamat (opsional)</label>
+        <input type="alamat" id="alamat" name="alamat" required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
+      </div>
+
+      <button type="submit"
+        class="w-full py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-all">Daftar</button>
+    </form>
+
+  </div>
+
 </body>
 </html>
