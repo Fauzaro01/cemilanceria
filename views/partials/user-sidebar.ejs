@@ -1,0 +1,76 @@
+<!-- User Sidebar: Clean, Modern, Cemilan Ceria -->
+<aside class="w-64 bg-white min-h-screen flex flex-col shadow-sm transition-all duration-300">
+  <!-- Logo Section -->
+  <div class="p-5 border-b border-gray-100">
+    <a href="/" class="flex items-center space-x-3 group">
+      <div class="bg-orange-500 w-9 h-9 rounded-lg flex items-center justify-center shadow-sm">
+        <i class="fas fa-cookie-bite text-white text-lg"></i>
+      </div>
+      <div>
+        <span class="text-lg font-bold text-gray-800 tracking-tight">
+          <span class="text-orange-500">Cemilan</span> Ceria
+        </span>
+        <div class="h-0.5 w-6 bg-orange-400 rounded-full mt-1"></div>
+      </div>
+    </a>
+  </div>
+
+  <!-- User Profile -->
+  <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
+    <div class="flex items-center space-x-3">
+      <div class="relative">
+        <div class="bg-gradient-to-br from-orange-400 to-orange-600 w-10 h-10 rounded-full flex items-center justify-center text-white font-medium text-sm">
+          <%= typeof user !== 'undefined' && user && user.name ? user.name.charAt(0).toUpperCase() : 'U' %>
+        </div>
+        <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="font-medium text-gray-800 truncate">
+          <%= typeof user !== 'undefined' && user ? user.name : 'Pengguna' %>
+        </p>
+        <p class="text-xs text-gray-500">Pelanggan</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 px-3 py-4 overflow-y-auto">
+    <ul class="space-y-1.5">
+      <li>
+        <a href="/user/dashboard" class="flex items-center px-4 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:bg-orange-50 hover:text-orange-700 group <%= activeMenu === 'dashboard' ? 'bg-orange-50 text-orange-700' : '' %>">
+          <i class="fas fa-tachometer-alt w-5 text-center group-hover:text-orange-500 <%= activeMenu === 'dashboard' ? 'text-orange-500' : 'text-gray-500' %>"></i>
+          <span class="ml-4">Dashboard</span>
+          <% if (activeMenu === 'dashboard') { %>
+            <span class="ml-auto w-2 h-2 rounded-full bg-orange-500"></span>
+          <% } %>
+        </a>
+      </li>
+      <li>
+        <a href="/user/orders" class="flex items-center px-4 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:bg-orange-50 hover:text-orange-700 group <%= activeMenu === 'orders' ? 'bg-orange-50 text-orange-700' : '' %>">
+          <i class="fas fa-shopping-cart w-5 text-center group-hover:text-orange-500 <%= activeMenu === 'orders' ? 'text-orange-500' : 'text-gray-500' %>"></i>
+          <span class="ml-4">Pesanan Saya</span>
+          <% if (activeMenu === 'orders') { %>
+            <span class="ml-auto w-2 h-2 rounded-full bg-orange-500"></span>
+          <% } %>
+        </a>
+      </li>
+      <li>
+        <a href="/user/profile" class="flex items-center px-4 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:bg-orange-50 hover:text-orange-700 group <%= activeMenu === 'profile' ? 'bg-orange-50 text-orange-700' : '' %>">
+          <i class="fas fa-user w-5 text-center group-hover:text-orange-500 <%= activeMenu === 'profile' ? 'text-orange-500' : 'text-gray-500' %>"></i>
+          <span class="ml-4">Profil</span>
+          <% if (activeMenu === 'profile') { %>
+            <span class="ml-auto w-2 h-2 rounded-full bg-orange-500"></span>
+          <% } %>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Bottom CTA -->
+  <div class="p-4 border-t border-gray-100 mt-auto">
+    <a href="/" class="flex items-center px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition">
+      <i class="fas fa-home mr-3 text-gray-400"></i>
+      Kembali ke Beranda
+    </a>
+  </div>
+</aside>

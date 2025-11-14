@@ -118,6 +118,28 @@ app.get('/admin/users', (req, res) => {
   });
 });
 
+// User routes
+app.get('/user/dashboard', (req, res) => {
+  res.render('user/dashboard', {
+    user: { name: 'Pengguna Cemilan', email: 'user@example.com' },
+    activeMenu: 'dashboard'
+  });
+});
+
+app.get('/user/orders', (req, res) => {
+  res.render('user/ordersproduk', {
+    user: { name: 'Pengguna Cemilan', email: 'user@example.com' },
+    activeMenu: 'orders'
+  });
+});
+
+app.get('/user/profile', (req, res) => {
+  res.render('user/profilpengguna', {
+    user: { name: 'Pengguna Cemilan', email: 'user@example.com' },
+    activeMenu: 'profile'
+  });
+});
+
 // app.get('/admin/settings', (req, res) => {
 //   res.render('admin/settings', {
 //     user: { name: 'Admin Cemilan' },
