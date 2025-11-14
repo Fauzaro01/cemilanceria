@@ -11,34 +11,40 @@
   <div class="w-full max-w-sm bg-white rounded-2xl shadow-lg p-8">
     <h1 class="text-2xl font-semibold text-center text-gray-800 mb-6">Masuk ke Akun Anda</h1>
 
-    <form class="space-y-5">
+    <form class="space-y-5" action="/register" method="post">
       <div>
-        <label class="block text-gray-700 mb-2" for="email">Email</label>
-        <input type="email" id="email" name="email" required
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
-      </div>
-
-      <div>
-        <label class="block text-gray-700 mb-2" for="password">Kata Sandi</label>
-        <input type="password" id="password" name="password" required
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
-      </div>
-
-      <div>
-        <label class="block text-gray-700 mb-2" for="nama">Nama</label>
+        <label class="block text-gray-700 mb-2" for="nama">Nama <span class="text-red-400">*</span></label>
         <input type="nama" id="nama" name="nama" required
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
       </div>
 
       <div>
-        <label class="block text-gray-700 mb-2" for="notelf">Nomor telfon (opsional)</label>
-        <input type="notelf" id="notelf" name="notelf" required
+        <label class="block text-gray-700 mb-2" for="email">Email <span class="text-red-400">*</span></label>
+        <input type="email" id="email" name="email" required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
+      </div>
+
+      <div>
+        <label class="block text-gray-700 mb-2" for="password">Kata Sandi <span class="text-red-400">*</span></label>
+        <input type="password" id="password" name="password" required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
+      </div>
+
+      <div>
+        <label class="block text-gray-700 mb-2" for="confirmPassword">Konfirmasi Kata Sandi <span class="text-red-400">*</span></label>
+        <input type="confirmPassword" id="confirmPassword" name="confirmPassword" required
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
+      </div>
+
+      <div>
+        <label class="block text-gray-700 mb-2" for="phone">Nomor telepon</label>
+        <input type="phone" id="phone" name="phone"
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
       </div>
 
        <div>
-        <label class="block text-gray-700 mb-2" for="alamat">Alamat (opsional)</label>
-        <input type="alamat" id="alamat" name="alamat" required
+        <label class="block text-gray-700 mb-2" for="address">Alamat</label>
+        <input type="address" id="address" name="address"
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
       </div>
 
