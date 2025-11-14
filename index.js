@@ -45,8 +45,6 @@ app.use('/admin', require('./route/admin'));
 // const ordersFile = path.join(dataDir, 'orders.json');
 // if (!fs.existsSync(ordersFile)) fs.writeFileSync(ordersFile, '[]');
 
-
-// utama
 app.get('/', (req, res) => {
     res.render('index');
 });
@@ -55,25 +53,17 @@ app.get('/dashboard', ensureAuthenticated, (req, res) => {
     res.send('<h1>Dashboard Admin</h1><p>Selamat datang di dashboard, ' + req.user.name + '!</p><a href="/admin/products">Kelola Produk</a> | <a href="/logout">Logout</a>');
 });
 
-app.get('/checkout', (req, res) => {
-    res.render('checkout');
+app.get('/products', (req, res) => {
+    res.render('products');
 });
 
 app.get('/cart', (req, res) => {
   res.render('cart');
 });
 
-app.get('/products', (req, res) => {
-    res.render('products');
+app.get('/checkout', (req, res) => {
+    res.render('checkout');
 });
-
-app.get('/pesanan', (req, res) => {
-    res.render('pesanan');
-});
-
-
-
-
 
 app.post('/checkout', (req, res) => {
   try {
@@ -106,12 +96,6 @@ app.post('/checkout', (req, res) => {
       paymentMethod: req.body.paymentMethod || 'cod'
     };
 
-    // // Simpan ke file orders.json
-    // const existing = JSON.parse(fs.readFileSync(ordersFile, 'utf8') || '[]');
-    // existing.push(order);
-    // fs.writeFileSync(ordersFile, JSON.stringify(existing, null, 2));
-
-    // Render halaman pesanan dengan data order (server-side)
     return res.render('pesanan', { order });
 
   } catch (err) {
@@ -120,39 +104,9 @@ app.post('/checkout', (req, res) => {
   }
 });
 
+
 app.get('/pesanan', (req, res) => {
-    res.render('pesanan');
-});
-
-// Placeholder API routes for backend integration (to be implemented by friend)
-app.get('/api/users', (req, res) => {
-  // Placeholder: Return empty array or mock data
-  res.json([]);
-});
-
-app.get('/api/orders', (req, res) => {
-  // Placeholder: Return empty array or mock data
-  res.json([]);
-});
-
-app.get('/api/products', (req, res) => {
-  // Placeholder: Return empty array or mock data
-  res.json([]);
-});
-
-app.post('/api/users', (req, res) => {
-  // Placeholder: Handle user creation
-  res.status(501).json({ message: 'Not implemented yet' });
-});
-
-app.post('/api/orders', (req, res) => {
-  // Placeholder: Handle order creation
-  res.status(501).json({ message: 'Not implemented yet' });
-});
-
-app.post('/api/products', (req, res) => {
-  // Placeholder: Handle product creation
-  res.status(501).json({ message: 'Not implemented yet' });
+  res.render('pesanan');
 });
 
 app.listen(process.env.PORT, () => {

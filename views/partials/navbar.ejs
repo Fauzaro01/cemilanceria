@@ -5,8 +5,8 @@
 
       <!-- Logo -->
       <a href="/" class="flex items-center space-x-2 group">
-        <div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center transform transition-transform duration-300 group-hover:rotate-6">
-          <img src="" alt="Logo" class="w-6 h-6">
+        <div class="w-10 h-10 rounded-full flex items-center justify-center transform transition-transform duration-300 group-hover:-rotate-12 group-hover:translate-x-1">
+          <img src="/img/favicon.webp" alt="Logo" class="w-6 h-6">
         </div>
         <span class="text-2xl font-bold text-gray-800">Cemilanceria</span>
       </a>
@@ -39,7 +39,100 @@
         </div>
 
         <!-- Tombol Login (hanya desktop) -->
-        <a href="/login" class="hidden md:block bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-full font-medium transition-all">Masuk</a>
+        <% if (typeof user !== 'undefined' && user) { %>
+          <div id="profileContainer" class="relative">
+            <button id="profileButton" class="flex items-center space-x-2 text-gray-700 hover:text-amber-600 focus:outline-none transition duration-300">
+              <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white font-semibold">
+                <span><%= user.name[0] %></span>
+              </div>
+              <span class="hidden md:block font-medium"><%= user.name %></span>
+                <i class="fa fa-chevron-down text-xs"></i>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div id="profileDropdown" class="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-1 z-10 hidden transition-all duration-300 transform origin-top-right">
+                <div class="px-4 py-2 border-b border-gray-200">
+                    <p class="text-sm font-medium text-gray-900"><%= user.name %></p>
+                    <p class="text-sm text-gray-500 truncate"><%= user.email %></p>
+                </div>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-user mr-2"></i>Profil Saya
+                </a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-cog mr-2"></i>Pengaturan
+                </a>
+                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-bell mr-2"></i>Notifikasi
+                </a>
+                <div class="border-t border-gray-200"></div>
+                <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Keluar
+                </a>
+            </div>
+          </div>
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const profileButton = document.getElementById('profileButton');
+                const profileDropdown = document.getElementById('profileDropdown');
+                let dropdownTimeout;
+
+                function showDropdown() {
+                    clearTimeout(dropdownTimeout);
+                    profileDropdown.classList.remove('hidden');
+                    profileDropdown.offsetHeight;
+                    profileDropdown.classList.add('opacity-100', 'scale-100');
+                    profileDropdown.classList.remove('opacity-0', 'scale-95');
+                }
+
+                function hideDropdown() {
+                    dropdownTimeout = setTimeout(() => {
+                        profileDropdown.classList.add('opacity-0', 'scale-95');
+                        profileDropdown.classList.remove('opacity-100', 'scale-100');
+                        setTimeout(() => {
+                            profileDropdown.classList.add('hidden');
+                        }, 300);
+                    }, 150);
+                }
+
+         
+                profileButton.addEventListener('mouseenter', showDropdown);
+                profileButton.addEventListener('mouseleave', hideDropdown);
+
+                profileDropdown.addEventListener('mouseenter', () => {
+                    clearTimeout(dropdownTimeout);
+                });
+                profileDropdown.addEventListener('mouseleave', hideDropdown);
+
+                document.addEventListener('click', function(event) {
+                    const profileContainer = document.getElementById('profileContainer');
+                    if (!profileContainer.contains(event.target)) {
+                        clearTimeout(dropdownTimeout);
+                        profileDropdown.classList.add('opacity-0', 'scale-95');
+                        profileDropdown.classList.remove('opacity-100', 'scale-100');
+                        setTimeout(() => {
+                            profileDropdown.classList.add('hidden');
+                        }, 300);
+                    }
+                });
+
+                profileButton.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (profileDropdown.classList.contains('hidden')) {
+                        showDropdown();
+                    } else {
+                        clearTimeout(dropdownTimeout);
+                        profileDropdown.classList.add('opacity-0', 'scale-95');
+                        profileDropdown.classList.remove('opacity-100', 'scale-100');
+                        setTimeout(() => {
+                            profileDropdown.classList.add('hidden');
+                        }, 300);
+                    }
+                });
+            });
+          </script>
+        <% } else { %>
+          <a href="/login" class="hidden md:block bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-full font-medium transition-all">Masuk</a>
+        <% } %>
 
         <!-- Tombol Hamburger (mobile only) -->
         <button id="mobile-menu-button" class="md:hidden text-gray-700 hover:text-amber-500 transition-transform duration-300">
@@ -100,4 +193,5 @@ document.addEventListener("DOMContentLoaded", () => window.updateCart());
   @keyframes fade-slide-up { from{opacity:1;transform:translateY(0);} to{opacity:0;transform:translateY(-10px);} }
   .animate-fade-slide-down{animation:fade-slide-down .25s ease-out;}
   .animate-fade-slide-up{animation:fade-slide-up .25s ease-in;}
+
 </style>
