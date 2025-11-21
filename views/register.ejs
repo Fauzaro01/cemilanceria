@@ -3,55 +3,133 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register</title>
+  <title>Register - Cemilanceria</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="flex items-center justify-center min-h-screen bg-gray-100">
 
-  <div class="w-full max-w-sm bg-white rounded-2xl shadow-lg p-8">
-    <h1 class="text-2xl font-semibold text-center text-gray-800 mb-6">Masuk ke Akun Anda</h1>
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+    <h1 class="text-2xl font-semibold text-center text-gray-800 mb-6">Daftar Akun Baru</h1>
 
-    <form class="space-y-5" action="/register" method="post">
+    <% if (error) { %>
+      <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+        <div class="flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+          </svg>
+          <span><%= error %></span>
+        </div>
+      </div>
+    <% } %>
+
+    <% if (success) { %>
+      <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
+        <div class="flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+          <span><%= success %></span>
+        </div>
+      </div>
+    <% } %>
+
+    <form class="space-y-4" action="/register" method="post">
       <div>
-        <label class="block text-gray-700 mb-2" for="nama">Nama <span class="text-red-400">*</span></label>
-        <input type="nama" id="nama" name="nama" required
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
+        <label class="block text-gray-700 mb-2 font-medium" for="name">
+          Nama Lengkap <span class="text-red-500">*</span>
+        </label>
+        <input 
+          type="text" 
+          id="name" 
+          name="name" 
+          required
+          value="<%= formData.name || '' %>"
+          placeholder="Masukkan nama lengkap"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition">
       </div>
 
       <div>
-        <label class="block text-gray-700 mb-2" for="email">Email <span class="text-red-400">*</span></label>
-        <input type="email" id="email" name="email" required
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
+        <label class="block text-gray-700 mb-2 font-medium" for="email">
+          Email <span class="text-red-500">*</span>
+        </label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          required
+          value="<%= formData.email || '' %>"
+          placeholder="contoh@email.com"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition">
       </div>
 
       <div>
-        <label class="block text-gray-700 mb-2" for="password">Kata Sandi <span class="text-red-400">*</span></label>
-        <input type="password" id="password" name="password" required
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
+        <label class="block text-gray-700 mb-2 font-medium" for="password">
+          Kata Sandi <span class="text-red-500">*</span>
+        </label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password" 
+          required
+          minlength="6"
+          placeholder="Minimal 6 karakter"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition">
+        <p class="text-xs text-gray-500 mt-1">Password minimal 6 karakter</p>
       </div>
 
       <div>
-        <label class="block text-gray-700 mb-2" for="confirmPassword">Konfirmasi Kata Sandi <span class="text-red-400">*</span></label>
-        <input type="confirmPassword" id="confirmPassword" name="confirmPassword" required
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
+        <label class="block text-gray-700 mb-2 font-medium" for="confirmPassword">
+          Konfirmasi Kata Sandi <span class="text-red-500">*</span>
+        </label>
+        <input 
+          type="password" 
+          id="confirmPassword" 
+          name="confirmPassword" 
+          required
+          minlength="6"
+          placeholder="Ulangi password"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition">
       </div>
 
       <div>
-        <label class="block text-gray-700 mb-2" for="phone">Nomor telepon</label>
-        <input type="phone" id="phone" name="phone"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
+        <label class="block text-gray-700 mb-2 font-medium" for="phone">
+          Nomor Telepon
+        </label>
+        <input 
+          type="tel" 
+          id="phone" 
+          name="phone"
+          value="<%= formData.phone || '' %>"
+          placeholder="08xxxxxxxxxx"
+          pattern="[0-9]{10,13}"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition">
+        <p class="text-xs text-gray-500 mt-1"></p>
       </div>
 
-       <div>
-        <label class="block text-gray-700 mb-2" for="address">Alamat</label>
-        <input type="address" id="address" name="address"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none">
+      <div>
+        <label class="block text-gray-700 mb-2 font-medium" for="address">
+          Alamat Lengkap
+        </label>
+        <textarea 
+          id="address" 
+          name="address"
+          rows="3"
+          placeholder="Jl. Contoh No. 123, Kota"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition resize-none"><%= formData.address || '' %></textarea>
+        <p class="text-xs text-gray-500 mt-1">Untuk pengiriman pesanan</p>
       </div>
 
-      <button type="submit"
-        class="w-full py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-all">Daftar</button>
+      <button 
+        type="submit"
+        class="w-full py-3 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 transition-all shadow-md hover:shadow-lg">
+        Daftar Sekarang
+      </button>
     </form>
 
+    <p class="text-center text-gray-600 mt-6 text-sm">
+      Sudah punya akun?
+      <a href="/login" class="text-amber-600 hover:text-amber-700 font-semibold hover:underline">Login di sini</a>
+    </p>
   </div>
 
 </body>

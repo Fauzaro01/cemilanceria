@@ -25,7 +25,9 @@ router.get('/register', ensureNotAuthenticated, (req, res) => {
 router.post('/login', ensureNotAuthenticated, (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) {
-            return next(err);
+            console.error('Login error:', err);
+            req.flash('error', 'Terjadi kesalahan pada server');
+            return res.redirect('/login');
         }
         
         if (!user) {
@@ -36,7 +38,9 @@ router.post('/login', ensureNotAuthenticated, (req, res, next) => {
         
         req.logIn(user, (err) => {
             if (err) {
-                return next(err);
+                console.error('Session error:', err);
+                req.flash('error', 'Terjadi kesalahan saat membuat sesi');
+                return res.redirect('/login');
             }
             
             if (user.role === 'ADMIN') {
@@ -57,25 +61,45 @@ router.post('/register', ensureNotAuthenticated, async (req, res) => {
             req.flash('formData', { name, email, phone, address });
             return res.redirect('/register');
         }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            req.flash('error', 'Format email tidak valid');
+            req.flash('formData', { name, email, phone, address });
+            return res.redirect('/register');
+        }
         
+        // Validasi password match
         if (password !== confirmPassword) {
             req.flash('error', 'Password dan konfirmasi password tidak sama');
             req.flash('formData', { name, email, phone, address });
             return res.redirect('/register');
         }
         
+        // Validasi password length
         if (password.length < 6) {
             req.flash('error', 'Password minimal 6 karakter');
             req.flash('formData', { name, email, phone, address });
             return res.redirect('/register');
         }
+
+        // Validasi phone number jika diisi
+        if (phone && phone.trim() !== '') {
+            const phoneRegex = /^[0-9]{10,13}$/;
+            if (!phoneRegex.test(phone)) {
+                req.flash('error', 'Nomor telepon harus berupa 10-13 digit angka');
+                req.flash('formData', { name, email, phone, address });
+                return res.redirect('/register');
+            }
+        }
         
+        // Cek apakah email sudah digunakan
         const existingUser = await prisma.user.findUnique({
-            where: { email }
+            where: { email: email.toLowerCase().trim() }
         });
         
         if (existingUser) {
-            req.flash('error', 'Email sudah digunakan');
+            req.flash('error', 'Email sudah terdaftar. Silakan gunakan email lain atau login.');
             req.flash('formData', { name, phone, address });
             return res.redirect('/register');
         }
@@ -85,42 +109,64 @@ router.post('/register', ensureNotAuthenticated, async (req, res) => {
         
         const newUser = await prisma.user.create({
             data: {
-                name,
-                email,
+                name: name.trim(),
+                email: email.toLowerCase().trim(),
                 password: hashedPassword,
-                phone: phone || null,
-                address: address || null,
+                phone: phone && phone.trim() !== '' ? phone.trim() : null,
+                address: address && address.trim() !== '' ? address.trim() : null,
                 role: 'USER'
             }
         });
         
-        req.flash('success', 'Akun berhasil dibuat! Silakan login.');
+        req.flash('success', 'Pendaftaran berhasil! Silakan login dengan akun Anda.');
         res.redirect('/login');
         
     } catch (error) {
         console.error('Register error:', error);
-        req.flash('error', 'Terjadi kesalahan saat mendaftar');
+        
+        // Handle Prisma specific errors
+        if (error.code === 'P2002') {
+            req.flash('error', 'Email sudah terdaftar');
+        } else {
+            req.flash('error', 'Terjadi kesalahan saat mendaftar. Silakan coba lagi.');
+        }
+        
         req.flash('formData', req.body);
         res.redirect('/register');
     }
 });
 
-router.post('/logout', (req, res) => {
+// Route untuk logout
+router.post('/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) {
+            console.error('Logout error:', err);
             return next(err);
         }
-        req.flash('success', 'Anda telah berhasil logout');
-        res.redirect('/');
+        req.session.destroy((err) => {
+            if (err) {
+                console.error('Session destroy error:', err);
+            }
+            res.clearCookie('connect.sid');
+            res.redirect('/');
+        });
     });
 });
 
-router.get('/logout', (req, res) => {
+// Route untuk logout via GET (untuk kemudahan)
+router.get('/logout', (req, res, next) => {
     req.logout((err) => {
         if (err) {
+            console.error('Logout error:', err);
             return next(err);
         }
-        res.redirect('/');
+        req.session.destroy((err) => {
+            if (err) {
+                console.error('Session destroy error:', err);
+            }
+            res.clearCookie('connect.sid');
+            res.redirect('/');
+        });
     });
 });
 
