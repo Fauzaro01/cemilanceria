@@ -41,13 +41,100 @@ document.addEventListener('DOMContentLoaded', function() {
     const checkoutLink = document.getElementById('checkout-link');
     const clearBtn = document.getElementById('clear-btn');
     let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    let verifiedCart = [];
+
+    async function verifyCart() {
+        if (cart.length === 0) {
+            verifiedCart = [];
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/cart/verify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ items: cart })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to verify cart');
+            }
+
+            const data = await response.json();
+            verifiedCart = data.verified;
+
+            // Update localStorage dengan data terverifikasi
+            const updatedCart = verifiedCart
+                .filter(item => item.available)
+                .map(item => {
+                    const originalItem = cart.find(c => c.productId === item.productId);
+                    return {
+                        productId: item.productId,
+                        product: item.name || originalItem.product,
+                        price: item.currentPrice || item.price,
+                        image: item.image || originalItem.image || '',
+                        qty: item.limitedStock ? item.maxQty : (originalItem.qty || 1)
+                    };
+                });
+
+            // Simpan cart yang sudah diverifikasi
+            localStorage.setItem('cart', JSON.stringify(updatedCart));
+            cart = updatedCart;
+
+            // Show notification for removed items
+            const removedItems = verifiedCart.filter(item => !item.available);
+            if (removedItems.length > 0) {
+                showNotification(
+                    `${removedItems.length} produk dihapus dari keranjang (stok habis/tidak tersedia)`,
+                    'warning'
+                );
+            }
+
+            // Show notification for limited stock
+            const limitedItems = verifiedCart.filter(item => item.limitedStock);
+            if (limitedItems.length > 0) {
+                showNotification(
+                    `Beberapa produk qty disesuaikan dengan stok tersedia`,
+                    'warning'
+                );
+            }
+
+        } catch (error) {
+            console.error('Error verifying cart:', error);
+            verifiedCart = cart.map(item => ({ ...item, available: true }));
+        }
+    }
+
+    function showNotification(message, type = 'info') {
+        const notif = document.createElement('div');
+        notif.textContent = message;
+        const bgColor = type === 'warning' ? 'bg-yellow-500' : 'bg-blue-500';
+        notif.className = `fixed bottom-6 right-6 ${bgColor} text-white px-4 py-3 rounded-lg shadow-lg text-sm z-50 opacity-0 transition-opacity duration-300 max-w-md`;
+        document.body.appendChild(notif);
+
+        setTimeout(() => notif.classList.add('opacity-100'), 50);
+        setTimeout(() => {
+            notif.classList.remove('opacity-100');
+            setTimeout(() => notif.remove(), 300);
+        }, 4000);
+    }
 
     function render() {
         cartItems.innerHTML = '';
         let total = 0;
 
         if (cart.length === 0) {
-            cartItems.innerHTML = '<p class="text-gray-500">Keranjang Anda kosong.</p>';
+            cartItems.innerHTML = `
+                <div class="text-center py-8">
+                    <i class="bi bi-cart-x text-6xl text-gray-300 mb-3"></i>
+                    <p class="text-gray-500 text-lg">Keranjang Anda kosong.</p>
+                    <a href="/products" class="inline-block mt-4 bg-amber-500 text-white px-6 py-2 rounded-lg hover:bg-amber-600 transition">
+                        Belanja Sekarang
+                    </a>
+                </div>
+            `;
             checkoutLink.classList.add('opacity-50','pointer-events-none','cursor-not-allowed');
             clearBtn.classList.add('opacity-50','pointer-events-none','cursor-not-allowed');
             totalPrice.textContent = 'Rp 0';
@@ -56,23 +143,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
         cart.forEach((item, index) => {
             const qty = item.qty || 1;
-            total += item.price * qty;
+            const itemTotal = item.price * qty;
+            total += itemTotal;
+
+            const verified = verifiedCart.find(v => v.productId === item.productId);
+            const hasWarning = verified && (verified.limitedStock || verified.priceChanged);
+            const warningText = verified?.reason || '';
 
             const itemDiv = document.createElement('div');
-            itemDiv.className = 'flex justify-between items-center border-b pb-2';
+            itemDiv.className = 'flex gap-4 items-start border-b pb-4';
             itemDiv.innerHTML = `
-                <div>
-                    <h3 class="font-medium">${item.product}</h3>
-                    <p class="text-sm text-gray-600">Rp ${(item.price * qty).toLocaleString()}</p>
+                <div class="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
+                    ${item.image 
+                        ? `<img src="${item.image}" alt="${item.product}" class="w-full h-full object-cover" onerror="this.src='/img/no-image.png'">` 
+                        : `<div class="w-full h-full flex items-center justify-center text-gray-400"><i class="bi bi-image text-3xl"></i></div>`
+                    }
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex-1">
+                    <h3 class="font-medium text-gray-800">${item.product}</h3>
+                    <p class="text-sm text-gray-600">Rp ${item.price.toLocaleString()} × ${qty}</p>
+                    ${hasWarning ? `<p class="text-xs text-yellow-600 mt-1"><i class="bi bi-exclamation-triangle"></i> ${warningText}</p>` : ''}
+                    <p class="text-amber-600 font-semibold mt-1">Rp ${itemTotal.toLocaleString()}</p>
+                    ${verified && verified.stock <= 10 && verified.stock > 0 ? `<p class="text-xs text-orange-500 mt-1">Stok tersisa: ${verified.stock}</p>` : ''}
+                </div>
+                <div class="flex flex-col items-end gap-2">
                     <div class="flex items-center border rounded-md">
-                        <button data-index="${index}" class="qty-minus px-2 py-1 text-gray-700 hover:text-red-500">−</button>
-                        <span class="px-3 text-gray-800 font-medium">${qty}</span>
-                        <button data-index="${index}" class="qty-plus px-2 py-1 text-gray-700 hover:text-green-500">+</button>
+                        <button data-index="${index}" class="qty-minus px-3 py-1 text-gray-700 hover:text-red-500 transition">−</button>
+                        <span class="px-3 text-gray-800 font-medium min-w-[2rem] text-center">${qty}</span>
+                        <button data-index="${index}" class="qty-plus px-3 py-1 text-gray-700 hover:text-green-500 transition ${verified && qty >= verified.stock ? 'opacity-50 cursor-not-allowed' : ''}">+</button>
                     </div>
-                    <button data-index="${index}" class="text-red-500 hover:text-red-700 remove-btn">
-                        <i class="bi bi-trash"></i>
+                    <button data-index="${index}" class="text-red-500 hover:text-red-700 remove-btn transition">
+                        <i class="bi bi-trash"></i> Hapus
                     </button>
                 </div>
             `;
@@ -88,6 +189,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('qty-plus')) {
             const idx = parseInt(e.target.getAttribute('data-index'));
+            const verified = verifiedCart.find(v => v.productId === cart[idx].productId);
+            
+            // Check stock limit
+            if (verified && cart[idx].qty >= verified.stock) {
+                showNotification(`Stok ${cart[idx].product} hanya tersisa ${verified.stock}`, 'warning');
+                return;
+            }
+            
             cart[idx].qty = (cart[idx].qty || 1) + 1;
             localStorage.setItem('cart', JSON.stringify(cart));
             render();
@@ -100,7 +209,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.classList.contains('qty-minus')) {
             const idx = parseInt(e.target.getAttribute('data-index'));
             cart[idx].qty = (cart[idx].qty || 1) - 1;
-            if (cart[idx].qty <= 0) cart.splice(idx, 1);
+            if (cart[idx].qty <= 0) {
+                cart.splice(idx, 1);
+            }
             localStorage.setItem('cart', JSON.stringify(cart));
             render();
             if (window.updateCart) window.updateCart();
@@ -112,22 +223,35 @@ document.addEventListener('DOMContentLoaded', function() {
         if(e.target.matches('.remove-btn') || e.target.closest('.remove-btn')) {
             const btn = e.target.matches('.remove-btn') ? e.target : e.target.closest('.remove-btn');
             const idx = parseInt(btn.getAttribute('data-index'));
+            const removedItem = cart[idx].product;
             cart.splice(idx, 1);
             localStorage.setItem('cart', JSON.stringify(cart));
             render();
             if (window.updateCart) window.updateCart();
+            showNotification(`${removedItem} dihapus dari keranjang`, 'info');
         }
     });
 
     // Kosongkan semua
     clearBtn.addEventListener('click', function() {
-        localStorage.removeItem('cart');
-        cart = [];
-        render();
-        if (window.updateCart) window.updateCart();
+        if (confirm('Apakah Anda yakin ingin mengosongkan keranjang?')) {
+            localStorage.removeItem('cart');
+            cart = [];
+            verifiedCart = [];
+            render();
+            if (window.updateCart) window.updateCart();
+            showNotification('Keranjang dikosongkan', 'info');
+        }
     });
 
-    render();
+    // Initialize
+    async function init() {
+        await verifyCart();
+        render();
+        if (window.updateCart) window.updateCart();
+    }
+
+    init();
 });
 </script>
 

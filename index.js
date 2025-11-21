@@ -6,8 +6,10 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('./config/passport');
 const { ensureAuthenticated } = require('./middleware/auth');
+const { PrismaClient } = require('./generated/prisma');
 
 const app = express();
+const prisma = new PrismaClient();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -44,11 +46,141 @@ app.get('/', (req, res) => {
 });
 
 app.get('/dashboard', ensureAuthenticated, (req, res) => {
-    res.send('<h1>Dashboard Admin</h1><p>Selamat datang di dashboard, ' + req.user.name + '!</p><a href="/admin/products">Kelola Produk</a> | <a href="/logout">Logout</a>');
+    res.render('user/dashboard');
 });
 
-app.get('/products', (req, res) => {
-    res.render('products');
+app.get('/products', async (req, res) => {
+    try {
+        const search = req.query.search || '';
+        const category = req.query.category || '';
+        
+        // Build query conditions
+        const whereConditions = {
+            isActive: true // Only show active products
+        };
+        
+        // Add search condition if provided
+        if (search) {
+            whereConditions.OR = [
+                { name: { contains: search } },
+                { description: { contains: search } },
+                { category: { contains: search } }
+            ];
+        }
+        
+        // Add category filter if provided
+        if (category) {
+            whereConditions.category = category;
+        }
+        
+        // Fetch products from database
+        const products = await prisma.product.findMany({
+            where: whereConditions,
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+        
+        // Get unique categories for filter
+        const categories = await prisma.product.findMany({
+            where: { isActive: true },
+            select: { category: true },
+            distinct: ['category']
+        });
+        
+        const uniqueCategories = categories
+            .map(c => c.category)
+            .filter(c => c !== null);
+        
+        res.render('products', { 
+            products, 
+            search,
+            category,
+            categories: uniqueCategories
+        });
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.render('products', { 
+            products: [], 
+            search: '',
+            category: '',
+            categories: [],
+            error: 'Gagal memuat produk'
+        });
+    }
+});
+
+// API endpoint untuk verifikasi cart items
+app.post('/api/cart/verify', async (req, res) => {
+    try {
+        const { items } = req.body;
+        
+        if (!items || !Array.isArray(items)) {
+            return res.status(400).json({ error: 'Invalid cart items' });
+        }
+
+        // Get product IDs from cart
+        const productIds = items.map(item => item.productId).filter(id => id);
+        
+        // Fetch products from database
+        const products = await prisma.product.findMany({
+            where: {
+                id: { in: productIds },
+                isActive: true
+            }
+        });
+
+        // Create verification result
+        const verified = items.map(item => {
+            const product = products.find(p => p.id === item.productId);
+            
+            if (!product) {
+                return {
+                    ...item,
+                    available: false,
+                    reason: 'Produk tidak ditemukan atau tidak aktif'
+                };
+            }
+
+            if (product.stock === 0) {
+                return {
+                    ...item,
+                    available: false,
+                    reason: 'Stok habis',
+                    stock: 0
+                };
+            }
+
+            if (item.qty > product.stock) {
+                return {
+                    ...item,
+                    available: true,
+                    limitedStock: true,
+                    maxQty: product.stock,
+                    reason: `Stok tersisa ${product.stock}`,
+                    currentPrice: product.price,
+                    name: product.name,
+                    image: product.imageUrl,
+                    stock: product.stock
+                };
+            }
+
+            return {
+                ...item,
+                available: true,
+                currentPrice: product.price,
+                name: product.name,
+                image: product.imageUrl,
+                stock: product.stock,
+                priceChanged: item.price !== product.price
+            };
+        });
+
+        res.json({ verified });
+    } catch (error) {
+        console.error('Error verifying cart:', error);
+        res.status(500).json({ error: 'Gagal memverifikasi keranjang' });
+    }
 });
 
 app.get('/cart', (req, res) => {

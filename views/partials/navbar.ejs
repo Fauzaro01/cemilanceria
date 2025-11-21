@@ -176,9 +176,20 @@
     cart = JSON.parse(localStorage.getItem('cart') || "[]");
     const totalQty = cart.reduce((sum, it) => sum + (it.qty || 1), 0);
     count.textContent = totalQty;
-    tip.textContent = totalQty ? `${totalQty} produk dalam keranjang` : "Belum ada produk";
+    
+    // Update tooltip dengan daftar produk
+    if (totalQty === 0) {
+      tip.textContent = "Belum ada produk";
+    } else {
+      const summary = cart.slice(0, 3).map(item => 
+        `${item.product} (${item.qty}x)`
+      ).join(', ');
+      tip.textContent = totalQty > 3 
+        ? `${summary}, +${totalQty - 3} lainnya` 
+        : summary;
+    }
   };
-document.addEventListener("DOMContentLoaded", () => window.updateCart());
+  document.addEventListener("DOMContentLoaded", () => window.updateCart());
 
 
   function clearCart() {

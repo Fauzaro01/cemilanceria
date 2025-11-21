@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Halaman Produk | Cemilan Ceria</title>
-  <link 
-    rel="stylesheet" 
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-  />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -26,9 +24,17 @@
 
   <style>
     @keyframes fadeSlideDown {
-      0% { opacity: 0; transform: translateY(-10px); }
-      100% { opacity: 1; transform: translateY(0); }
+      0% {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
+
     .animate-fade-slide-down {
       animation: fadeSlideDown 0.4s ease-out forwards;
     }
@@ -37,6 +43,7 @@
     .link-underline {
       position: relative;
     }
+
     .link-underline::after {
       content: '';
       position: absolute;
@@ -47,6 +54,7 @@
       background-color: #f59e0b;
       transition: width 0.3s ease;
     }
+
     .link-underline:hover::after {
       width: 100%;
     }
@@ -56,72 +64,280 @@
 <body class="bg-gray-50">
   <%- include('partials/navbar') %>
 
-  <!-- 🔍 Bagian Pencarian Produk -->
-  <section class="py-12 bg-gradient-to-r from-amber-50 to-white text-center shadow-inner animate-fade-slide-down">
-    <div class="max-w-2xl mx-auto">
-      <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-3">Temukan Produk Favoritmu</h2>
-      <p class="text-gray-500 mb-6 max-w-md mx-auto">
-        Cari berbagai pilihan <span class="text-amber-500 font-semibold">puding</span> dan <span class="text-amber-500 font-semibold">cemilan</span> lezat dari kami.
-      </p>
-      <div class="relative max-w-md mx-auto">
-        <input 
-          type="text" 
-          id="searchInput"
-          placeholder="Ketik nama produk (contoh: Puding, Cireng)..."
-          class="w-full border border-gray-300 bg-white rounded-full px-5 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-sm transition placeholder-gray-400"
-        >
-        <i class="bi bi-search absolute right-5 top-3.5 text-gray-400 text-lg"></i>
+    <!-- 🔍 Bagian Pencarian Produk -->
+    <section class="py-12 bg-gradient-to-r from-amber-50 to-white text-center shadow-inner animate-fade-slide-down">
+      <div class="max-w-2xl mx-auto px-4">
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-3">Temukan Produk Favoritmu</h2>
+        <p class="text-gray-500 mb-6 max-w-md mx-auto">
+          Cari berbagai pilihan <span class="text-amber-500 font-semibold">puding</span> dan <span
+            class="text-amber-500 font-semibold">cemilan</span> lezat dari kami.
+        </p>
+        
+        <!-- Search Form -->
+        <form method="GET" action="/products" class="max-w-md mx-auto mb-4">
+          <div class="relative">
+            <input 
+              type="text" 
+              id="searchInput" 
+              name="search"
+              value="<%= search || '' %>"
+              placeholder="Ketik nama produk (contoh: Puding, Cireng)..."
+              class="w-full border border-gray-300 bg-white rounded-full px-5 py-3 pr-12 focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-sm transition placeholder-gray-400">
+              <button type="submit" class="absolute right-2 top-1/2 px-3 transform -translate-y-1/2 bg-amber-500 text-white rounded-full p-2 hover:bg-amber-600 transition">
+              <i class="bi bi-search text-lg"></i>
+            </button>
+          </div>
+        </form>
+        
+        <!-- Category Filter -->
+        <% if (categories && categories.length > 0) { %>
+          <div class="flex justify-center gap-2 flex-wrap">
+            <a href="/products" class="px-4 py-2 rounded-full text-sm font-medium transition <%= !category ? 'bg-amber-500 text-white' : 'bg-white text-gray-700 hover:bg-amber-100' %>">
+              Semua
+            </a>
+            <% categories.forEach(cat => { %>
+              <a href="/products?category=<%= cat %>" class="px-4 py-2 rounded-full text-sm font-medium transition <%= category === cat ? 'bg-amber-500 text-white' : 'bg-white text-gray-700 hover:bg-amber-100' %>">
+                <%= cat %>
+              </a>
+            <% }) %>
+          </div>
+        <% } %>
       </div>
+    </section>
+
+    <!-- Produk -->
+    <div id="productSection" class="animate-fade-slide-down">
+      <section class="py-10 bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center text-center">
+        <div class="container mx-auto px-4">
+          <!-- Grid Produk -->
+          <% if (products && products.length > 0) { %>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              <% products.forEach(product => { %>
+                <!-- Product Card -->
+                <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl relative group product-card" data-product-name="<%= product.name.toLowerCase() %>">
+                  
+                  <!-- Label Stock -->
+                  <% if (product.stock < 10 && product.stock > 0) { %>
+                    <div class="absolute top-4 left-4 bg-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
+                      Stok Terbatas!
+                    </div>
+                  <% } else if (product.stock === 0) { %>
+                    <div class="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
+                      Habis
+                    </div>
+                  <% } %>
+                  
+                  <!-- Gambar -->
+                  <div class="overflow-hidden bg-gray-100">
+                    <% if (product.imageUrl) { %>
+                      <img src="<%= product.imageUrl %>" alt="<%= product.name %>" 
+                        class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110"
+                        onerror="this.src='https://via.placeholder.com/400x300?text=<%= encodeURIComponent(product.name) %>'">
+                    <% } else { %>
+                      <div class="w-full h-56 flex items-center justify-center bg-gradient-to-br from-amber-100 to-amber-200">
+                        <i class="bi bi-image text-6xl text-amber-400"></i>
+                      </div>
+                    <% } %>
+                  </div>
+
+                  <!-- Isi -->
+                  <div class="p-5 text-left">
+                    <% if (product.category) { %>
+                      <span class="text-xs font-semibold text-amber-500 uppercase tracking-wider mb-1 inline-block">
+                        <%= product.category %>
+                      </span>
+                    <% } %>
+                    <h3 class="text-xl font-bold text-gray-900 mb-1"><%= product.name %></h3>
+
+                    <!-- Description -->
+                    <% if (product.description) { %>
+                      <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                        <%= product.description %>
+                      </p>
+                    <% } %>
+
+                    <!-- Stock Info -->
+                    <div class="text-sm text-gray-500 mb-3">
+                      <i class="bi bi-box-seam mr-1"></i>
+                      Stok: <span class="font-semibold <%= product.stock > 10 ? 'text-green-600' : product.stock > 0 ? 'text-orange-600' : 'text-red-600' %>">
+                        <%= product.stock > 0 ? product.stock : 'Habis' %>
+                      </span>
+                    </div>
+
+                    <!-- Harga -->
+                    <div class="flex items-center justify-between mb-4">
+                      <div>
+                        <span class="text-xl font-bold text-gray-800">
+                          Rp <%= product.price.toLocaleString('id-ID') %>
+                        </span>
+                      </div>
+                    </div>
+
+                    <!-- Tombol -->
+                    <% if (product.stock > 0) { %>
+                      <button
+                        class="add-to-cart w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105"
+                        data-product-id="<%= product.id %>"
+                        data-product="<%= product.name %>" 
+                        data-price="<%= product.price %>"
+                        data-image="<%= product.imageUrl || '' %>">
+                        <i class="bi bi-cart-check"></i>
+                        Tambah ke Keranjang
+                      </button>
+                    <% } else { %>
+                      <button
+                        class="w-full flex items-center justify-center gap-2 bg-gray-400 text-white font-medium py-2.5 rounded-lg cursor-not-allowed"
+                        disabled>
+                        <i class="bi bi-x-circle"></i>
+                        Stok Habis
+                      </button>
+                    <% } %>
+                  </div>
+                </div>
+              <% }) %>
+            </div>
+          <% } else { %>
+            <!-- No Products Message -->
+            <div class="py-16 text-center text-gray-500">
+              <i class="bi bi-emoji-frown text-6xl text-amber-400 mb-4 block"></i>
+              <h3 class="text-2xl font-bold text-gray-700 mb-2">
+                <% if (search) { %>
+                  Produk tidak ditemukan
+                <% } else { %>
+                  Belum ada produk
+                <% } %>
+              </h3>
+              <p class="text-gray-500 mb-4">
+                <% if (search) { %>
+                  Hasil pencarian untuk "<%= search %>" tidak ditemukan.
+                <% } else { %>
+                  Produk akan segera hadir!
+                <% } %>
+              </p>
+              <% if (search || category) { %>
+                <a href="/products" class="inline-block bg-amber-500 text-white px-6 py-3 rounded-lg hover:bg-amber-600 transition">
+                  <i class="bi bi-arrow-left mr-2"></i>
+                  Lihat Semua Produk
+                </a>
+              <% } %>
+            </div>
+          <% } %>
+        </div>
+      </section>
     </div>
-  </section>
 
-  <!-- Produk -->
-  <div id="productSection" class="animate-fade-slide-down">
-    <%- include('partials/produkpuding') %>
-    <%- include('partials/produkcireng') %>
-  </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const addToCartButtons = document.querySelectorAll('.add-to-cart');
 
-  <!-- Pesan jika produk tidak ditemukan -->
-  <div id="noResultMessage" class="hidden py-16 text-center text-gray-500 text-lg">
-    <i class="bi bi-emoji-frown text-4xl text-amber-400 mb-3 block"></i>
-    <p>Oops! Produk yang kamu cari tidak ditemukan.</p>
-    <p class="text-sm text-gray-400 mt-1">Coba ketik nama lain, misalnya “Puding Stroberi” atau “Cireng”.</p>
-  </div>
+          addToCartButtons.forEach(button => {
+            button.addEventListener('click', function () {
+              const productId = parseInt(this.getAttribute('data-product-id'));
+              const product = this.getAttribute('data-product-name');
+              const price = parseInt(this.getAttribute('data-price'));
+              const image = this.getAttribute('data-product-image');
+              let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-  <%- include('partials/footer') %>
+              // Jika produk sudah ada (cek berdasarkan productId), tambahkan qty
+              const existing = cart.find(item => item.productId === productId);
+              if (existing) {
+                existing.qty = (existing.qty || 1) + 1;
+              } else {
+                cart.push({ productId, product, price, image, qty: 1 });
+              }
 
-  <!-- 🔍 Script Filter Produk -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const searchInput = document.getElementById('searchInput');
-      const productTitles = document.querySelectorAll('h3.text-xl.font-bold');
-      const noResultMessage = document.getElementById('noResultMessage');
+              // Simpan ke localStorage
+              localStorage.setItem('cart', JSON.stringify(cart));
 
-      searchInput.addEventListener('keyup', () => {
-        const searchValue = searchInput.value.toLowerCase().trim();
-        let visibleCount = 0;
+              // Update total qty di navbar
+              const totalQty = cart.reduce((sum, it) => sum + (it.qty || 1), 0);
+              const cartCount = document.getElementById('cartCount');
+              if (cartCount) {
+                cartCount.textContent = totalQty;
+              }
 
-        productTitles.forEach(title => {
-          const card = title.closest('.bg-white.rounded-xl');
-          const name = title.textContent.toLowerCase();
+              const cartTooltip = document.getElementById('cartTooltip');
+              if (cartTooltip) {
+                cartTooltip.textContent = totalQty ? `${totalQty} produk dalam keranjang` : "Belum ada produk";
+              }
 
-          if (name.includes(searchValue) || searchValue === '') {
-            card.style.display = '';
-            visibleCount++;
-          } else {
-            card.style.display = 'none';
-          }
+              // Update navbar cart jika fungsi tersedia
+              if (typeof window.updateCart === 'function') {
+                window.updateCart();
+              }
+
+              // --- Efek klik halus ---
+              button.classList.add('scale-95', 'bg-amber-600');
+              setTimeout(() => {
+                button.classList.remove('scale-95', 'bg-amber-600');
+              }, 150);
+
+              // --- Notifikasi kecil (toast) ---
+              const notif = document.createElement('div');
+              notif.textContent = `${product} ditambahkan ke keranjang!`;
+              notif.className = `
+          fixed bottom-6 right-6 bg-amber-500 text-white px-4 py-2 
+          rounded-lg shadow-lg text-sm z-50 opacity-0 transition-opacity duration-300
+        `;
+              document.body.appendChild(notif);
+
+              // Muncul perlahan
+              setTimeout(() => notif.classList.add('opacity-100'), 50);
+              // Hilang otomatis
+              setTimeout(() => {
+                notif.classList.remove('opacity-100');
+                setTimeout(() => notif.remove(), 300);
+              }, 1500);
+            });
+          });
         });
+      </script>
 
-        // Tampilkan pesan "tidak ditemukan" jika tidak ada hasil
-        if (visibleCount === 0) {
-          noResultMessage.classList.remove('hidden');
-        } else {
-          noResultMessage.classList.add('hidden');
-        }
-      });
-    });
-  </script>
+
+    </div>
+
+    <!-- Pesan jika produk tidak ditemukan -->
+    <div id="noResultMessage" class="hidden py-16 text-center text-gray-500 text-lg">
+      <i class="bi bi-emoji-frown text-4xl text-amber-400 mb-3 block"></i>
+      <p>Oops! Produk yang kamu cari tidak ditemukan.</p>
+      <p class="text-sm text-gray-400 mt-1">Coba ketik nama lain, misalnya “Puding Stroberi” atau “Cireng”.</p>
+    </div>
+
+    <%- include('partials/footer') %>
+
+      <!-- 🔍 Script Filter Produk -->
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const searchInput = document.getElementById('searchInput');
+          const productTitles = document.querySelectorAll('h3.text-xl.font-bold');
+          const noResultMessage = document.getElementById('noResultMessage');
+
+          searchInput.addEventListener('keyup', () => {
+            const searchValue = searchInput.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            productTitles.forEach(title => {
+              const card = title.closest('.bg-white.rounded-xl');
+              const name = title.textContent.toLowerCase();
+
+              if (name.includes(searchValue) || searchValue === '') {
+                card.style.display = '';
+                visibleCount++;
+              } else {
+                card.style.display = 'none';
+              }
+            });
+
+            // Tampilkan pesan "tidak ditemukan" jika tidak ada hasil
+            if (visibleCount === 0) {
+              noResultMessage.classList.remove('hidden');
+            } else {
+              noResultMessage.classList.add('hidden');
+            }
+          });
+        });
+      </script>
 
 </body>
+
 </html>
