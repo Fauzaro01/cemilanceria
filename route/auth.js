@@ -40,9 +40,9 @@ router.post('/login', ensureNotAuthenticated, (req, res, next) => {
             }
             
             if (user.role === 'ADMIN') {
-                return res.redirect('/dashboard');
+                return res.redirect('/admin');
             } else {
-                return res.redirect('/keranjang');
+                return res.redirect('/dashboard');
             }
         });
     })(req, res, next);

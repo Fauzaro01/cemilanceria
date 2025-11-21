@@ -37,52 +37,27 @@ app.use((req, res, next) => {
 
 app.use('/', require('./route/auth'));
 app.use('/api', require('./route/api'));
+app.use('/admin', require('./route/admin'));
 
-// // ensure data folder exists
-// const dataDir = path.join(__dirname, 'data');
-// if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
-// const ordersFile = path.join(dataDir, 'orders.json');
-// if (!fs.existsSync(ordersFile)) fs.writeFileSync(ordersFile, '[]');
-
-
-// utama
 app.get('/', (req, res) => {
     res.render('index');
 });
 
-app.get('/keranjang', ensureAuthenticated, (req, res) => {
-    if (req.user.role === 'ADMIN') {
-        return res.redirect('/dashboard');
-    }
-    res.send('<h1>Halaman Keranjang</h1><p>Selamat datang di keranjang belanja, ' + req.user.name + '!</p><a href="/logout">Logout</a>');
-});
-
 app.get('/dashboard', ensureAuthenticated, (req, res) => {
-    if (req.user.role !== 'ADMIN') {
-        return res.redirect('/keranjang');
-    }
-    res.send('<h1>Dashboard Admin</h1><p>Selamat datang di dashboard, ' + req.user.name + '!</p><a href="/logout">Logout</a>');
+    res.send('<h1>Dashboard Admin</h1><p>Selamat datang di dashboard, ' + req.user.name + '!</p><a href="/admin/products">Kelola Produk</a> | <a href="/logout">Logout</a>');
 });
 
-app.get('/checkout', (req, res) => {
-    res.render('checkout');
+app.get('/products', (req, res) => {
+    res.render('products');
 });
 
 app.get('/cart', (req, res) => {
   res.render('cart');
 });
 
-app.get('/halamanproduk', (req, res) => {
-    res.render('halamanproduk');
+app.get('/checkout', (req, res) => {
+    res.render('checkout');
 });
-
-app.get('/pesanan', (req, res) => {
-    res.render('pesanan');
-});
-
-
-
-
 
 app.post('/checkout', (req, res) => {
   try {
@@ -115,12 +90,6 @@ app.post('/checkout', (req, res) => {
       paymentMethod: req.body.paymentMethod || 'cod'
     };
 
-    // // Simpan ke file orders.json
-    // const existing = JSON.parse(fs.readFileSync(ordersFile, 'utf8') || '[]');
-    // existing.push(order);
-    // fs.writeFileSync(ordersFile, JSON.stringify(existing, null, 2));
-
-    // Render halaman pesanan dengan data order (server-side)
     return res.render('pesanan', { order });
 
   } catch (err) {
@@ -130,97 +99,7 @@ app.post('/checkout', (req, res) => {
 });
 
 app.get('/pesanan', (req, res) => {
-    res.render('pesanan');
-});
-
-app.get('/admin/dashboard', (req, res) => {
-  res.render('admin/dashboard', {
-    user: { name: 'Admin Cemilan' },
-    activeMenu: 'dashboard'
-  });
-});
-
-app.get('/admin/products', (req, res) => {
-  res.render('admin/products', {
-    user: { name: 'Admin Cemilan' },
-    activeMenu: 'products'
-  });
-});
-
-app.get('/admin/orders', (req, res) => {
-  res.render('admin/orders', {
-    user: { name: 'Admin Cemilan' },
-    activeMenu: 'orders'
-  });
-});
-
-app.get('/admin/users', (req, res) => {
-  res.render('admin/users', {
-    user: { name: 'Admin Cemilan' },
-    activeMenu: 'users'
-  });
-});
-
-// User routes
-app.get('/user/dashboard', (req, res) => {
-  res.render('user/dashboard', {
-    user: { name: 'Pengguna Cemilan', email: 'user@example.com' },
-    activeMenu: 'dashboard'
-  });
-});
-
-app.get('/user/orders', (req, res) => {
-  res.render('user/ordersproduk', {
-    user: { name: 'Pengguna Cemilan', email: 'user@example.com' },
-    activeMenu: 'orders'
-  });
-});
-
-app.get('/user/profile', (req, res) => {
-  res.render('user/profilpengguna', {
-    user: { name: 'Pengguna Cemilan', email: 'user@example.com' },
-    activeMenu: 'profile'
-  });
-});
-
-// app.get('/admin/settings', (req, res) => {
-//   res.render('admin/settings', {
-//     user: { name: 'Admin Cemilan' },
-//     activeMenu: 'settings'
-//   });
-// });
-
-app
-
-// Placeholder API routes for backend integration (to be implemented by friend)
-app.get('/api/users', (req, res) => {
-  // Placeholder: Return empty array or mock data
-  res.json([]);
-});
-
-app.get('/api/orders', (req, res) => {
-  // Placeholder: Return empty array or mock data
-  res.json([]);
-});
-
-app.get('/api/products', (req, res) => {
-  // Placeholder: Return empty array or mock data
-  res.json([]);
-});
-
-app.post('/api/users', (req, res) => {
-  // Placeholder: Handle user creation
-  res.status(501).json({ message: 'Not implemented yet' });
-});
-
-app.post('/api/orders', (req, res) => {
-  // Placeholder: Handle order creation
-  res.status(501).json({ message: 'Not implemented yet' });
-});
-
-app.post('/api/products', (req, res) => {
-  // Placeholder: Handle product creation
-  res.status(501).json({ message: 'Not implemented yet' });
+  res.render('pesanan');
 });
 
 app.listen(process.env.PORT, () => {

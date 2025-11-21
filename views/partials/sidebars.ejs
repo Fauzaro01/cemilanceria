@@ -2,7 +2,7 @@
 <aside class="w-64 bg-white min-h-screen flex flex-col shadow-sm transition-all duration-300">
   <!-- Logo Section -->
   <div class="p-5 border-b border-gray-100">
-    <a href="/admin/dashboard" class="flex items-center space-x-3 group">
+    <a href="/admin" class="flex items-center space-x-3 group">
       <div class="bg-orange-500 w-9 h-9 rounded-lg flex items-center justify-center shadow-sm">
         <i class="fas fa-cookie-bite text-white text-lg"></i>
       </div>
@@ -37,7 +37,7 @@
   <nav class="flex-1 px-3 py-4 overflow-y-auto">
     <ul class="space-y-1.5">
       <li>
-        <a href="/admin/dashboard" class="flex items-center px-4 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:bg-orange-50 hover:text-orange-700 group <%= activeMenu === 'dashboard' ? 'bg-orange-50 text-orange-700' : '' %>">
+        <a href="/admin" class="flex items-center px-4 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:bg-orange-50 hover:text-orange-700 group <%= activeMenu === 'dashboard' ? 'bg-orange-50 text-orange-700' : '' %>">
           <i class="fas fa-tachometer-alt w-5 text-center group-hover:text-orange-500 <%= activeMenu === 'dashboard' ? 'text-orange-500' : 'text-gray-500' %>"></i>
           <span class="ml-4">Dashboard</span>
           <% if (activeMenu === 'dashboard') { %>
@@ -85,10 +85,16 @@
   </nav>
 
   <!-- Bottom CTA (opsional) -->
-  <div class="p-4 border-t border-gray-100 mt-auto">
+  <div class="p-4 border-gray-100 mt-auto">
     <a href="/admin/settings" class="flex items-center px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:bg-gray-100 transition">
       <i class="fas fa-question-circle mr-3 text-gray-400"></i>
       Bantuan & Dukungan
+    </a>
+  </div>
+  <div class="p-4 border-t border-gray-100">
+    <a href="/logout" class="flex items-center px-3 py-2.5 rounded-lg text-sm text-gray-600 group hover:text-red-400 hover:bg-red-100 transition">
+      <i class="fas fa-sign-out-alt mr-3 group-hover:text-red-400 text-gray-400"></i>
+      Logout
     </a>
   </div>
 </aside>
