@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Halaman Utama</title>
-  <link 
-  rel="stylesheet" 
-  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
-/>
+  <title>Cemilan Ceria - Cita Rasa Yang Tak Terlupakan</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -16,8 +16,22 @@
       theme: {
         extend: {
           colors: {
-            'primary': '#f59e0b', // amber-500
-            'primary-dark': '#d97706', // amber-600
+            'primary': '#f59e0b',
+            'primary-dark': '#d97706',
+            'secondary': '#1e293b',
+          },
+          fontFamily: {
+            'poppins': ['Poppins', 'sans-serif'],
+          },
+          animation: {
+            'float': 'float 3s ease-in-out infinite',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' },
+            }
           }
         }
       }
@@ -25,33 +39,46 @@
   </script>
 
   <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+    
     /* --- Animasi untuk transisi --- */
     @keyframes fadeSlideDown {
-      0% { opacity: 0; transform: translateY(-10px); }
+      0% { opacity: 0; transform: translateY(-20px); }
       100% { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes fadeSlideUp {
-      0% { opacity: 0; transform: translateY(10px); }
+      0% { opacity: 0; transform: translateY(20px); }
       100% { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
+      50% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
+    }
+
     .animate-fade-slide-down {
-      animation: fadeSlideDown 0.3s ease-out forwards;
+      animation: fadeSlideDown 0.5s ease-out forwards;
     }
 
     .animate-fade-slide-up {
-      animation: fadeSlideUp 0.3s ease-out forwards;
+      animation: fadeSlideUp 0.5s ease-out forwards;
     }
 
-    /* Hover underline*/
+    .animate-pulse-glow {
+      animation: pulse-glow 2s infinite;
+    }
+
+    /* Hover underline */
     .link-underline {
       position: relative;
     }
     .link-underline::after {
       content: '';
       position: absolute;
-      bottom: 0;
+      bottom: -2px;
       left: 0;
       width: 0%;
       height: 2px;
@@ -61,79 +88,218 @@
     .link-underline:hover::after {
       width: 100%;
     }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #f59e0b;
+      border-radius: 5px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #d97706;
+    }
+
+    /* Gradient text */
+    .gradient-text {
+      background: linear-gradient(to right, #f59e0b, #d97706);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Card hover effect */
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-5px);
+    }
+
+    /* Carousel dots */
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .carousel-dot.active {
+      background-color: white;
+      width: 30px;
+      border-radius: 5px;
+    }
   </style>
 </head>
 
 <body class="bg-gray-50">
-
-
+  <!-- Navbar -->
   <%- include('partials/navbar') %>
-<section class="flex flex-col md:flex-row items-center justify-between max-w-6xl mx-auto px-6 py-16">
-  <!-- Bagian teks -->
-  <div class="text-center md:text-left md:w-1/2">
-    <h1 class="text-4xl font-bold text-gray-800 mb-4">
-      Cita Rasa <span class="text-primary">Yang Tak Terlupakan</span>
-    </h1>
-    <p class="text-gray-600 mb-6">
-      Setiap gigitan membawa kebahagiaan. Dibuat dengan bahan alami dan cinta.
-    </p>
-    <a href="#produk" class="bg-primary text-white px-5 py-3 rounded-full hover:bg-primary-dark transition">
-      Coba Sekarang
-    </a>
-  </div>
 
-  <!-- Bagian gambar carousel -->
-  <div class="relative mt-10 md:mt-0 md:w-1/2 flex justify-center">
-    <div class="overflow-hidden w-60 rounded-2xl shadow-3xl relative ">
-      <div id="carousel" class="flex transition-transform duration-700 ease-in-out">
-        <img src="https://i.pinimg.com/736x/cf/95/2c/cf952c0bb7fee5b59c8bb0a94ac8b58b.jpg" class="w-60 aspect-square object-cover flex-shrink-0">
-        <img src="https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg" class="w-60 aspect-square object-cover flex-shrink-0">
-        <img src="https://i.pinimg.com/1200x/2a/8b/4c/2a8b4c995f0cce056d5240cbb6d94744.jpg" class="w-60 aspect-square object-cover flex-shrink-0">
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23000000" fill-opacity="0.1"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+    </div>
+
+    <div class="container mx-auto px-6 py-20 lg:py-32 relative z-10">
+      <div class="flex flex-col lg:flex-row items-center justify-between">
+        <!-- Bagian teks -->
+        <div class="text-center lg:text-left lg:w-1/2 animate-fade-slide-down">
+          <div class="inline-flex items-center bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
+            <i class="bi bi-star-fill mr-2"></i>
+            Cemilan Favorit Keluarga Indonesia
+          </div>
+          <h1 class="text-4xl lg:text-6xl font-bold text-gray-800 mb-6 leading-tight">
+            Cita Rasa <span class="gradient-text">Yang Tak Terlupakan</span>
+          </h1>
+          <p class="text-lg text-gray-600 mb-8 max-w-lg">
+            Setiap gigitan membawa kebahagiaia. Dibuat dengan bahan alami dan cinta untuk menciptakan pengalaman kuliner yang tak terlupakan.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <a href="#produk" class="bg-primary text-white px-8 py-4 rounded-full hover:bg-primary-dark transition-all duration-300 transform hover:scale-105 hover:shadow-lg font-medium inline-flex items-center justify-center">
+              <i class="bi bi-basket2-fill mr-2"></i>
+              Coba Sekarang
+            </a>
+            <a href="#tentang" class="border-2 border-primary text-primary px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all duration-300 font-medium inline-flex items-center justify-center">
+              <i class="bi bi-play-circle mr-2"></i>
+              Pelajari Lebih Lanjut
+            </a>
+          </div>
+        </div>
+
+        <!-- Bagian gambar carousel -->
+        <div class="relative mt-12 lg:mt-0 lg:w-1/2 flex justify-center">
+          <div class="relative">
+            <!-- Glow effect -->
+            <div class="absolute -inset-4 bg-gradient-to-r from-amber-400 to-orange-500 rounded-2xl blur-xl opacity-30 animate-pulse-slow"></div>
+            
+            <!-- Carousel container -->
+            <div class="relative overflow-hidden w-80 lg:w-96 rounded-2xl shadow-2xl">
+              <div id="carousel" class="flex transition-transform duration-700 ease-in-out">
+                <img src="https://i.pinimg.com/736x/cf/95/2c/cf952c0bb7fee5b59c8bb0a94ac8b58b.jpg" class="w-full aspect-square object-cover flex-shrink-0">
+                <img src="https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg" class="w-full aspect-square object-cover flex-shrink-0">
+                <img src="https://i.pinimg.com/1200x/2a/8b/4c/2a8b4c995f0cce056d5240cbb6d94744.jpg" class="w-full aspect-square object-cover flex-shrink-0">
+              </div>
+              
+              <!-- Carousel controls -->
+              <button id="prev" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-3 transition-all duration-300 shadow-lg">
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <button id="next" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-3 transition-all duration-300 shadow-lg">
+                <i class="bi bi-chevron-right"></i>
+              </button>
+              
+              <!-- Carousel dots -->
+              <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                <div class="carousel-dot active" data-index="0"></div>
+                <div class="carousel-dot" data-index="1"></div>
+                <div class="carousel-dot" data-index="2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <button id="prev" class="absolute left-0 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2">❮</button>
-    <button id="next" class="absolute right-0 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2">❯</button>
-  </div>
-</section>
+  </section>
 
-  <section class="py-10 bg-gradient-to-br from-gray-50 to-gray-100 flex flex-col items-center text-center">
-    <div class="container mx-auto px-4">
-      <!-- <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Produk Lainnya</h2>
-      <p class="text-gray-500 mb-10 max-w-2xl mx-auto">
-        Nikmati berbagai pilihan Cemilan lezat dan segar dari 
-        <span class="font-semibold text-amber-500">Cemilan Ceria</span>.
-      </p> -->
+  <!-- Features Section -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center card-hover">
+          <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+            <i class="bi bi-truck text-primary text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">Pengiriman Cepat</h3>
+          <p class="text-gray-600">Pesanan Anda akan tiba dalam waktu singkat dengan pengemasan yang aman.</p>
+        </div>
+        <div class="text-center card-hover">
+          <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+            <i class="bi bi-shield-check text-primary text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">Kualitas Terjamin</h3>
+          <p class="text-gray-600">Produk kami dibuat dengan bahan berkualitas tinggi dan proses yang higienis.</p>
+        </div>
+        <div class="text-center card-hover">
+          <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
+            <i class="bi bi-heart text-primary text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold text-gray-800 mb-2">Dibuat dengan Cinta</h3>
+          <p class="text-gray-600">Setiap produk dibuat dengan perhatian khusus untuk memberikan pengalaman terbaik.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section id="produk" class="py-16 bg-gradient-to-br from-gray-50 to-gray-100">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Produk Unggulan Kami</h2>
+        <p class="text-gray-500 max-w-2xl mx-auto">
+          Nikmati berbagai pilihan cemilan lezat dan segar dari 
+          <span class="font-semibold text-primary">Cemilan Ceria</span>.
+        </p>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="flex justify-center mb-8">
+          <button class="px-4 py-2 rounded-md text-white bg-primary :text-primary font-medium transition-all duration-300">Terlaris</button>
+        </div>
+      </div>
 
       <!-- Grid Produk -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+
         
         <!-- PRODUK 1 -->
-        <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl relative group">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover group">
           <!-- Label Promo -->
           <div class="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10 animate-pulse">
-              Promo!
+            <i class="bi bi-lightning-fill mr-1"></i>
+            Promo!
           </div>
 
           <!-- Gambar -->
-          <div class="overflow-hidden">
-            <img src="https://i.pinimg.com/1200x/2a/8b/4c/2a8b4c995f0cce056d5240cbb6d94744.jpg" alt="Puding Cokelat"
-                class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110">
+          <div class="relative overflow-hidden h-56">
+            <img src="https://i.pinimg.com/1200x/2a/8b/4c/2a8b4c995f0cce056d5240cbb6d94744.jpg" alt="Cireng Ayam Suir"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+            
+            <!-- Quick view button -->
+            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+              <button class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 p-3 rounded-full transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
+                <i class="bi bi-eye-fill"></i>
+              </button>
+            </div>
           </div>
 
           <!-- Isi -->
-          <div class="p-5 text-left">
-            <span class="text-xs font-semibold text-amber-500 uppercase tracking-wider mb-1 inline-block">Cemilan Ceria</span>
-            <h3 class="text-xl font-bold text-gray-900 mb-1">Cireng Ayam Suir</h3>
+          <div class="p-5">
+            <span class="text-xs font-semibold text-primary uppercase tracking-wider mb-1 inline-block">Cemilan Ceria</span>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Cireng Ayam Suir</h3>
 
             <!-- Rating -->
-            <div class="flex items-center text-yellow-400 mb-3">
-              <span>★★★★★</span>
-              <span class="text-xs text-gray-500 ml-2">(90)</span>
+            <div class="flex items-center mb-3">
+              <div class="flex text-yellow-400">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+              </div>
+              <span class="text-xs text-gray-500 ml-2">(90 ulasan)</span>
             </div>
 
             <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-                  Cireng Ayam Suwir Pedas: Pedasnya Menggigit, Gurihnya Menggoda!
-                </p>
+              Cireng Ayam Suwir Pedas: Pedasnya Menggigit, Gurihnya Menggoda!
+            </p>
 
             <!-- Harga -->
             <div class="flex items-center justify-between mb-4">
@@ -141,141 +307,361 @@
                 <span class="text-xl font-bold text-gray-800">Rp 3.000</span>
                 <span class="text-sm text-gray-500 line-through ml-2">Rp 4.000</span>
               </div>
+              <span class="bg-red-100 text-red-600 text-xs font-semibold px-2 py-1 rounded">25% OFF</span>
             </div>
 
             <!-- Tombol -->
             <button class="add-to-cart w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105" data-product="Cireng Ayam Suir" data-price="3000">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16" class="w-4 h-4">
-                <path d="M8 1a.5.5 0 0 1 .5.5V4h2.5a.5.5 0 0 1 0 1H8.5v2.5a.5.5 0 0 1-1 0V5H5a.5.5 0 0 1 0-1h2.5V1.5A.5.5 0 0 1 8 1z"/>
-                <path d="M3 3h10a1 1 0 0 1 1 1v9.5a1.5 1.5 0 0 1-1.5 1.5H3.5A1.5 1.5 0 0 1 2 13.5V4a1 1 0 0 1 1-1z"/>
-              </svg>
+              <i class="bi bi-cart-plus-fill"></i>
               Tambah ke Keranjang
             </button>
           </div>
         </div>
 
         <!-- PRODUK 2 -->
-        <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl relative group">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover group">
           <!-- Label Baru -->
           <div class="absolute top-4 left-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
+            <i class="bi bi-patch-check-fill mr-1"></i>
             Baru!
           </div>
 
           <!-- Gambar -->
-          <div class="overflow-hidden">
-            <img src="https://i.pinimg.com/1200x/e2/e1/15/e2e1154998dd10acbe8876a69d436462.jpg" alt="Lumpia Kering"
-                class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110">
+          <div class="relative overflow-hidden h-56">
+            <img src="https://i.pinimg.com/736x/cf/95/2c/cf952c0bb7fee5b59c8bb0a94ac8b58b.jpg" alt="Pudding coklat"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+            
+            <!-- Quick view button -->
+            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+              <button class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 p-3 rounded-full transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
+                <i class="bi bi-eye-fill"></i>
+              </button>
+            </div>
           </div>
 
           <!-- Isi -->
-          <div class="p-5 text-left">
-            <span class="text-xs font-semibold text-amber-500 uppercase tracking-wider mb-1 inline-block">Cemilan Ceria</span>
-            <h3 class="text-xl font-bold text-gray-900 mb-1">Lumpia Kering</h3>
+          <div class="p-5">
+            <span class="text-xs font-semibold text-primary uppercase tracking-wider mb-1 inline-block">Cemilan Ceria</span>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Pudding Coklat</h3>
 
             <!-- Rating -->
-            <div class="flex items-center text-yellow-400 mb-3">
-              <span>★★★★☆</span>
-              <span class="text-xs text-gray-500 ml-2">(0)</span>
+            <div class="flex items-center mb-3">
+              <div class="flex text-yellow-400">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star"></i>
+              </div>
+              <span class="text-xs text-gray-500 ml-2">(Belum ada ulasan)</span>
             </div>
 
             <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-                Gurihnya Menggugah Selera, Krispinya Bikin Ketagihan!
+              Pudding lembut dengan rasa coklat premium yang nikmat
             </p>
 
             <!-- Harga -->
             <div class="flex items-center justify-between mb-4">
-              <span class="text-xl font-bold text-gray-800">Rp ????</span>
+              <span class="text-xl font-bold text-gray-800">Rp 7.000</span>
             </div>
 
             <!-- Tombol -->
-            <button class="w-full flex items-center justify-center gap-2 bg-gray-400 text-white font-medium py-2.5 rounded-lg cursor-not-allowed" disabled>
-              Coming Soon
+            <button class="add-to-cart w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105" data-product="Lumpia Kering" data-price="15000">
+              <i class="bi bi-cart-plus-fill"></i>
+              Tambah ke Keranjang
             </button>
           </div>
         </div>
-        <!-- <---produk 3--- -->
-              <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl relative group">
+
+        <!-- PRODUK 3 -->
+        <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover group">
           <!-- Label Baru -->
           <div class="absolute top-4 left-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
+            <i class="bi bi-patch-check-fill mr-1"></i>
             Baru!
           </div>
 
           <!-- Gambar -->
-          <div class="overflow-hidden">
-            <img src="https://i.pinimg.com/736x/69/30/ba/6930ba0dbfd51f317aa1b6bce0454cb2.jpg" alt="Basreng"
-                class="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110">
+          <div class="relative overflow-hidden h-56">
+            <img src="https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg" alt="Pudding Strawberry"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+            
+            <!-- Quick view button -->
+            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
+              <button class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 p-3 rounded-full transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
+                <i class="bi bi-eye-fill"></i>
+              </button>
+            </div>
           </div>
 
           <!-- Isi -->
-          <div class="p-5 text-left">
-            <span class="text-xs font-semibold text-amber-500 uppercase tracking-wider mb-1 inline-block">Cemilan Ceria</span>
-            <h3 class="text-xl font-bold text-gray-900 mb-1">Basreng</h3>
+          <div class="p-5">
+            <span class="text-xs font-semibold text-primary uppercase tracking-wider mb-1 inline-block">Cemilan Ceria</span>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Pudding Strawberry</h3>
 
             <!-- Rating -->
-            <div class="flex items-center text-yellow-400 mb-3">
-              <span>☆☆☆☆☆</span>
-              <span class="text-xs text-gray-500 ml-2">(0)</span>
+            <div class="flex items-center mb-3">
+              <div class="flex text-yellow-400">
+               <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star"></i>
+              </div>
+              <span class="text-xs text-gray-500 ml-2"></span>
             </div>
 
             <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-                Teman setia di setiap waktu, kapan saja dan di mana saja.
+              Pudding segar dengan rasa strawberry asli
             </p>
 
             <!-- Harga -->
             <div class="flex items-center justify-between mb-4">
-              <span class="text-xl font-bold text-gray-800">Rp ????</span>
+              <span class="text-xl font-bold text-gray-800">Rp 7.000</span>
             </div>
 
             <!-- Tombol -->
-            <button class="w-full flex items-center justify-center gap-2 bg-gray-400 text-white font-medium py-2.5 rounded-lg cursor-not-allowed" disabled>
-              Coming Soon
+            <button class="add-to-cart w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105" data-product="Basreng" data-price="10000">
+              <i class="bi bi-cart-plus-fill"></i>
+              Tambah ke Keranjang
             </button>
           </div>
+        </div>
+
+      </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Apa Kata Pelanggan Kami</h2>
+        <p class="text-gray-500 max-w-2xl mx-auto">
+          Kepuasan pelanggan adalah prioritas utama kami. Dengarkan apa kata mereka tentang produk kami.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <!-- Testimonial 1 -->
+        <div class="bg-gray-50 rounded-xl p-6 shadow-md">
+          <div class="flex items-center mb-4">
+            <img src="https://i.pravatar.cc/150?img=1" alt="Customer" class="w-12 h-12 rounded-full mr-4">
+            <div>
+              <h4 class="font-semibold text-gray-800">Sarah Putri</h4>
+              <div class="flex text-yellow-400 text-sm">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-600 italic">"Cemilan Ceria adalah favorit keluarga kami! Rasanya enak dan harganya terjangkau. Anak-anak sangat suka cirengnya."</p>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="bg-gray-50 rounded-xl p-6 shadow-md">
+          <div class="flex items-center mb-4">
+            <img src="https://i.pravatar.cc/150?img=2" alt="Customer" class="w-12 h-12 rounded-full mr-4">
+            <div>
+              <h4 class="font-semibold text-gray-800">Budi Santoso</h4>
+              <div class="flex text-yellow-400 text-sm">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-600 italic">"Kualitas produk sangat baik dan pengiriman cepat. Saya sudah memesan berkali-kali dan tidak pernah kecewa!"</p>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="bg-gray-50 rounded-xl p-6 shadow-md">
+          <div class="flex items-center mb-4">
+            <img src="https://i.pravatar.cc/150?img=3" alt="Customer" class="w-12 h-12 rounded-full mr-4">
+            <div>
+              <h4 class="font-semibold text-gray-800">Maya Indah</h4>
+              <div class="flex text-yellow-400 text-sm">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star"></i>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-600 italic">"Lumpia keringnya enak sekali! Renyah dan tidak terlalu manis. Cocok untuk camilan saat nonton film."</p>
         </div>
       </div>
     </div>
   </section>
 
+  
+
+  <!-- Footer -->
   <%- include('partials/footer') %>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" class="fixed bottom-6 left-6 bg-white text-primary p-3 rounded-full shadow-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-110 opacity-0 invisible">
+    <i class="bi bi-arrow-up"></i>
+  </button>
   
-<script>
+  <script>
+    // Carousel functionality
+    const carousel = document.getElementById('carousel');
+    const totalSlides = carousel.children.length;
+    const dots = document.querySelectorAll('.carousel-dot');
+    let index = 0;
+    let intervalId;
 
-  //catatan kalo ada yg mau ubah js nya 
+    function showSlide() {
+      carousel.style.transform = `translateX(-${index * 100}%)`;
+      
+      // Update dots
+      dots.forEach((dot, i) => {
+        if (i === index) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
 
-  
-  // Ambil elemen utama carousel
-  const carousel = document.getElementById('carousel');
+    function startAutoSlide() {
+      intervalId = setInterval(() => {
+        index = (index + 1) % totalSlides;
+        showSlide();
+      }, 4000);
+    }
 
-  // Hitung jumlah gambar di dalam carousel
-  const totalSlides = carousel.children.length;
+    function stopAutoSlide() {
+      clearInterval(intervalId);
+    }
 
-  // Variabel posisi gambar yang sedang tampil
-  let index = 0;
+    // Button controls
+    document.getElementById('next').onclick = () => {
+      index = (index + 1) % totalSlides;
+      showSlide();
+      stopAutoSlide();
+      startAutoSlide();
+    };
 
-  // Fungsi untuk menggeser carousel ke gambar tertentu
-  function showSlide() {
-    carousel.style.transform = `translateX(-${index * 100}%)`;
-  }
+    document.getElementById('prev').onclick = () => {
+      index = (index - 1 + totalSlides) % totalSlides;
+      showSlide();
+      stopAutoSlide();
+      startAutoSlide();
+    };
 
-  // Tombol next → maju ke gambar berikutnya
-  document.getElementById('next').onclick = () => {
-    index = (index + 1) % totalSlides; // kalau sudah di akhir, balik ke awal
-    showSlide();
-  };
+    // Dot controls
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        index = i;
+        showSlide();
+        stopAutoSlide();
+        startAutoSlide();
+      });
+    });
 
-  // Tombol prev → kembali ke gambar sebelumnya
-  document.getElementById('prev').onclick = () => {
-    index = (index - 1 + totalSlides) % totalSlides; // kalau di awal, lompat ke akhir
-    showSlide();
-  };
+    // Start auto slide
+    startAutoSlide();
 
-  // Geser otomatis setiap 4 detik
-  setInterval(() => {
-    index = (index + 1) % totalSlides;
-    showSlide();
-  }, 4000);
+    // Add to cart functionality
+    const cartCount = document.getElementById('cart-count');
+    let count = 0;
 
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+      button.addEventListener('click', function() {
+        count++;
+        cartCount.textContent = count;
+        
+        // Add animation to cart button
+        const cartButton = document.getElementById('cart-button');
+        cartButton.classList.add('animate-pulse-glow');
+        setTimeout(() => {
+          cartButton.classList.remove('animate-pulse-glow');
+        }, 2000);
+        
+        // Show notification
+        const productName = this.getAttribute('data-product');
+        showNotification(`${productName} telah ditambahkan ke keranjang!`);
+      });
+    });
 
-</script>
+    // Notification function
+    function showNotification(message) {
+      const notification = document.createElement('div');
+      notification.className = 'fixed top-20 right-6 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-slide-down';
+      notification.innerHTML = `
+        <div class="flex items-center">
+          <i class="bi bi-check-circle-fill mr-2"></i>
+          <span>${message}</span>
+        </div>
+      `;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.classList.add('opacity-0');
+        setTimeout(() => {
+          document.body.removeChild(notification);
+        }, 300);
+      }, 3000);
+    }
+
+    // Back to top button
+    const backToTopButton = document.getElementById('back-to-top');
+    
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTopButton.classList.remove('opacity-0', 'invisible');
+        backToTopButton.classList.add('opacity-100', 'visible');
+      } else {
+        backToTopButton.classList.add('opacity-0', 'invisible');
+        backToTopButton.classList.remove('opacity-100', 'visible');
+      }
+    });
+    
+    backToTopButton.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+
+    // Animate elements on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-fade-slide-up');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.card-hover').forEach(el => {
+      observer.observe(el);
+    });
+  </script>
 </body>
 </html>
