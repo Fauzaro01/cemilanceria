@@ -9,6 +9,10 @@
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
   <script>
     tailwind.config = {
       theme: {
@@ -57,6 +61,32 @@
 
     .link-underline:hover::after {
       width: 100%;
+    }
+
+    /* SweetAlert2 Toast Custom Style */
+    .colored-toast.swal2-icon-success {
+      background-color: #f0f0f0 !important;
+    }
+    .colored-toast .swal2-title {
+      font-size: 14px !important;
+      font-weight: 600 !important;
+      color: #975b00 !important;
+    }
+    .colored-toast .swal2-icon {
+      width: 32px !important;
+      height: 32px !important;
+      border-width: 2px !important;
+      margin: 0 8px 0 0 !important;
+    }
+    .colored-toast .swal2-icon .swal2-icon-content {
+      font-size: 18px !important;
+    }
+    .colored-toast {
+      padding: 10px 16px !important;
+      min-width: auto !important;
+    }
+    .colored-toast .swal2-timer-progress-bar {
+      background-color: rgba(226, 109, 0, 0.911) !important;
     }
   </style>
 </head>
@@ -178,7 +208,7 @@
                       <button
                         class="add-to-cart w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105"
                         data-product-id="<%= product.id %>"
-                        data-product="<%= product.name %>" 
+                        data-product-name="<%= product.name %>" 
                         data-price="<%= product.price %>"
                         data-image="<%= product.imageUrl || '' %>">
                         <i class="bi bi-cart-check"></i>
@@ -233,33 +263,24 @@
           addToCartButtons.forEach(button => {
             button.addEventListener('click', function () {
               const productId = parseInt(this.getAttribute('data-product-id'));
-              const product = this.getAttribute('data-product-name');
+              const productName = this.getAttribute('data-product-name');
               const price = parseInt(this.getAttribute('data-price'));
-              const image = this.getAttribute('data-product-image');
+              const image = this.getAttribute('data-image');
               let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
               // Jika produk sudah ada (cek berdasarkan productId), tambahkan qty
               const existing = cart.find(item => item.productId === productId);
+              let isNewItem = false;
+              
               if (existing) {
                 existing.qty = (existing.qty || 1) + 1;
               } else {
-                cart.push({ productId, product, price, image, qty: 1 });
+                cart.push({ productId, product: productName, price, image, qty: 1 });
+                isNewItem = true;
               }
 
               // Simpan ke localStorage
               localStorage.setItem('cart', JSON.stringify(cart));
-
-              // Update total qty di navbar
-              const totalQty = cart.reduce((sum, it) => sum + (it.qty || 1), 0);
-              const cartCount = document.getElementById('cartCount');
-              if (cartCount) {
-                cartCount.textContent = totalQty;
-              }
-
-              const cartTooltip = document.getElementById('cartTooltip');
-              if (cartTooltip) {
-                cartTooltip.textContent = totalQty ? `${totalQty} produk dalam keranjang` : "Belum ada produk";
-              }
 
               // Update navbar cart jika fungsi tersedia
               if (typeof window.updateCart === 'function') {
@@ -267,27 +288,33 @@
               }
 
               // --- Efek klik halus ---
-              button.classList.add('scale-95', 'bg-amber-600');
+              button.classList.add('scale-95');
               setTimeout(() => {
-                button.classList.remove('scale-95', 'bg-amber-600');
+                button.classList.remove('scale-95');
               }, 150);
 
-              // --- Notifikasi kecil (toast) ---
-              const notif = document.createElement('div');
-              notif.textContent = `${product} ditambahkan ke keranjang!`;
-              notif.className = `
-          fixed bottom-6 right-6 bg-amber-500 text-white px-4 py-2 
-          rounded-lg shadow-lg text-sm z-50 opacity-0 transition-opacity duration-300
-        `;
-              document.body.appendChild(notif);
+              // --- SweetAlert2 Toast ---
+              const Toast = Swal.mixin({
+                toast: true,
+                position: 'bottom-end',
+                showConfirmButton: false,
+                timer: 2200,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                  // toast.addEventListener('mouseenter', Swal.stopTimer)
+                  // toast.addEventListener('mouseleave', Swal.resumeTimer)
+                },
+                customClass: {
+                  popup: 'colored-toast'
+                }
+              });
 
-              // Muncul perlahan
-              setTimeout(() => notif.classList.add('opacity-100'), 50);
-              // Hilang otomatis
-              setTimeout(() => {
-                notif.classList.remove('opacity-100');
-                setTimeout(() => notif.remove(), 300);
-              }, 1500);
+              const currentQty = existing ? existing.qty : 1;
+              
+              Toast.fire({
+                icon: 'success',
+                title: `${productName} ditambahkan (${currentQty}x)`
+              });
             });
           });
         });
