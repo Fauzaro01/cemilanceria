@@ -39,12 +39,6 @@ app.use('/', require('./route/auth'));
 app.use('/api', require('./route/api'));
 app.use('/admin', require('./route/admin'));
 
-// // ensure data folder exists
-// const dataDir = path.join(__dirname, 'data');
-// if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir);
-// const ordersFile = path.join(dataDir, 'orders.json');
-// if (!fs.existsSync(ordersFile)) fs.writeFileSync(ordersFile, '[]');
-
 app.get('/', (req, res) => {
     res.render('index');
 });
@@ -103,7 +97,6 @@ app.post('/checkout', (req, res) => {
     return res.status(500).send('Terjadi kesalahan pada server.');
   }
 });
-
 
 app.get('/pesanan', (req, res) => {
   res.render('pesanan');

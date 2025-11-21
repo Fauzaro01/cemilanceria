@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pesanan Saya | Cemilan Ceria</title>
+
+  <!-- 🔗 Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              DEFAULT: '#FF7F00',
+              light: '#FFA756',
+              dark: '#CC6600',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- 🎨 Font & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Source Sans Pro', system-ui, sans-serif;
+    }
+    /* Smooth scroll & layout */
+    html { scroll-behavior: smooth; }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <div class="flex min-h-screen">
+    <!-- Sidebar (include partial) -->
+    <%- include('../partials/user-sidebar.ejs', {activeMenu: 'orders'}) %>
+
+    <!-- Main Content -->
+    <div class="flex flex-col flex-1">
+      <!-- Top Header -->
+      <header class="bg-white shadow-sm">
+        <div class="px-6 py-4">
+          <h1 class="text-2xl font-bold text-gray-800">Pesanan Saya</h1>
+        </div>
+      </header>
+
+      <!-- Content -->
+      <main class="flex-1 p-6 overflow-auto">
+        <!-- Filter Tabs -->
+        <div class="mb-6">
+          <div class="flex space-x-1 bg-gray-100 p-1 rounded-lg w-fit">
+            <button id="tabAll" class="px-4 py-2 rounded-md text-sm font-medium transition-all tab-active bg-white text-gray-800 shadow-sm">Semua</button>
+            <button id="tabPending" class="px-4 py-2 rounded-md text-sm font-medium transition-all text-gray-600 hover:text-gray-800">Pending</button>
+            <button id="tabCompleted" class="px-4 py-2 rounded-md text-sm font-medium transition-all text-gray-600 hover:text-gray-800">Selesai</button>
+          </div>
+        </div>
+
+        <!-- Orders List -->
+        <div id="ordersList" class="space-y-4">
+          <!-- Orders will be populated here -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden text-center py-12">
+          <i class="fas fa-shopping-cart text-6xl text-gray-300 mb-4"></i>
+          <h3 class="text-xl font-semibold text-gray-600 mb-2">Belum ada pesanan</h3>
+          <p class="text-gray-500">Mulai belanja untuk melihat pesanan Anda di sini.</p>
+          <a href="/" class="inline-block mt-4 px-6 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">Mulai Belanja</a>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="bg-white border-t border-gray-200 py-4 px-6 text-sm text-gray-600">
+        <strong>&copy; 2025 <a href="#" class="text-primary font-medium hover:underline">Cemilan Ceria</a>.</strong>
+        All rights reserved.
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // Initialize data if not present
+    if (!localStorage.getItem('userOrders')) {
+      const initialUserOrders = [
+        { id: 1, items: [{name: 'Puding Cokelat', quantity: 2, price: 6000}, {name: 'Cireng Ayam Suir', quantity: 1, price: 3000}], total: 15000, status: 'completed', date: new Date().toISOString().split('T')[0] },
+        { id: 2, items: [{name: 'Puding Stroberi', quantity: 1, price: 6000}], total: 6000, status: 'pending', date: new Date().toISOString().split('T')[0] },
+        { id: 3, items: [{name: 'Cireng Ayam Suir', quantity: 3, price: 3000}], total: 9000, status: 'completed', date: new Date(Date.now() - 86400000).toISOString().split('T')[0] }
+      ];
+      localStorage.setItem('userOrders', JSON.stringify(initialUserOrders));
+    }
+
+    let currentFilter = 'all';
+
+    // Tab switching
+    document.getElementById('tabAll').addEventListener('click', () => setActiveTab('all'));
+    document.getElementById('tabPending').addEventListener('click', () => setActiveTab('pending'));
+    document.getElementById('tabCompleted').addEventListener('click', () => setActiveTab('completed'));
+
+    function setActiveTab(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.tab-active').forEach(btn => btn.classList.remove('tab-active', 'bg-white', 'text-gray-800', 'shadow-sm'));
+      document.querySelectorAll('.tab-active').forEach(btn => btn.classList.add('text-gray-600'));
+
+      const activeBtn = document.getElementById(`tab${filter.charAt(0).toUpperCase() + filter.slice(1)}`);
+      activeBtn.classList.add('tab-active', 'bg-white', 'text-gray-800', 'shadow-sm');
+      activeBtn.classList.remove('text-gray-600');
+
+      displayOrders();
+    }
+
+    // Display orders
+    function displayOrders() {
+      const orders = JSON.parse(localStorage.getItem('userOrders') || '[]');
+      const ordersList = document.getElementById('ordersList');
+      const emptyState = document.getElementById('emptyState');
+
+      let filteredOrders = orders;
+      if (currentFilter === 'pending') {
+        filteredOrders = orders.filter(o => o.status === 'pending');
+      } else if (currentFilter === 'completed') {
+        filteredOrders = orders.filter(o => o.status === 'completed');
+      }
+
+      ordersList.innerHTML = '';
+
+      if (filteredOrders.length === 0) {
+        emptyState.classList.remove('hidden');
+        ordersList.classList.add('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      ordersList.classList.remove('hidden');
+
+      filteredOrders.forEach(order => {
+        const orderElement = document.createElement('div');
+        orderElement.className = 'bg-white rounded-xl shadow-sm p-6 border border-gray-100';
+        orderElement.innerHTML = `
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">Pesanan #${order.id}</h3>
+              <p class="text-sm text-gray-500">${order.date}</p>
+            </div>
+            <span class="inline-block px-3 py-1 text-sm rounded-full ${order.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+              ${order.status === 'completed' ? 'Selesai' : 'Pending'}
+            </span>
+          </div>
+          <div class="space-y-2 mb-4">
+            ${order.items.map(item => `
+              <div class="flex justify-between text-sm">
+                <span>${item.name} x${item.quantity}</span>
+                <span>Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="flex justify-between items-center pt-4 border-t border-gray-100">
+            <span class="font-semibold text-gray-800">Total:</span>
+            <span class="font-bold text-lg text-gray-800">Rp ${order.total.toLocaleString('id-ID')}</span>
+          </div>
+        `;
+        ordersList.appendChild(orderElement);
+      });
+    }
+
+    // Initialize
+    setActiveTab('all');
+  </script>
+
+</body>
+</html>
