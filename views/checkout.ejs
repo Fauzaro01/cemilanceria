@@ -3,58 +3,417 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout</title>
+    <title>Checkout - Konfirmasi Pesanan</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-gray-50">
     <%- include('partials/navbar') %>
 
-    <div class="max-w-4xl mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6">Checkout</h1>
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">
+            <i class="bi bi-clipboard-check text-amber-500"></i>
+            Konfirmasi Pesanan
+        </h1>
+        <p class="text-gray-600 mb-6">Periksa kembali produk dan informasi pengiriman Anda sebelum melakukan pembayaran</p>
 
-        <!-- Halaman checkout hanya menampilkan form. Daftar item pindah ke halaman Keranjang -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Product List Section -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Products Card -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="bi bi-cart-check text-amber-500"></i>
+                        Produk yang Dibeli
+                        <span id="itemCount" class="text-sm font-normal text-gray-500"></span>
+                    </h2>
+                    
+                    <div id="productList" class="space-y-4">
+                        <!-- Products will be loaded here -->
+                    </div>
+                </div>
 
-        <form action="/checkout" method="POST" class="bg-white rounded-lg shadow-md p-6">
-            <input type="hidden" name="cart" id="cartInput">
-            <input type="hidden" name="paymentMethod" value="cod">
-            <h2 class="text-xl font-semibold text-gray-800 mb-2">Metode Pembayaran</h2>
-            <p class="mb-4 text-gray-700">Pembayaran: <strong>COD (Bayar di Tempat)</strong></p>
-            <h2 class="text-xl font-semibold text-gray-800 mb-2">Alamat Pengiriman</h2>
-            <p class="mb-4 text-gray-700">Alamat: <strong>~</strong></p>
+                <!-- Shipping Information Card -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="bi bi-truck text-amber-500"></i>
+                        Informasi Pengiriman
+                    </h2>
+                    
+                    <form id="checkoutForm" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Nama Lengkap <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" name="name" id="name" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                    placeholder="Masukkan nama lengkap"
+                                    value="<%= user ? user.name : '' %>">
+                            </div>
 
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Email <span class="text-red-500">*</span>
+                                </label>
+                                <input type="email" name="email" id="email" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                    placeholder="email@example.com"
+                                    value="<%= user ? user.email : '' %>">
+                            </div>
 
-            <div class="mt-6 flex gap-3">
-                <a href="/cart" class="flex-1 text-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 px-4 rounded-md transition duration-300">Kembali ke Keranjang</a>
-                <button type="submit" id="submitOrderBtn" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 px-4 rounded-md transition duration-300">
-                    Pesan Sekarang
-                </button>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    No. Telepon <span class="text-red-500">*</span>
+                                </label>
+                                <input type="tel" name="phone" id="phone" required
+                                    pattern="[0-9]{10,13}"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                    placeholder="08xxxxxxxxxx"
+                                    value="<%= user ? (user.phone || '') : '' %>">
+                                <p class="text-xs text-gray-500 mt-1">Format: 10-13 digit angka</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">
+                                    Kota/Kabupaten <span class="text-red-500">*</span>
+                                </label>
+                                <input type="text" name="city" id="city" required
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                    placeholder="Contoh: Jakarta">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Alamat Lengkap <span class="text-red-500">*</span>
+                            </label>
+                            <textarea name="address" id="address" required rows="3"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                placeholder="Masukkan alamat lengkap (Jalan, No. Rumah, RT/RW, Kelurahan, Kecamatan)"><%= user ? (user.address || '') : '' %></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Catatan Pesanan (Opsional)
+                            </label>
+                            <textarea name="notes" id="notes" rows="2"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                                placeholder="Contoh: Tolong kirim sore hari, Jangan dibunyikan belnya"></textarea>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </form>
+
+            <!-- Order Summary Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-md p-6 sticky top-24">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">
+                        <i class="bi bi-receipt text-amber-500"></i>
+                        Ringkasan Belanja
+                    </h2>
+                    
+                    <div class="space-y-3 mb-4">
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>Total Produk:</span>
+                            <span id="totalItems" class="font-medium">0 item</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>Subtotal:</span>
+                            <span id="subtotal" class="font-medium">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-600">
+                            <span>Ongkos Kirim:</span>
+                            <span class="text-green-600 font-semibold">GRATIS</span>
+                        </div>
+                        <div class="border-t pt-3 flex justify-between text-lg font-bold">
+                            <span class="text-gray-800">Total Bayar:</span>
+                            <span id="total" class="text-amber-600">Rp 0</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
+                        <p class="text-xs text-amber-800">
+                            <i class="bi bi-info-circle"></i>
+                            <strong>Info:</strong> Pembayaran menggunakan Midtrans. Anda dapat memilih berbagai metode pembayaran setelah klik tombol di bawah.
+                        </p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <button type="button" id="processOrderBtn"
+                            class="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center gap-2 shadow-md hover:shadow-lg">
+                            <i class="bi bi-credit-card-2-front"></i>
+                            Lanjutkan ke Pembayaran
+                        </button>
+                        <a href="/cart"
+                            class="w-full block text-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium py-3 px-4 rounded-lg transition duration-300">
+                            <i class="bi bi-arrow-left"></i>
+                            Kembali ke Keranjang
+                        </a>
+                    </div>
+
+                    <p class="text-xs text-gray-500 text-center mt-4">
+                        <i class="bi bi-shield-check"></i>
+                        Transaksi Anda aman dan terlindungi
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <%- include('partials/footer') %>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const cartInput = document.getElementById('cartInput');
-            const form = document.querySelector('form[action="/checkout"]');
-            const submitBtn = form.querySelector('button[type="submit"]');
-            const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        let cart = [];
+        let isProcessing = false;
 
-            // Sertakan data keranjang sebagai input tersembunyi agar server menerima item jika diperlukan
-            cartInput.value = JSON.stringify(cart);
-
-            // Jika keranjang kosong, nonaktifkan tombol submit dan beri petunjuk singkat
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Page loaded, initializing checkout...');
+            
+            // Load cart from localStorage
+            cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            console.log('Cart loaded:', cart);
+            
             if (cart.length === 0) {
-                submitBtn.disabled = true;
-                submitBtn.classList.add('opacity-50','cursor-not-allowed');
-                const note = document.createElement('p');
-                note.className = 'text-sm text-gray-500 mb-4';
-                note.textContent = 'Keranjang kosong — tambahkan produk terlebih dahulu.';
-                form.insertBefore(note, form.firstChild);
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Keranjang Kosong',
+                    text: 'Silakan tambahkan produk terlebih dahulu',
+                    confirmButtonColor: '#f59e0b'
+                }).then(() => {
+                    window.location.href = '/products';
+                });
+                return;
+            }
+
+            // Verify cart with database
+            await verifyAndUpdateCart();
+            
+            // Render products and summary
+            renderProducts();
+            renderSummary();
+
+            // Setup button event listener
+            const processBtn = document.getElementById('processOrderBtn');
+            console.log('Button element:', processBtn);
+            
+            if (processBtn) {
+                processBtn.addEventListener('click', handleProcessOrder);
+                console.log('Event listener attached');
+            } else {
+                console.error('Process button not found!');
             }
         });
+
+        async function handleProcessOrder(e) {
+            e.preventDefault();
+            console.log('Process order clicked, isProcessing:', isProcessing);
+            
+            if (isProcessing) {
+                console.log('Already processing, returning...');
+                return;
+            }
+            
+            const form = document.getElementById('checkoutForm');
+            console.log('Form validity:', form.checkValidity());
+            
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            // Validate cart
+            if (cart.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Keranjang Kosong',
+                    text: 'Tidak ada produk untuk diproses',
+                    confirmButtonColor: '#f59e0b'
+                });
+                return;
+            }
+
+            isProcessing = true;
+            const button = e.currentTarget;
+            button.disabled = true;
+            button.innerHTML = '<i class="bi bi-hourglass-split animate-spin"></i> Memproses Pesanan...';
+
+            try {
+                console.log('Preparing order data...');
+                
+                const formData = {
+                    name: document.getElementById('name').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    phone: document.getElementById('phone').value.trim(),
+                    address: `${document.getElementById('address').value.trim()}, ${document.getElementById('city').value.trim()}`,
+                    notes: document.getElementById('notes').value.trim(),
+                    items: cart
+                };
+
+                console.log('Form data:', formData);
+
+                const response = await fetch('/api/orders/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                console.log('Response status:', response.status);
+                const result = await response.json();
+                console.log('Response data:', result);
+
+                if (!response.ok) {
+                    throw new Error(result.error || result.message || 'Gagal membuat pesanan');
+                }
+
+                // Success - clear cart and redirect
+                localStorage.removeItem('cart');
+                if (window.updateCart) window.updateCart();
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pesanan Berhasil Dibuat!',
+                    text: 'Anda akan diarahkan ke halaman pembayaran...',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = `/pesanan/${result.orderNumber}`;
+                });
+
+            } catch (error) {
+                console.error('Error creating order:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Memproses Pesanan',
+                    text: error.message || 'Terjadi kesalahan saat memproses pesanan',
+                    confirmButtonColor: '#f59e0b'
+                });
+                
+                isProcessing = false;
+                button.disabled = false;
+                button.innerHTML = '<i class="bi bi-credit-card-2-front"></i> Lanjutkan ke Pembayaran';
+            }
+        }
+
+        async function verifyAndUpdateCart() {
+            try {
+                console.log('Verifying cart with database...');
+                const response = await fetch('/api/cart/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ items: cart })
+                });
+
+                const data = await response.json();
+                const verified = data.verified;
+                console.log('Verified cart:', verified);
+
+                // Update cart with verified data
+                const updatedCart = verified
+                    .filter(item => item.available)
+                    .map(item => {
+                        const originalItem = cart.find(c => c.productId === item.productId);
+                        return {
+                            productId: item.productId,
+                            product: item.name || originalItem.product,
+                            price: item.currentPrice || item.price,
+                            image: item.image || originalItem.image || '',
+                            qty: item.limitedStock ? item.maxQty : (originalItem.qty || 1)
+                        };
+                    });
+
+                cart = updatedCart;
+                localStorage.setItem('cart', JSON.stringify(cart));
+
+                // Show warnings
+                const removedItems = verified.filter(item => !item.available);
+                if (removedItems.length > 0) {
+                    await Swal.fire({
+                        icon: 'warning',
+                        title: 'Perhatian!',
+                        html: `<strong>${removedItems.length}</strong> produk dihapus karena stok habis atau tidak tersedia`,
+                        confirmButtonColor: '#f59e0b'
+                    });
+                    
+                    if (cart.length === 0) {
+                        window.location.href = '/cart';
+                    }
+                }
+
+                const limitedItems = verified.filter(item => item.limitedStock);
+                if (limitedItems.length > 0) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'bottom-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                    
+                    Toast.fire({
+                        icon: 'info',
+                        title: 'Beberapa jumlah produk disesuaikan dengan stok tersedia'
+                    });
+                }
+
+            } catch (error) {
+                console.error('Error verifying cart:', error);
+            }
+        }
+
+        function renderProducts() {
+            const productList = document.getElementById('productList');
+            const itemCount = document.getElementById('itemCount');
+            
+            if (cart.length === 0) {
+                productList.innerHTML = '<p class="text-gray-500 text-center py-8">Tidak ada produk</p>';
+                itemCount.textContent = '(0 item)';
+                return;
+            }
+
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            itemCount.textContent = `(${totalItems} item)`;
+
+            const html = cart.map(item => {
+                const itemTotal = item.price * item.qty;
+                return `
+                    <div class="flex gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                        <div class="flex-shrink-0 w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
+                            ${item.image 
+                                ? `<img src="${item.image}" alt="${item.product}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='<div class=\\'w-full h-full flex items-center justify-center text-gray-400\\'><i class=\\'bi bi-image text-2xl\\'></i></div>'">` 
+                                : `<div class="w-full h-full flex items-center justify-center text-gray-400"><i class="bi bi-image text-2xl"></i></div>`
+                            }
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-gray-800 mb-1">${item.product}</h3>
+                            <p class="text-sm text-gray-600 mb-2">Rp ${item.price.toLocaleString('id-ID')} × ${item.qty}</p>
+                            <p class="text-amber-600 font-bold">Rp ${itemTotal.toLocaleString('id-ID')}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            productList.innerHTML = html;
+        }
+
+        function renderSummary() {
+            let totalQty = 0;
+            let totalAmount = 0;
+
+            cart.forEach(item => {
+                totalQty += item.qty;
+                totalAmount += item.price * item.qty;
+            });
+
+            document.getElementById('totalItems').textContent = `${totalQty} item`;
+            document.getElementById('subtotal').textContent = `Rp ${totalAmount.toLocaleString('id-ID')}`;
+            document.getElementById('total').textContent = `Rp ${totalAmount.toLocaleString('id-ID')}`;
+        }
     </script>
 </body>
 </html>

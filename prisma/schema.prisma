@@ -48,20 +48,21 @@ model Product {
 }
 
 model Order {
-  id           Int         @id @default(autoincrement())
-  orderNumber  String      @unique
-  userId       Int
-  status       OrderStatus @default(PENDING)
-  totalAmount  Float
+  id              Int         @id @default(autoincrement())
+  orderNumber     String      @unique
+  userId          Int?
+  status          OrderStatus @default(PENDING)
+  totalAmount     Float
   shippingAddress String?
-  notes        String?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  notes           String?
+  snapToken       String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
   
 
-  user         User        @relation(fields: [userId], references: [id])
+  user            User?       @relation(fields: [userId], references: [id])
   
-  orderItems   OrderItem[]
+  orderItems      OrderItem[]
   
   @@map("orders")
 }

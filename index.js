@@ -5,7 +5,7 @@ const path = require('path');
 const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('./config/passport');
-const { ensureAuthenticated } = require('./middleware/auth');
+const { ensureAuthenticated, ensureNotAuthenticated } = require('./middleware/auth');
 const { PrismaClient } = require('./generated/prisma');
 
 const app = express();
@@ -107,55 +107,54 @@ app.get('/products', async (req, res) => {
     }
 });
 
-app.get('/cart', (req, res) => {
+app.get('/cart', ensureAuthenticated, (req, res) => {
   res.render('cart');
 });
 
-app.get('/checkout', (req, res) => {
+app.get('/checkout', ensureAuthenticated, (req, res) => {
     res.render('checkout');
 });
 
-app.post('/checkout', (req, res) => {
-  try {
-    const { cart } = req.body;
+app.get('/pesanan/:orderNumber', ensureAuthenticated, async (req, res) => {
+    try {
+        const { orderNumber } = req.params;
+        
+        const order = await prisma.order.findUnique({
+            where: { orderNumber },
+            include: {
+                orderItems: {
+                    include: {
+                        product: true
+                    }
+                },
+                user: true
+            }
+        });
 
-    let parsedCart = [];
-    if (cart) {
-      try {
-        parsedCart = JSON.parse(cart);
-      } catch (e) {
-        console.error('Gagal parse cart JSON:', e);
-        parsedCart = [];
-      }
+        if (!order) {
+            return res.status(404).send('Pesanan tidak ditemukan');
+        }
+
+        res.render('pesanan', { 
+            order,
+            midtransClientKey: process.env.MIDTRANS_CLIENT_KEY 
+        });
+
+    } catch (error) {
+        console.error('Error fetching order:', error);
+        res.status(500).send('Terjadi kesalahan');
     }
-
-    if (!parsedCart || parsedCart.length === 0) {
-      // Jika cart kosong, tampilkan pesan sederhana atau redirect kembali
-      return res.send(`<script>alert('Keranjang kosong. Tambahkan produk terlebih dahulu.'); window.location.href = '/cart';</script>`);
-    }
-
-    const order = {
-      id: Date.now(),
-      createdAt: new Date().toISOString(),
-      // Informasi pengirim dihilangkan dari checkout untuk sekarang
-      name: '',
-      email: '',
-      phone: '',
-      address: '',
-      cart: parsedCart,
-      paymentMethod: req.body.paymentMethod || 'cod'
-    };
-
-    return res.render('pesanan', { order });
-
-  } catch (err) {
-    console.error('Error processing checkout:', err);
-    return res.status(500).send('Terjadi kesalahan pada server.');
-  }
 });
 
-app.get('/pesanan', (req, res) => {
-  res.render('pesanan');
+app.get('/pesanan', ensureAuthenticated, (req, res) => {
+  res.render('pesanan', { 
+      order: null,
+      midtransClientKey: process.env.MIDTRANS_CLIENT_KEY 
+  });
+});
+
+app.get('/dashboard', ensureAuthenticated, (req, res) => {
+    res.render('user/dashboard', { user: req.user });
 });
 
 app.listen(process.env.PORT, () => {

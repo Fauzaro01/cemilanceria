@@ -86,16 +86,6 @@
   </div>
 
   <script>
-    // Initialize data if not present
-    if (!localStorage.getItem('userOrders')) {
-      const initialUserOrders = [
-        { id: 1, items: [{name: 'Puding Cokelat', quantity: 2, price: 6000}, {name: 'Cireng Ayam Suir', quantity: 1, price: 3000}], total: 15000, status: 'completed', date: new Date().toISOString().split('T')[0] },
-        { id: 2, items: [{name: 'Puding Stroberi', quantity: 1, price: 6000}], total: 6000, status: 'pending', date: new Date().toISOString().split('T')[0] },
-        { id: 3, items: [{name: 'Cireng Ayam Suir', quantity: 3, price: 3000}], total: 9000, status: 'completed', date: new Date(Date.now() - 86400000).toISOString().split('T')[0] }
-      ];
-      localStorage.setItem('userOrders', JSON.stringify(initialUserOrders));
-    }
-
     let currentFilter = 'all';
 
     // Tab switching
@@ -105,32 +95,47 @@
 
     function setActiveTab(filter) {
       currentFilter = filter;
-      document.querySelectorAll('.tab-active').forEach(btn => btn.classList.remove('tab-active', 'bg-white', 'text-gray-800', 'shadow-sm'));
-      document.querySelectorAll('.tab-active').forEach(btn => btn.classList.add('text-gray-600'));
+      document.querySelectorAll('.tab-active').forEach(btn => {
+        btn.classList.remove('tab-active', 'bg-white', 'text-gray-800', 'shadow-sm');
+        btn.classList.add('text-gray-600');
+      });
 
-      const activeBtn = document.getElementById(`tab${filter.charAt(0).toUpperCase() + filter.slice(1)}`);
+      const tabMap = {
+        'all': 'tabAll',
+        'pending': 'tabPending',
+        'completed': 'tabCompleted'
+      };
+
+      const activeBtn = document.getElementById(tabMap[filter]);
       activeBtn.classList.add('tab-active', 'bg-white', 'text-gray-800', 'shadow-sm');
       activeBtn.classList.remove('text-gray-600');
 
-      displayOrders();
+      fetchOrders();
+    }
+
+    // Fetch orders from API
+    async function fetchOrders() {
+      try {
+        const response = await fetch(`/api/user/orders?status=${currentFilter}`);
+        const result = await response.json();
+        
+        if (result.success) {
+          displayOrders(result.data);
+        }
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+        document.getElementById('ordersList').innerHTML = '<p class="text-red-500 text-center">Gagal memuat pesanan</p>';
+      }
     }
 
     // Display orders
-    function displayOrders() {
-      const orders = JSON.parse(localStorage.getItem('userOrders') || '[]');
+    function displayOrders(orders) {
       const ordersList = document.getElementById('ordersList');
       const emptyState = document.getElementById('emptyState');
 
-      let filteredOrders = orders;
-      if (currentFilter === 'pending') {
-        filteredOrders = orders.filter(o => o.status === 'pending');
-      } else if (currentFilter === 'completed') {
-        filteredOrders = orders.filter(o => o.status === 'completed');
-      }
-
       ordersList.innerHTML = '';
 
-      if (filteredOrders.length === 0) {
+      if (orders.length === 0) {
         emptyState.classList.remove('hidden');
         ordersList.classList.add('hidden');
         return;
@@ -139,30 +144,53 @@
       emptyState.classList.add('hidden');
       ordersList.classList.remove('hidden');
 
-      filteredOrders.forEach(order => {
+      const statusMap = {
+        'PENDING': { class: 'bg-yellow-100 text-yellow-800', text: 'Pending' },
+        'CONFIRMED': { class: 'bg-blue-100 text-blue-800', text: 'Dikonfirmasi' },
+        'PROCESSING': { class: 'bg-purple-100 text-purple-800', text: 'Diproses' },
+        'SHIPPED': { class: 'bg-indigo-100 text-indigo-800', text: 'Dikirim' },
+        'DELIVERED': { class: 'bg-green-100 text-green-800', text: 'Selesai' },
+        'CANCELLED': { class: 'bg-red-100 text-red-800', text: 'Dibatalkan' }
+      };
+
+      orders.forEach(order => {
         const orderElement = document.createElement('div');
-        orderElement.className = 'bg-white rounded-xl shadow-sm p-6 border border-gray-100';
+        orderElement.className = 'bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition cursor-pointer';
+        orderElement.onclick = () => window.location.href = `/pesanan/${order.orderNumber}`;
+        
+        const date = new Date(order.createdAt).toLocaleDateString('id-ID', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        
+        const status = statusMap[order.status] || statusMap['PENDING'];
+        
+        const itemsHtml = order.orderItems.map(item => `
+          <div class="flex justify-between text-sm">
+            <span>${item.product.name} x${item.quantity}</span>
+            <span>Rp ${item.subtotal.toLocaleString('id-ID')}</span>
+          </div>
+        `).join('');
+        
         orderElement.innerHTML = `
           <div class="flex items-center justify-between mb-4">
             <div>
-              <h3 class="text-lg font-semibold text-gray-800">Pesanan #${order.id}</h3>
-              <p class="text-sm text-gray-500">${order.date}</p>
+              <h3 class="text-lg font-semibold text-gray-800">${order.orderNumber}</h3>
+              <p class="text-sm text-gray-500">${date}</p>
             </div>
-            <span class="inline-block px-3 py-1 text-sm rounded-full ${order.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
-              ${order.status === 'completed' ? 'Selesai' : 'Pending'}
+            <span class="inline-block px-3 py-1 text-sm rounded-full ${status.class}">
+              ${status.text}
             </span>
           </div>
           <div class="space-y-2 mb-4">
-            ${order.items.map(item => `
-              <div class="flex justify-between text-sm">
-                <span>${item.name} x${item.quantity}</span>
-                <span>Rp ${(item.price * item.quantity).toLocaleString('id-ID')}</span>
-              </div>
-            `).join('')}
+            ${itemsHtml}
           </div>
           <div class="flex justify-between items-center pt-4 border-t border-gray-100">
             <span class="font-semibold text-gray-800">Total:</span>
-            <span class="font-bold text-lg text-gray-800">Rp ${order.total.toLocaleString('id-ID')}</span>
+            <span class="font-bold text-lg text-gray-800">Rp ${order.totalAmount.toLocaleString('id-ID')}</span>
           </div>
         `;
         ordersList.appendChild(orderElement);
@@ -170,7 +198,7 @@
     }
 
     // Initialize
-    setActiveTab('all');
+    fetchOrders();
   </script>
 
 </body>

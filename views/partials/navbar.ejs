@@ -78,18 +78,20 @@
                     <p class="text-sm font-medium text-gray-900"><%= user.name %></p>
                     <p class="text-sm text-gray-500 truncate"><%= user.email %></p>
                 </div>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <i class="fas fa-user mr-2"></i>Profil Saya
+                <a href="/user/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <i class="bi bi-person-circle mr-2"></i>Profil Saya
                 </a>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <i class="fas fa-cog mr-2"></i>Pengaturan
-                </a>
-                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <i class="fas fa-bell mr-2"></i>Notifikasi
+                <% if(user.role === 'USER') { %>
+                  <a href="/user/pesanan" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      <i class="bi bi-bell mr-2"></i>Pesanan
+                  </a>
+                <% } %>
+                <a href="<%= user.role !== 'USER' ? '/admin' : '/dashboard' %>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <i class="bi bi-speedometer2 mr-2"></i>Dashboard
                 </a>
                 <div class="border-t border-gray-200"></div>
                 <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Keluar
+                    <i class="bi bi-box-arrow-right mr-2"></i>Keluar
                 </a>
             </div>
           </div>
@@ -193,10 +195,10 @@
   };
 
   // Keranjang
-  let cart = JSON.parse(localStorage.getItem('cart') || "[]");
+  let keranjang = JSON.parse(localStorage.getItem('cart') || "[]");
   window.updateCart = () => {
-    cart = JSON.parse(localStorage.getItem('cart') || "[]");
-    const totalQty = cart.reduce((sum, it) => sum + (it.qty || 1), 0);
+    keranjang = JSON.parse(localStorage.getItem('cart') || "[]");
+    const totalQty = keranjang.reduce((sum, it) => sum + (it.qty || 1), 0);
     count.textContent = totalQty;
     
     // Update badge count
@@ -216,7 +218,7 @@
           </div>
         `;
       } else {
-        const itemsHtml = cart.slice(0, 3).map(item => {
+        const itemsHtml = keranjang.slice(0, 3).map(item => {
           const itemTotal = item.price * (item.qty || 1);
           return `
             <div class="flex gap-3 mb-3 pb-3 border-b border-gray-100 last:border-0">
@@ -235,8 +237,8 @@
           `;
         }).join('');
         
-        const remaining = cart.length - 3;
-        const totalPrice = cart.reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
+        const remaining = keranjang.length - 3;
+        const totalPrice = keranjang.reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
         
         container.innerHTML = `
           ${itemsHtml}
@@ -259,7 +261,7 @@
 
 
   function clearCart() {
-    if (cart.length === 0) {
+    if (keranjang.length === 0) {
       Swal.fire({
         icon: 'info',
         title: 'Keranjang Kosong',
@@ -271,7 +273,7 @@
     
     Swal.fire({
       title: 'Kosongkan Keranjang?',
-      text: `${cart.length} produk akan dihapus dari keranjang`,
+      text: `${keranjang.length} produk akan dihapus dari keranjang`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#ef4444',

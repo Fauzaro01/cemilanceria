@@ -1,12 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { ensureUser } = require('../middleware/auth');
+const { ensureAuthenticated } = require('../middleware/auth');
 
-// router.use(ensureUser);
-
-router.get('/dashboard', (req, res) => {
-    res.render('user/dashboard', { user: req.user });
-});
+router.use(ensureAuthenticated);
 
 router.get('/profile', (req, res) => {
     res.render('user/profile', { user: req.user });
