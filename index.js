@@ -39,14 +39,11 @@ app.use((req, res, next) => {
 
 app.use('/', require('./route/auth'));
 app.use('/api', require('./route/api'));
+app.use('/user', require('./route/user'));
 app.use('/admin', require('./route/admin'));
 
 app.get('/', (req, res) => {
     res.render('index');
-});
-
-app.get('/dashboard', ensureAuthenticated, (req, res) => {
-    res.render('user/dashboard');
 });
 
 app.get('/products', async (req, res) => {
