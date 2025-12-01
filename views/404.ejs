@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Halaman Tidak Ditemukan | Cemilan Ceria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .pulse-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .slide-in {
+            animation: slideIn 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-orange-50 via-white to-amber-50 min-h-screen flex items-center justify-center px-4 py-8 overflow-hidden relative">
+    <!-- Background Decorative Elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-20 left-10 md:left-20 opacity-10">
+            <i class="bi bi-star-fill text-4xl md:text-6xl text-orange-300 float-animation"></i>
+        </div>
+        <div class="absolute bottom-20 right-10 md:right-20 opacity-10">
+            <i class="bi bi-heart-fill text-4xl md:text-6xl text-orange-300 float-animation" style="animation-delay: 0.5s;"></i>
+        </div>
+        <div class="absolute top-1/2 left-5 opacity-5">
+            <i class="bi bi-emoji-smile text-5xl text-orange-300 float-animation" style="animation-delay: 1s;"></i>
+        </div>
+        <div class="absolute top-1/4 right-10 opacity-5">
+            <i class="bi bi-cup-hot text-5xl text-orange-300 float-animation" style="animation-delay: 1.5s;"></i>
+        </div>
+    </div>
+
+    <div class="max-w-4xl w-full relative z-10">
+        <div class="text-center fade-in">
+            <!-- 404 Text with Gradient -->
+            <h1 class="text-7xl md:text-9xl font-extrabold mb-4 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 bg-clip-text text-transparent">
+                404
+            </h1>
+            
+            <!-- Message -->
+            <h2 class="text-2xl md:text-4xl font-bold text-gray-800 mb-3 md:mb-4 px-4">
+                Oops! Halaman Tidak Ditemukan
+            </h2>
+            <p class="text-base md:text-lg text-gray-600 mb-8 md:mb-10 max-w-2xl mx-auto px-4 leading-relaxed">
+                Sepertinya halaman yang Anda cari sedang menyembunyikan diri seperti cemilan favorit! 🍪
+            </p>
+
+            <!-- Navigation Cards Grid -->
+            <div class="max-w-3xl mx-auto mb-8 md:mb-10 px-4">
+                <h3 class="font-semibold text-gray-800 mb-5 md:mb-6 flex items-center justify-center gap-2 text-base md:text-lg">
+                    <i class="bi bi-compass text-xl md:text-2xl text-amber-500"></i>
+                    Mungkin Anda mencari:
+                </h3>
+                
+                <!-- Grid Layout -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                    <!-- Home -->
+                    <a href="/" class="group bg-white hover:bg-gradient-to-br hover:from-orange-50 hover:to-amber-50 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-4 md:p-5 transform hover:-translate-y-1 slide-in" style="animation-delay: 0.1s;">
+                        <div class="flex flex-col items-center gap-2 md:gap-3">
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-orange-100 group-hover:bg-orange-200 flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                                <i class="bi bi-house-door text-xl md:text-2xl text-orange-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-700 group-hover:text-orange-600 text-sm md:text-base transition-colors">Beranda</span>
+                        </div>
+                    </a>
+
+                    <!-- Products -->
+                    <a href="/products" class="group bg-white hover:bg-gradient-to-br hover:from-orange-50 hover:to-amber-50 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-4 md:p-5 transform hover:-translate-y-1 slide-in" style="animation-delay: 0.2s;">
+                        <div class="flex flex-col items-center gap-2 md:gap-3">
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-blue-100 group-hover:bg-blue-200 flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                                <i class="bi bi-shop text-xl md:text-2xl text-blue-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-700 group-hover:text-blue-600 text-sm md:text-base transition-colors">Produk</span>
+                        </div>
+                    </a>
+
+                    <!-- Dashboard / Login -->
+                    <% if (typeof user !== 'undefined' && user) { %>
+                        <% if (user.role === 'ADMIN') { %>
+                            <a href="/admin" class="group bg-white hover:bg-gradient-to-br hover:from-purple-50 hover:to-pink-50 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-4 md:p-5 transform hover:-translate-y-1 slide-in" style="animation-delay: 0.3s;">
+                                <div class="flex flex-col items-center gap-2 md:gap-3">
+                                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-purple-100 group-hover:bg-purple-200 flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                                        <i class="bi bi-speedometer2 text-xl md:text-2xl text-purple-600"></i>
+                                    </div>
+                                    <span class="font-medium text-gray-700 group-hover:text-purple-600 text-sm md:text-base transition-colors">Admin</span>
+                                </div>
+                            </a>
+                        <% } else { %>
+                            <a href="/user/dashboard" class="group bg-white hover:bg-gradient-to-br hover:from-green-50 hover:to-emerald-50 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-4 md:p-5 transform hover:-translate-y-1 slide-in" style="animation-delay: 0.3s;">
+                                <div class="flex flex-col items-center gap-2 md:gap-3">
+                                    <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-green-100 group-hover:bg-green-200 flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                                        <i class="bi bi-speedometer2 text-xl md:text-2xl text-green-600"></i>
+                                    </div>
+                                    <span class="font-medium text-gray-700 group-hover:text-green-600 text-sm md:text-base transition-colors">Dashboard</span>
+                                </div>
+                            </a>
+                        <% } %>
+                    <% } else { %>
+                        <a href="/login" class="group bg-white hover:bg-gradient-to-br hover:from-indigo-50 hover:to-blue-50 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-4 md:p-5 transform hover:-translate-y-1 slide-in" style="animation-delay: 0.3s;">
+                            <div class="flex flex-col items-center gap-2 md:gap-3">
+                                <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-indigo-100 group-hover:bg-indigo-200 flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                                    <i class="bi bi-box-arrow-in-right text-xl md:text-2xl text-indigo-600"></i>
+                                </div>
+                                <span class="font-medium text-gray-700 group-hover:text-indigo-600 text-sm md:text-base transition-colors">Login</span>
+                            </div>
+                        </a>
+                    <% } %>
+
+                    <!-- Back Button -->
+                    <a onclick="history.back()" class="group bg-white hover:bg-gradient-to-br hover:from-gray-50 hover:to-slate-50 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 p-4 md:p-5 transform hover:-translate-y-1 cursor-pointer slide-in" style="animation-delay: 0.4s;">
+                        <div class="flex flex-col items-center gap-2 md:gap-3">
+                            <div class="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gray-100 group-hover:bg-gray-200 flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                                <i class="bi bi-arrow-left text-xl md:text-2xl text-gray-600"></i>
+                            </div>
+                            <span class="font-medium text-gray-700 group-hover:text-gray-800 text-sm md:text-base transition-colors">Kembali</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Bottom Decorative Icons -->
+            <div class="flex justify-center gap-4 md:gap-6 opacity-20 px-4">
+                <i class="bi bi-cookie text-3xl md:text-4xl text-orange-400 float-animation"></i>
+                <i class="bi bi-cup-straw text-3xl md:text-4xl text-orange-400 float-animation" style="animation-delay: 0.3s;"></i>
+                <i class="bi bi-bag text-3xl md:text-4xl text-orange-400 float-animation" style="animation-delay: 0.6s;"></i>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

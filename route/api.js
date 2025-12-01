@@ -13,6 +13,7 @@ const snap = new midtransClient.Snap({
 
 router.use('/', require('./api/product'));
 router.use('/user', require('./api/user'));
+router.use('/admin', require('./api/admin'));
 
 router.get('/', (req, res) => {
     res.send({

@@ -157,6 +157,12 @@ app.get('/dashboard', ensureAuthenticated, (req, res) => {
     res.render('user/dashboard', { user: req.user });
 });
 
+app.use((req, res, next) => {
+    res.status(404).render('404', {
+        user: req.user || null
+    });
+});
+
 app.listen(process.env.PORT, () => {
     console.log(`[🚀] Server sudah berjalan pada http://localhost:${process.env.PORT}`);
 });

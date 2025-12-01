@@ -28,6 +28,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
     body {
@@ -52,14 +53,41 @@
 
       <!-- Content -->
       <main class="flex-1 p-6 overflow-auto">
+        <!-- Filters -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
+          <div class="flex flex-wrap gap-4 items-center">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <select id="filterStatus" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                <option value="all">Semua</option>
+                <option value="PENDING">Pending</option>
+                <option value="CONFIRMED">Dikonfirmasi</option>
+                <option value="PROCESSING">Diproses</option>
+                <option value="SHIPPED">Dikirim</option>
+                <option value="DELIVERED">Selesai</option>
+                <option value="CANCELLED">Dibatalkan</option>
+              </select>
+            </div>
+            <div class="flex-1">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Cari</label>
+              <input type="text" id="searchOrder" placeholder="Cari nomor pesanan..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+            </div>
+            <div class="self-end">
+              <button onclick="loadOrders()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
+                <i class="fas fa-search mr-2"></i>Filter
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Orders Table -->
         <div class="bg-white rounded-xl shadow-sm border border-gray-100">
-          <div class="p-6">
+          <div class="p-6 overflow-x-auto">
             <table class="w-full text-sm text-left">
               <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                 <tr>
-                  <th scope="col" class="px-6 py-3">ID Pesanan</th>
+                  <th scope="col" class="px-6 py-3">Nomor Pesanan</th>
                   <th scope="col" class="px-6 py-3">Pelanggan</th>
-                  <th scope="col" class="px-6 py-3">Email</th>
                   <th scope="col" class="px-6 py-3">Total</th>
                   <th scope="col" class="px-6 py-3">Status</th>
                   <th scope="col" class="px-6 py-3">Tanggal</th>
@@ -67,9 +95,19 @@
                 </tr>
               </thead>
               <tbody id="ordersTable">
-                <!-- Orders will be loaded here -->
+                <tr>
+                  <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                    <p>Memuat data...</p>
+                  </td>
+                </tr>
               </tbody>
             </table>
+          </div>
+
+          <!-- Pagination -->
+          <div id="pagination" class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+            <!-- Pagination will be inserted here -->
           </div>
         </div>
       </main>
@@ -83,48 +121,212 @@
   </div>
 
   <script>
-    let orders = JSON.parse(localStorage.getItem('orders') || '[]');
+    let currentPage = 1;
+    const limit = 10;
 
-    function renderOrders() {
+    // Load orders from API
+    async function loadOrders(page = 1) {
+      try {
+        const status = document.getElementById('filterStatus').value;
+        const search = document.getElementById('searchOrder').value;
+        
+        const params = new URLSearchParams({
+          page,
+          limit,
+          status,
+          search
+        });
+
+        const response = await fetch(`/api/admin/orders?${params}`);
+        const result = await response.json();
+        
+        if (result.success) {
+          renderOrders(result.data);
+          renderPagination(result.pagination);
+          currentPage = page;
+        }
+      } catch (error) {
+        console.error('Error loading orders:', error);
+        document.getElementById('ordersTable').innerHTML = `
+          <tr>
+            <td colspan="6" class="px-6 py-8 text-center text-red-500">
+              <i class="fas fa-exclamation-triangle text-2xl mb-2"></i>
+              <p>Gagal memuat data pesanan</p>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    // Render orders table
+    function renderOrders(orders) {
       const tbody = document.getElementById('ordersTable');
-      tbody.innerHTML = '';
-      orders.forEach(order => {
-        const statusClass = order.status === 'completed' ? 'bg-green-100 text-green-800' : order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800';
-        const row = `
-          <tr class="bg-white border-b">
-            <td class="px-6 py-4 font-medium text-gray-900">#${order.id}</td>
-            <td class="px-6 py-4">${order.customer}</td>
-            <td class="px-6 py-4">${order.email}</td>
-            <td class="px-6 py-4">Rp ${order.total.toLocaleString('id-ID')}</td>
+      
+      if (orders.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+              <i class="fas fa-inbox text-2xl mb-2"></i>
+              <p>Tidak ada pesanan</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      const statusMap = {
+        'PENDING': { class: 'bg-yellow-100 text-yellow-800', text: 'Pending' },
+        'CONFIRMED': { class: 'bg-blue-100 text-blue-800', text: 'Dikonfirmasi' },
+        'PROCESSING': { class: 'bg-purple-100 text-purple-800', text: 'Diproses' },
+        'SHIPPED': { class: 'bg-indigo-100 text-indigo-800', text: 'Dikirim' },
+        'DELIVERED': { class: 'bg-green-100 text-green-800', text: 'Selesai' },
+        'CANCELLED': { class: 'bg-red-100 text-red-800', text: 'Dibatalkan' }
+      };
+
+      tbody.innerHTML = orders.map(order => {
+        const status = statusMap[order.status] || statusMap['PENDING'];
+        const date = new Date(order.createdAt).toLocaleDateString('id-ID', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        
+        return `
+          <tr class="bg-white border-b hover:bg-gray-50">
+            <td class="px-6 py-4 font-medium text-gray-900">${order.orderNumber}</td>
             <td class="px-6 py-4">
-              <span class="px-2 py-1 text-xs font-medium rounded-full ${statusClass}">
-                ${order.status === 'completed' ? 'Selesai' : order.status === 'pending' ? 'Pending' : 'Dibatalkan'}
+              <div>
+                <p class="font-medium">${order.user ? order.user.name : 'Guest'}</p>
+                <p class="text-xs text-gray-500">${order.user ? order.user.email : '-'}</p>
+              </div>
+            </td>
+            <td class="px-6 py-4">Rp ${order.totalAmount.toLocaleString('id-ID')}</td>
+            <td class="px-6 py-4">
+              <span class="px-2 py-1 text-xs font-medium rounded-full ${status.class}">
+                ${status.text}
               </span>
             </td>
-            <td class="px-6 py-4">${order.date}</td>
+            <td class="px-6 py-4">${date}</td>
             <td class="px-6 py-4">
-              <select onchange="updateStatus(${order.id}, this.value)" class="text-sm border rounded px-2 py-1">
-                <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                <option value="completed" ${order.status === 'completed' ? 'selected' : ''}>Selesai</option>
-                <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Dibatalkan</option>
+              <select onchange="updateStatus(${order.id}, this.value, this)" class="text-sm border rounded px-2 py-1 focus:ring-2 focus:ring-orange-500">
+                <option value="">Ubah Status</option>
+                <option value="PENDING" ${order.status === 'PENDING' ? 'selected' : ''}>Pending</option>
+                <option value="CONFIRMED" ${order.status === 'CONFIRMED' ? 'selected' : ''}>Dikonfirmasi</option>
+                <option value="PROCESSING" ${order.status === 'PROCESSING' ? 'selected' : ''}>Diproses</option>
+                <option value="SHIPPED" ${order.status === 'SHIPPED' ? 'selected' : ''}>Dikirim</option>
+                <option value="DELIVERED" ${order.status === 'DELIVERED' ? 'selected' : ''}>Selesai</option>
+                <option value="CANCELLED" ${order.status === 'CANCELLED' ? 'selected' : ''}>Dibatalkan</option>
               </select>
             </td>
           </tr>
         `;
-        tbody.innerHTML += row;
-      });
+      }).join('');
     }
 
-    function updateStatus(id, status) {
-      const index = orders.findIndex(o => o.id === id);
-      if (index !== -1) {
-        orders[index].status = status;
-        localStorage.setItem('orders', JSON.stringify(orders));
-        renderOrders();
+    // Render pagination
+    function renderPagination(pagination) {
+      const container = document.getElementById('pagination');
+      
+      if (pagination.totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+      }
+
+      let paginationHTML = `
+        <div class="text-sm text-gray-600">
+          Halaman ${pagination.page} dari ${pagination.totalPages} (Total: ${pagination.total} pesanan)
+        </div>
+        <div class="flex gap-2">
+      `;
+
+      // Previous button
+      if (pagination.page > 1) {
+        paginationHTML += `
+          <button onclick="loadOrders(${pagination.page - 1})" class="px-3 py-1 border rounded hover:bg-gray-100">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+        `;
+      }
+
+      // Page numbers
+      for (let i = 1; i <= pagination.totalPages; i++) {
+        if (i === pagination.page) {
+          paginationHTML += `
+            <button class="px-3 py-1 bg-orange-500 text-white rounded">${i}</button>
+          `;
+        } else if (i === 1 || i === pagination.totalPages || Math.abs(i - pagination.page) <= 1) {
+          paginationHTML += `
+            <button onclick="loadOrders(${i})" class="px-3 py-1 border rounded hover:bg-gray-100">${i}</button>
+          `;
+        } else if (i === pagination.page - 2 || i === pagination.page + 2) {
+          paginationHTML += `<span class="px-2">...</span>`;
+        }
+      }
+
+      // Next button
+      if (pagination.page < pagination.totalPages) {
+        paginationHTML += `
+          <button onclick="loadOrders(${pagination.page + 1})" class="px-3 py-1 border rounded hover:bg-gray-100">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        `;
+      }
+
+      paginationHTML += `</div>`;
+      container.innerHTML = paginationHTML;
+    }
+
+    // Update order status
+    async function updateStatus(orderId, newStatus, selectElement) {
+      if (!newStatus) return;
+      
+      try {
+        const response = await fetch(`/api/admin/orders/${orderId}/status`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: result.message,
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+          });
+          loadOrders(currentPage);
+        } else {
+          throw new Error(result.error);
+        }
+      } catch (error) {
+        console.error('Error updating status:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal!',
+          text: error.message
+        });
+        selectElement.value = '';
       }
     }
 
-    renderOrders();
+    // Event listeners
+    document.getElementById('searchOrder').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        loadOrders(1);
+      }
+    });
+
+    // Initialize
+    loadOrders();
   </script>
 
 </body>
