@@ -147,6 +147,80 @@ router.get('/orders', async (req, res) => {
     }
 });
 
+// Get single order detail
+router.get('/orders/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const order = await prisma.order.findUnique({
+            where: { id: parseInt(id) },
+            include: {
+                user: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        phone: true
+                    }
+                },
+                orderItems: {
+                    include: {
+                        product: {
+                            select: {
+                                id: true,
+                                name: true,
+                                price: true,
+                                imageUrl: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                error: 'Pesanan tidak ditemukan'
+            });
+        }
+
+        // Parse shipping address if it's a JSON string
+        let shippingAddress = null;
+        if (order.shippingAddress) {
+            try {
+                shippingAddress = typeof order.shippingAddress === 'string' 
+                    ? JSON.parse(order.shippingAddress) 
+                    : order.shippingAddress;
+            } catch (e) {
+                shippingAddress = { fullAddress: order.shippingAddress };
+            }
+        }
+
+        // Format order items
+        const items = order.orderItems.map(item => ({
+            ...item,
+            product: item.product || { name: 'Produk tidak ditemukan', price: 0 }
+        }));
+
+        res.json({
+            success: true,
+            data: {
+                ...order,
+                shippingAddress,
+                items,
+                orderItems: undefined // Remove duplicate field
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching order detail:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Gagal mengambil detail pesanan'
+        });
+    }
+});
+
 // Update order status
 router.put('/orders/:id/status', async (req, res) => {
     try {
@@ -286,6 +360,150 @@ router.put('/users/:id/toggle-active', async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Gagal mengubah status pengguna'
+        });
+    }
+});
+
+// Get sales report
+router.get('/reports/sales', async (req, res) => {
+    try {
+        const { period, startDate, endDate } = req.query;
+
+        if (!startDate || !endDate) {
+            return res.status(400).json({
+                success: false,
+                error: 'Tanggal mulai dan akhir harus diisi'
+            });
+        }
+
+        const start = new Date(startDate);
+        start.setHours(0, 0, 0, 0);
+        
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+
+        // Get all orders in the date range
+        const orders = await prisma.order.findMany({
+            where: {
+                createdAt: {
+                    gte: start,
+                    lte: end
+                }
+            },
+            include: {
+                orderItems: {
+                    include: {
+                        product: true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'asc'
+            }
+        });
+
+        // Calculate summary
+        const summary = {
+            totalSales: 0,
+            totalOrders: orders.length,
+            completedOrders: 0,
+            averageOrder: 0
+        };
+
+        orders.forEach(order => {
+            if (['CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED'].includes(order.status)) {
+                summary.totalSales += order.totalAmount;
+                if (order.status === 'DELIVERED') {
+                    summary.completedOrders++;
+                }
+            }
+        });
+
+        summary.averageOrder = summary.totalOrders > 0 
+            ? Math.round(summary.totalSales / summary.totalOrders) 
+            : 0;
+
+        // Group by period
+        const groupedData = {};
+        const chartLabels = [];
+        const chartSales = [];
+        const chartOrders = [];
+
+        orders.forEach(order => {
+            let periodKey;
+            const orderDate = new Date(order.createdAt);
+
+            if (period === 'week') {
+                // Get week number
+                const weekStart = new Date(orderDate);
+                weekStart.setDate(orderDate.getDate() - orderDate.getDay());
+                periodKey = weekStart.toLocaleDateString('id-ID', { 
+                    day: '2-digit', 
+                    month: 'short',
+                    year: 'numeric'
+                });
+            } else {
+                // Monthly
+                periodKey = orderDate.toLocaleDateString('id-ID', { 
+                    month: 'long',
+                    year: 'numeric'
+                });
+            }
+
+            if (!groupedData[periodKey]) {
+                groupedData[periodKey] = {
+                    period: periodKey,
+                    totalSales: 0,
+                    totalOrders: 0,
+                    completed: 0,
+                    pending: 0,
+                    averageOrder: 0
+                };
+            }
+
+            groupedData[periodKey].totalOrders++;
+            
+            if (['CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED'].includes(order.status)) {
+                groupedData[periodKey].totalSales += order.totalAmount;
+            }
+            
+            if (order.status === 'DELIVERED') {
+                groupedData[periodKey].completed++;
+            } else if (order.status === 'PENDING') {
+                groupedData[periodKey].pending++;
+            }
+        });
+
+        // Calculate averages and prepare chart data
+        const details = Object.values(groupedData).map(item => {
+            item.averageOrder = item.totalOrders > 0 
+                ? Math.round(item.totalSales / item.totalOrders) 
+                : 0;
+            
+            chartLabels.push(item.period);
+            chartSales.push(item.totalSales);
+            chartOrders.push(item.totalOrders);
+            
+            return item;
+        });
+
+        res.json({
+            success: true,
+            data: {
+                summary,
+                details,
+                chart: {
+                    labels: chartLabels,
+                    sales: chartSales,
+                    orders: chartOrders
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error generating sales report:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Gagal membuat laporan penjualan'
         });
     }
 });

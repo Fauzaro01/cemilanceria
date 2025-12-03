@@ -30,10 +30,41 @@
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
     body {
       font-family: 'Source Sans Pro', system-ui, sans-serif;
+    }
+    
+    .tab-button {
+      transition: all 0.3s ease;
+    }
+    
+    .tab-content {
+      animation: fadeIn 0.3s ease-in;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+      .overflow-x-auto {
+        overflow-x: auto;
+      }
+      
+      table {
+        min-width: 800px;
+      }
     }
   </style>
 </head>
@@ -54,63 +85,149 @@
 
       <!-- Content -->
       <main class="flex-1 p-6 overflow-auto">
-        <!-- Filters -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
-          <div class="flex flex-wrap gap-4 items-center">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-              <select id="filterStatus" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
-                <option value="all">Semua</option>
-                <option value="PENDING">Pending</option>
-                <option value="CONFIRMED">Dikonfirmasi</option>
-                <option value="PROCESSING">Diproses</option>
-                <option value="SHIPPED">Dikirim</option>
-                <option value="DELIVERED">Selesai</option>
-                <option value="CANCELLED">Dibatalkan</option>
-              </select>
-            </div>
-            <div class="flex-1">
-              <label class="block text-sm font-medium text-gray-700 mb-1">Cari</label>
-              <input type="text" id="searchOrder" placeholder="Cari nomor pesanan..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
-            </div>
-            <div class="self-end">
-              <button onclick="loadOrders()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
-                <i class="fas fa-search mr-2"></i>Filter
+        <!-- Tabs -->
+        <div class="mb-6">
+          <div class="border-b border-gray-200">
+            <nav class="-mb-px flex space-x-8">
+              <button onclick="switchTab('orders')" id="tab-orders" class="tab-button border-b-2 border-orange-500 py-4 px-1 text-sm font-medium text-orange-600">
+                <i class="fas fa-shopping-cart mr-2"></i>Daftar Pesanan
               </button>
+              <button onclick="switchTab('reports')" id="tab-reports" class="tab-button border-b-2 border-transparent py-4 px-1 text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300">
+                <i class="fas fa-chart-bar mr-2"></i>Laporan Transaksi
+              </button>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Orders Tab Content -->
+        <div id="content-orders" class="tab-content">
+          <!-- Filters -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
+            <div class="flex flex-wrap gap-4 items-center">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select id="filterStatus" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                  <option value="all">Semua</option>
+                  <option value="PENDING">Pending</option>
+                  <option value="CONFIRMED">Dikonfirmasi</option>
+                  <option value="PROCESSING">Diproses</option>
+                  <option value="SHIPPED">Dikirim</option>
+                  <option value="DELIVERED">Selesai</option>
+                  <option value="CANCELLED">Dibatalkan</option>
+                </select>
+              </div>
+              <div class="flex-1">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Cari</label>
+                <input type="text" id="searchOrder" placeholder="Cari nomor pesanan..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+              </div>
+              <div class="self-end">
+                <button onclick="loadOrders()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
+                  <i class="fas fa-search mr-2"></i>Filter
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Orders Table -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+            <div class="p-6 overflow-x-auto">
+              <table class="w-full text-sm text-left">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3">Nomor Pesanan</th>
+                    <th scope="col" class="px-6 py-3">Pelanggan</th>
+                    <th scope="col" class="px-6 py-3">Total</th>
+                    <th scope="col" class="px-6 py-3">Status</th>
+                    <th scope="col" class="px-6 py-3">Tanggal</th>
+                    <th scope="col" class="px-6 py-3">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersTable">
+                  <tr>
+                    <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                      <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                      <p>Memuat data...</p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination -->
+            <div id="pagination" class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+              <!-- Pagination will be inserted here -->
             </div>
           </div>
         </div>
 
-        <!-- Orders Table -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-100">
-          <div class="p-6 overflow-x-auto">
-            <table class="w-full text-sm text-left">
-              <thead class="text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-                  <th scope="col" class="px-6 py-3">Nomor Pesanan</th>
-                  <th scope="col" class="px-6 py-3">Pelanggan</th>
-                  <th scope="col" class="px-6 py-3">Total</th>
-                  <th scope="col" class="px-6 py-3">Status</th>
-                  <th scope="col" class="px-6 py-3">Tanggal</th>
-                  <th scope="col" class="px-6 py-3">Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="ordersTable">
-                <tr>
-                  <td colspan="6" class="px-6 py-8 text-center text-gray-500">
-                    <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-                    <p>Memuat data...</p>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+        <!-- Reports Tab Content -->
+        <div id="content-reports" class="tab-content hidden">
+          <!-- Report Filters -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-6">
+            <div class="flex flex-wrap gap-4 items-end">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Periode</label>
+                <select id="reportPeriod" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+                  <option value="week">Mingguan</option>
+                  <option value="month">Bulanan</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Dari Tanggal</label>
+                <input type="date" id="reportStartDate" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Sampai Tanggal</label>
+                <input type="date" id="reportEndDate" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500">
+              </div>
+              <div>
+                <button onclick="loadReport()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
+                  <i class="fas fa-chart-line mr-2"></i>Generate Laporan
+                </button>
+              </div>
+            </div>
           </div>
 
-          <!-- Pagination -->
-          <div id="pagination" class="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-            <!-- Pagination will be inserted here -->
+          <!-- Summary Cards -->
+          <div id="reportSummary" class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <!-- Summary cards will be inserted here -->
+          </div>
+
+          <!-- Chart -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Grafik Penjualan</h3>
+            <canvas id="salesChart" height="100"></canvas>
+          </div>
+
+          <!-- Report Table -->
+          <div class="bg-white rounded-xl shadow-sm border border-gray-100">
+            <div class="p-6">
+              <h3 class="text-lg font-semibold text-gray-800 mb-4">Detail Transaksi</h3>
+              <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                  <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                    <tr>
+                      <th scope="col" class="px-6 py-3">Periode</th>
+                      <th scope="col" class="px-6 py-3">Total Pesanan</th>
+                      <th scope="col" class="px-6 py-3">Total Penjualan</th>
+                      <th scope="col" class="px-6 py-3">Rata-rata</th>
+                      <th scope="col" class="px-6 py-3">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="reportTable">
+                    <tr>
+                      <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+                        <i class="fas fa-chart-bar text-2xl mb-2"></i>
+                        <p>Pilih periode dan klik Generate Laporan</p>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
+
       </main>
 
       <!-- Footer -->
@@ -124,6 +241,39 @@
   <script>
     let currentPage = 1;
     const limit = 10;
+    let salesChart = null;
+
+    // Tab Switching
+    function switchTab(tab) {
+      // Hide all content
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      // Remove active state from all tabs
+      document.querySelectorAll('.tab-button').forEach(el => {
+        el.classList.remove('border-orange-500', 'text-orange-600');
+        el.classList.add('border-transparent', 'text-gray-500');
+      });
+      
+      // Show selected content
+      document.getElementById(`content-${tab}`).classList.remove('hidden');
+      // Add active state to selected tab
+      const activeTab = document.getElementById(`tab-${tab}`);
+      activeTab.classList.remove('border-transparent', 'text-gray-500');
+      activeTab.classList.add('border-orange-500', 'text-orange-600');
+
+      // Load data if needed
+      if (tab === 'reports') {
+        setDefaultReportDates();
+      }
+    }
+
+    // Set default report dates
+    function setDefaultReportDates() {
+      const today = new Date();
+      const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      
+      document.getElementById('reportStartDate').value = lastMonth.toISOString().split('T')[0];
+      document.getElementById('reportEndDate').value = today.toISOString().split('T')[0];
+    }
 
     // Load orders from API
     async function loadOrders(page = 1) {
@@ -211,15 +361,20 @@
             </td>
             <td class="px-6 py-4">${date}</td>
             <td class="px-6 py-4">
-              <select onchange="updateStatus(${order.id}, this.value, this)" class="text-sm border rounded px-2 py-1 focus:ring-2 focus:ring-orange-500">
-                <option value="">Ubah Status</option>
-                <option value="PENDING" ${order.status === 'PENDING' ? 'selected' : ''}>Pending</option>
-                <option value="CONFIRMED" ${order.status === 'CONFIRMED' ? 'selected' : ''}>Dikonfirmasi</option>
-                <option value="PROCESSING" ${order.status === 'PROCESSING' ? 'selected' : ''}>Diproses</option>
-                <option value="SHIPPED" ${order.status === 'SHIPPED' ? 'selected' : ''}>Dikirim</option>
-                <option value="DELIVERED" ${order.status === 'DELIVERED' ? 'selected' : ''}>Selesai</option>
-                <option value="CANCELLED" ${order.status === 'CANCELLED' ? 'selected' : ''}>Dibatalkan</option>
-              </select>
+              <div class="flex gap-2">
+                <button onclick="viewOrderDetail(${order.id})" class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 transition">
+                  <i class="fas fa-eye mr-1"></i>Detail
+                </button>
+                <select onchange="updateStatus(${order.id}, this.value, this)" class="text-xs border rounded px-2 py-1 focus:ring-2 focus:ring-orange-500">
+                  <option value="">Ubah Status</option>
+                  <option value="PENDING" ${order.status === 'PENDING' ? 'selected' : ''}>Pending</option>
+                  <option value="CONFIRMED" ${order.status === 'CONFIRMED' ? 'selected' : ''}>Dikonfirmasi</option>
+                  <option value="PROCESSING" ${order.status === 'PROCESSING' ? 'selected' : ''}>Diproses</option>
+                  <option value="SHIPPED" ${order.status === 'SHIPPED' ? 'selected' : ''}>Dikirim</option>
+                  <option value="DELIVERED" ${order.status === 'DELIVERED' ? 'selected' : ''}>Selesai</option>
+                  <option value="CANCELLED" ${order.status === 'CANCELLED' ? 'selected' : ''}>Dibatalkan</option>
+                </select>
+              </div>
             </td>
           </tr>
         `;
@@ -317,6 +472,313 @@
         });
         selectElement.value = '';
       }
+    }
+
+    // View Order Detail
+    async function viewOrderDetail(orderId) {
+      try {
+        const response = await fetch(`/api/admin/orders/${orderId}`);
+        const result = await response.json();
+        
+        if (result.success) {
+          const order = result.data;
+          const statusMap = {
+            'PENDING': 'Pending',
+            'CONFIRMED': 'Dikonfirmasi',
+            'PROCESSING': 'Diproses',
+            'SHIPPED': 'Dikirim',
+            'DELIVERED': 'Selesai',
+            'CANCELLED': 'Dibatalkan'
+          };
+
+          let itemsHTML = order.items.map(item => `
+            <tr class="border-b">
+              <td class="py-2">${item.product ? item.product.name : 'Produk tidak ditemukan'}</td>
+              <td class="py-2 text-center">${item.quantity}</td>
+              <td class="py-2 text-right">Rp ${item.price.toLocaleString('id-ID')}</td>
+              <td class="py-2 text-right font-semibold">Rp ${(item.quantity * item.price).toLocaleString('id-ID')}</td>
+            </tr>
+          `).join('');
+
+          Swal.fire({
+            title: `<strong>Detail Pesanan #${order.orderNumber}</strong>`,
+            html: `
+              <div class="text-left">
+                <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                  <h3 class="font-semibold text-gray-700 mb-2">Informasi Pelanggan</h3>
+                  <p class="text-sm"><strong>Nama:</strong> ${order.user ? order.user.name : 'Guest'}</p>
+                  <p class="text-sm"><strong>Email:</strong> ${order.user ? order.user.email : '-'}</p>
+                  <p class="text-sm"><strong>Telepon:</strong> ${order.shippingAddress?.phone || '-'}</p>
+                </div>
+
+                <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                  <h3 class="font-semibold text-gray-700 mb-2">Alamat Pengiriman</h3>
+                  <p class="text-sm">${order.shippingAddress?.fullAddress || '-'}</p>
+                  <p class="text-sm">${order.shippingAddress?.city || ''}, ${order.shippingAddress?.province || ''}</p>
+                  <p class="text-sm">${order.shippingAddress?.postalCode || ''}</p>
+                </div>
+
+                <div class="mb-4">
+                  <h3 class="font-semibold text-gray-700 mb-2">Item Pesanan</h3>
+                  <table class="w-full text-sm">
+                    <thead class="bg-gray-100">
+                      <tr>
+                        <th class="py-2 px-2 text-left">Produk</th>
+                        <th class="py-2 px-2 text-center">Qty</th>
+                        <th class="py-2 px-2 text-right">Harga</th>
+                        <th class="py-2 px-2 text-right">Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${itemsHTML}
+                    </tbody>
+                  </table>
+                </div>
+
+                <div class="p-4 bg-orange-50 rounded-lg">
+                  <div class="flex justify-between text-sm mb-1">
+                    <span>Subtotal:</span>
+                    <span>Rp ${order.totalAmount.toLocaleString('id-ID')}</span>
+                  </div>
+                  <div class="flex justify-between text-sm mb-1">
+                    <span>Ongkir:</span>
+                    <span>Rp ${(order.shippingCost || 0).toLocaleString('id-ID')}</span>
+                  </div>
+                  <div class="flex justify-between font-bold text-lg border-t pt-2 mt-2">
+                    <span>Total:</span>
+                    <span class="text-orange-600">Rp ${(order.totalAmount + (order.shippingCost || 0)).toLocaleString('id-ID')}</span>
+                  </div>
+                </div>
+
+                <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                  <p class="text-sm"><strong>Status:</strong> <span class="font-semibold text-blue-600">${statusMap[order.status]}</span></p>
+                  <p class="text-sm"><strong>Metode Pembayaran:</strong> ${order.paymentMethod || 'Midtrans'}</p>
+                  <p class="text-sm"><strong>Tanggal:</strong> ${new Date(order.createdAt).toLocaleString('id-ID')}</p>
+                </div>
+              </div>
+            `,
+            width: '800px',
+            showCloseButton: true,
+            showCancelButton: false,
+            confirmButtonText: 'Tutup',
+            confirmButtonColor: '#FF7F00'
+          });
+        }
+      } catch (error) {
+        console.error('Error loading order detail:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal!',
+          text: 'Gagal memuat detail pesanan'
+        });
+      }
+    }
+
+    // Load Report
+    async function loadReport() {
+      try {
+        const period = document.getElementById('reportPeriod').value;
+        const startDate = document.getElementById('reportStartDate').value;
+        const endDate = document.getElementById('reportEndDate').value;
+
+        if (!startDate || !endDate) {
+          Swal.fire({
+            icon: 'warning',
+            title: 'Perhatian!',
+            text: 'Mohon pilih rentang tanggal'
+          });
+          return;
+        }
+
+        const params = new URLSearchParams({ period, startDate, endDate });
+        const response = await fetch(`/api/admin/reports/sales?${params}`);
+        const result = await response.json();
+
+        if (result.success) {
+          renderReportSummary(result.data.summary);
+          renderReportTable(result.data.details);
+          renderSalesChart(result.data.chart);
+        }
+      } catch (error) {
+        console.error('Error loading report:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal!',
+          text: 'Gagal memuat laporan'
+        });
+      }
+    }
+
+    // Render Report Summary
+    function renderReportSummary(summary) {
+      const summaryHTML = `
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Total Penjualan</p>
+              <p class="text-2xl font-bold text-gray-800">Rp ${summary.totalSales.toLocaleString('id-ID')}</p>
+            </div>
+            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-money-bill-wave text-orange-600 text-xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Total Pesanan</p>
+              <p class="text-2xl font-bold text-gray-800">${summary.totalOrders}</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-shopping-cart text-blue-600 text-xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Rata-rata Pesanan</p>
+              <p class="text-2xl font-bold text-gray-800">Rp ${summary.averageOrder.toLocaleString('id-ID')}</p>
+            </div>
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-chart-line text-green-600 text-xl"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Pesanan Selesai</p>
+              <p class="text-2xl font-bold text-gray-800">${summary.completedOrders}</p>
+            </div>
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <i class="fas fa-check-circle text-purple-600 text-xl"></i>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('reportSummary').innerHTML = summaryHTML;
+    }
+
+    // Render Report Table
+    function renderReportTable(details) {
+      const tbody = document.getElementById('reportTable');
+
+      if (details.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="px-6 py-8 text-center text-gray-500">
+              <i class="fas fa-inbox text-2xl mb-2"></i>
+              <p>Tidak ada data untuk periode ini</p>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = details.map(item => `
+        <tr class="bg-white border-b hover:bg-gray-50">
+          <td class="px-6 py-4 font-medium">${item.period}</td>
+          <td class="px-6 py-4">${item.totalOrders}</td>
+          <td class="px-6 py-4">Rp ${item.totalSales.toLocaleString('id-ID')}</td>
+          <td class="px-6 py-4">Rp ${item.averageOrder.toLocaleString('id-ID')}</td>
+          <td class="px-6 py-4">
+            <span class="text-xs">
+              <span class="text-green-600 font-semibold">${item.completed}</span> selesai, 
+              <span class="text-yellow-600">${item.pending}</span> pending
+            </span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Render Sales Chart
+    function renderSalesChart(chartData) {
+      const ctx = document.getElementById('salesChart').getContext('2d');
+
+      // Destroy existing chart
+      if (salesChart) {
+        salesChart.destroy();
+      }
+
+      salesChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: chartData.labels,
+          datasets: [{
+            label: 'Total Penjualan (Rp)',
+            data: chartData.sales,
+            borderColor: '#FF7F00',
+            backgroundColor: 'rgba(255, 127, 0, 0.1)',
+            tension: 0.4,
+            fill: true
+          }, {
+            label: 'Jumlah Pesanan',
+            data: chartData.orders,
+            borderColor: '#3B82F6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            tension: 0.4,
+            fill: true,
+            yAxisID: 'y1'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          interaction: {
+            mode: 'index',
+            intersect: false,
+          },
+          scales: {
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              ticks: {
+                callback: function(value) {
+                  return 'Rp ' + value.toLocaleString('id-ID');
+                }
+              }
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              grid: {
+                drawOnChartArea: false,
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  let label = context.dataset.label || '';
+                  if (label) {
+                    label += ': ';
+                  }
+                  if (context.parsed.y !== null) {
+                    if (context.datasetIndex === 0) {
+                      label += 'Rp ' + context.parsed.y.toLocaleString('id-ID');
+                    } else {
+                      label += context.parsed.y + ' pesanan';
+                    }
+                  }
+                  return label;
+                }
+              }
+            }
+          }
+        }
+      });
     }
 
     // Event listeners
