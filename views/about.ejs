@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tentang Kami | Cemilan Ceria</title>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'primary': '#f59e0b',
+            'primary-dark': '#d97706',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    @keyframes fadeSlideDown {
+      0% { opacity: 0; transform: translateY(-30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeSlideUp {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    @keyframes scaleIn {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .animate-fade-slide-down {
+      animation: fadeSlideDown 0.6s ease-out forwards;
+    }
+    .animate-fade-slide-up {
+      animation: fadeSlideUp 0.6s ease-out forwards;
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.8s ease-out forwards;
+    }
+    .animate-scale-in {
+      animation: scaleIn 0.5s ease-out forwards;
+    }
+    .card-hover {
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    }
+    .gradient-bg {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <%- include('partials/navbar') %>
+
+  <!-- Hero Section -->
+  <section class="relative gradient-bg text-white py-20 overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full filter blur-3xl"></div>
+      <div class="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full filter blur-3xl"></div>
+    </div>
+    <div class="container mx-auto px-6 md:px-12 lg:px-20 relative z-10">
+      <div class="text-center animate-fade-slide-down">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">Tentang Cemilan Ceria</h1>
+        <p class="text-xl md:text-2xl font-light max-w-3xl mx-auto">
+          Menghadirkan Kebahagiaan Melalui Camilan Berkualitas
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Visi & Misi -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-6 md:px-12 lg:px-20">
+      <div class="grid md:grid-cols-2 gap-8 mb-16">
+        <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-8 rounded-2xl shadow-lg card-hover animate-fade-slide-up">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center mr-4">
+              <i class="fas fa-eye text-white text-xl"></i>
+            </div>
+            <h2 class="text-3xl font-bold text-gray-900">Visi Kami</h2>
+          </div>
+          <p class="text-lg text-gray-700 leading-relaxed">
+            Menjadi penyedia camilan sehat dan berkualitas nomor satu di Indonesia yang menghadirkan kebahagiaan dalam setiap gigitan.
+          </p>
+        </div>
+        
+        <div class="bg-gradient-to-br from-amber-50 to-orange-50 p-8 rounded-2xl shadow-lg card-hover animate-fade-slide-up" style="animation-delay: 0.1s;">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center mr-4">
+              <i class="fas fa-rocket text-white text-xl"></i>
+            </div>
+            <h2 class="text-3xl font-bold text-gray-900">Misi Kami</h2>
+          </div>
+          <p class="text-lg text-gray-700 leading-relaxed">
+            Menghadirkan produk camilan berkualitas tinggi dengan bahan-bahan alami terbaik, menciptakan inovasi rasa, dan memberikan pelayanan terbaik kepada pelanggan.
+          </p>
+        </div>
+      </div>
+
+      <!-- Tentang Perusahaan -->
+      <div class="max-w-4xl mx-auto text-center mb-16 animate-fade-in">
+        <h2 class="text-4xl font-bold text-gray-900 mb-8">
+          <span class="gradient-text">Cerita Kami</span>
+        </h2>
+        <div class="space-y-6 text-left">
+          <p class="text-lg text-gray-700 leading-relaxed">
+            Selamat datang di <span class="font-semibold text-primary">Cemilan Ceria</span>! Kami adalah penyedia camilan enak, sehat, dan berkualitas untuk keluarga Indonesia. 
+            Misi kami adalah menghadirkan kebahagiaan melalui camilan yang tidak hanya lezat tetapi juga menyehatkan.
+          </p>
+          <p class="text-lg text-gray-700 leading-relaxed">
+            Kami bangga dengan berbagai produk camilan kami, mulai dari puding segar hingga cireng gurih, yang semuanya dibuat dengan penuh cinta dan perhatian terhadap kualitas. 
+            Tim kami terdiri dari para ahli kuliner yang berdedikasi untuk menciptakan inovasi rasa yang memanjakan lidah Anda.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tim Kami -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-6 md:px-12 lg:px-20">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold mb-4">
+          <span class="gradient-text">Tim Pembuat</span>
+        </h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Kenalan dengan tim yang membuat platform Cemilan Ceria
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Team Member 1 -->
+        <div class="bg-gradient-to-br from-white to-amber-50 rounded-2xl shadow-lg overflow-hidden card-hover animate-scale-in">
+          <div class="h-48 gradient-bg flex items-center justify-center">
+            <div class="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-xl">
+              <i class="fas fa-user text-primary text-5xl"></i>
+            </div>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold text-gray-900 mb-1">Adrian Maulana Rahman</h3>
+            <p class="text-primary font-semibold mb-3">Backend Developer</p>
+            <p class="text-gray-600 text-sm mb-4">
+              Bertanggung jawab atas pengembangan backend pada produk dan sistem kami
+            </p>
+            <div class="flex justify-center space-x-3">
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-github"></i>
+              </a>
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team Member 2 -->
+        <div class="bg-gradient-to-br from-white to-amber-50 rounded-2xl shadow-lg overflow-hidden card-hover animate-scale-in" style="animation-delay: 0.1s;">
+          <div class="h-48 gradient-bg flex items-center justify-center">
+            <div class="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-xl">
+              <i class="fas fa-user text-primary text-5xl"></i>
+            </div>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold text-gray-900 mb-1">Maulana Rivqi</h3>
+            <p class="text-primary font-semibold mb-3">Backend Developer</p>
+            <p class="text-gray-600 text-sm mb-4">
+              Membangun Sistem Autentikasi dan Manajemen Pengguna yang Aman
+            </p>
+            <div class="flex justify-center space-x-3">
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-github"></i>
+              </a>
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team Member 3 -->
+        <div class="bg-gradient-to-br from-white to-amber-50 rounded-2xl shadow-lg overflow-hidden card-hover animate-scale-in" style="animation-delay: 0.2s;">
+          <div class="h-48 gradient-bg flex items-center justify-center">
+            <div class="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-xl">
+              <i class="fas fa-user text-primary text-5xl"></i>
+            </div>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold text-gray-900 mb-1">Ahmad Kin Hirufael</h3>
+            <p class="text-primary font-semibold mb-3">Frontend Developer</p>
+            <p class="text-gray-600 text-sm mb-4">
+              Mengembangkan antarmuka pengguna yang responsif dan interaktif
+            </p>
+            <div class="flex justify-center space-x-3">
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-github"></i>
+              </a>
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team Member 4 -->
+        <div class="bg-gradient-to-br from-white to-amber-50 rounded-2xl shadow-lg overflow-hidden card-hover animate-scale-in" style="animation-delay: 0.3s;">
+          <div class="h-48 gradient-bg flex items-center justify-center">
+            <div class="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-xl">
+              <i class="fas fa-user text-primary text-5xl"></i>
+            </div>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold text-gray-900 mb-1">Muhamad Fauzaan</h3>
+            <p class="text-primary font-semibold mb-3">Backend Developer</p>
+            <p class="text-gray-600 text-sm mb-4">
+              Memastikan kualitas dan keamanan setiap fitur yang diluncurkan
+            </p>
+            <div class="flex justify-center space-x-3">
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-github"></i>
+              </a>
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+                <div class="bg-gradient-to-br from-white to-amber-50 rounded-2xl shadow-lg overflow-hidden card-hover animate-scale-in" style="animation-delay: 0.3s;">
+          <div class="h-48 gradient-bg flex items-center justify-center">
+            <div class="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-xl">
+              <i class="fas fa-user text-primary text-5xl"></i>
+            </div>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold text-gray-900 mb-1">Dimas Bagus Prasetyo</h3>
+            <p class="text-primary font-semibold mb-3">Frontend Developer</p>
+            <p class="text-gray-600 text-sm mb-4">
+              Mengembangkan antarmuka pengguna yang responsif dan interaktif
+            </p>
+            <div class="flex justify-center space-x-3">
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-github"></i>
+              </a>
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="bg-gradient-to-br from-white to-amber-50 rounded-2xl shadow-lg overflow-hidden card-hover animate-scale-in" style="animation-delay: 0.3s;">
+          <div class="h-48 gradient-bg flex items-center justify-center">
+            <div class="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-xl">
+              <i class="fas fa-user text-primary text-5xl"></i>
+            </div>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold text-gray-900 mb-1">Bartholomeus Immanuel Zebian K.</h3>
+            <p class="text-primary font-semibold mb-3">Frontend Developer</p>
+            <p class="text-gray-600 text-sm mb-4">
+              Mengembangkan antarmuka pengguna yang responsif dan interaktif
+            </p>
+            <div class="flex justify-center space-x-3">
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-github"></i>
+              </a>
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-white to-amber-50 rounded-2xl shadow-lg overflow-hidden card-hover animate-scale-in" style="animation-delay: 0.3s;">
+          <div class="h-48 gradient-bg flex items-center justify-center">
+            <div class="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-xl">
+              <i class="fas fa-user text-primary text-5xl"></i>
+            </div>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold text-gray-900 mb-1">Fahreza</h3>
+            <p class="text-primary font-semibold mb-3">Frontend Developer</p>
+            <p class="text-gray-600 text-sm mb-4">
+              Mengembangkan antarmuka pengguna yang responsif dan interaktif
+            </p>
+            <div class="flex justify-center space-x-3">
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-github"></i>
+              </a>
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-white to-amber-50 rounded-2xl shadow-lg overflow-hidden card-hover animate-scale-in" style="animation-delay: 0.3s;">
+          <div class="h-48 gradient-bg flex items-center justify-center">
+            <div class="w-32 h-32 bg-white rounded-full flex items-center justify-center shadow-xl">
+              <i class="fas fa-user text-primary text-5xl"></i>
+            </div>
+          </div>
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold text-gray-900 mb-1">Salman Yusuf Alfarisi</h3>
+            <p class="text-primary font-semibold mb-3">Frontend Developer</p>
+            <p class="text-gray-600 text-sm mb-4">
+              Mengembangkan antarmuka pengguna yang responsif dan interaktif
+            </p>
+            <div class="flex justify-center space-x-3">
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-github"></i>
+              </a>
+              <a href="#" class="w-10 h-10 bg-primary hover:bg-primary-dark rounded-full flex items-center justify-center text-white transition-colors">
+                <i class="fab fa-linkedin"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="py-16 gradient-bg text-white">
+    <div class="container mx-auto px-6 md:px-12 lg:px-20 text-center">
+      <h2 class="text-4xl font-bold mb-6 animate-fade-slide-down">Siap Mencoba Cemilan Kami?</h2>
+      <p class="text-xl mb-8 max-w-2xl mx-auto animate-fade-slide-up">
+        Terima kasih telah memilih Cemilan Ceria sebagai teman setia Anda dalam menikmati camilan. 
+        Kami berharap dapat terus melayani Anda dengan produk-produk terbaik kami!
+      </p>
+      <a href="/products" class="inline-block bg-white text-primary font-bold px-8 py-4 rounded-full hover:bg-gray-100 transition-colors shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300">
+        <i class="fas fa-shopping-bag mr-2"></i>
+        Belanja Sekarang
+      </a>
+    </div>
+  </section>
+
+  <%- include('partials/footer') %>
+</body>
+</html>
