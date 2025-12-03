@@ -65,6 +65,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const data = await response.json();
             verifiedCart = data.verified;
 
+            console.log('Verified Cart:', verifiedCart);
+
             // Update localStorage dengan data terverifikasi
             const updatedCart = verifiedCart
                 .filter(item => item.available)
@@ -78,6 +80,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         qty: item.limitedStock ? item.maxQty : (originalItem.qty || 1)
                     };
                 });
+
+            console.log('Updated Cart to be saved:', updatedCart);
 
             // Simpan cart yang sudah diverifikasi
             localStorage.setItem('cart', JSON.stringify(updatedCart));
@@ -190,6 +194,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.classList.contains('qty-plus')) {
             const idx = parseInt(e.target.getAttribute('data-index'));
             const verified = verifiedCart.find(v => v.productId === cart[idx].productId);
+
+            console.log('Attempting to increase qty for:', cart[idx]);
+            console.log('Verified item:', verified);
             
             // Check stock limit
             if (verified && cart[idx].qty >= verified.stock) {
