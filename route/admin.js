@@ -1,46 +1,37 @@
 const express = require('express');
 const router = express.Router();
+const { ensureAuthenticated, ensureAdmin } = require('../middleware/auth');
+
+// Middleware to ensure admin access
+router.use(ensureAuthenticated);
+router.use(ensureAdmin);
 
 router.get('/', (req, res) => {
     res.render('admin/dashboard', {
-        user: { name: 'Admin Cemilan' },
+        user: req.user,
         activeMenu: 'dashboard'
     });
-})
+});
 
 router.get('/products', (req, res) => {
   res.render('admin/products', {
-    user: { name: 'Admin Cemilan' },
+    user: req.user,
     activeMenu: 'products'
   });
 });
 
 router.get('/orders', (req, res) => {
   res.render('admin/orders', {
-    user: { name: 'Admin Cemilan' },
+    user: req.user,
     activeMenu: 'orders'
   });
 });
 
 router.get('/users', (req, res) => {
   res.render('admin/users', {
-    user: { name: 'Admin Cemilan' },
+    user: req.user,
     activeMenu: 'users'
   });
 });
 
-router.get('/settings', (req, res) => {
-  res.render('admin/settings', {
-    user: { name: 'Admin Cemilan' },
-    activeMenu: 'settings'
-  });
-});
-
-// 404 Handler
-router.get('/*path', (req, res) => {
-    res.status(404).send({
-        msg: "not found"
-    });
-})
-
-module.exports = router
+module.exports = router;

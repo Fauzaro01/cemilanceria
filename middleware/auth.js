@@ -23,6 +23,13 @@ const ensureAdmin = (req, res, next) => {
     res.status(403).send('Access denied: Admin only');
 };
 
+const ensureUser = (req, res, next) => {
+    if (req.isAuthenticated() && req.user.role === 'USER') {
+        return next();
+    }
+    res.status(403).send('Access denied: User only');
+};
+
 const redirectByRole = (req, res, next) => {
     if (req.isAuthenticated()) {
         if (req.user.role === 'ADMIN') {
@@ -38,5 +45,6 @@ module.exports = {
     ensureAuthenticated,
     ensureNotAuthenticated,
     ensureAdmin,
+    ensureUser,
     redirectByRole
 };

@@ -37,7 +37,7 @@
   <nav class="flex-1 px-3 py-4 overflow-y-auto">
     <ul class="space-y-1.5">
       <li>
-        <a href="/user/dashboard" class="flex items-center px-4 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:bg-orange-50 hover:text-orange-700 group <%= activeMenu === 'dashboard' ? 'bg-orange-50 text-orange-700' : '' %>">
+        <a href="/dashboard" class="flex items-center px-4 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:bg-orange-50 hover:text-orange-700 group <%= activeMenu === 'dashboard' ? 'bg-orange-50 text-orange-700' : '' %>">
           <i class="fas fa-tachometer-alt w-5 text-center group-hover:text-orange-500 <%= activeMenu === 'dashboard' ? 'text-orange-500' : 'text-gray-500' %>"></i>
           <span class="ml-4">Dashboard</span>
           <% if (activeMenu === 'dashboard') { %>
@@ -46,8 +46,8 @@
         </a>
       </li>
       <li>
-        <a href="/user/orders" class="flex items-center px-4 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:bg-orange-50 hover:text-orange-700 group <%= activeMenu === 'orders' ? 'bg-orange-50 text-orange-700' : '' %>">
-          <i class="fas fa-shopping-cart w-5 text-center group-hover:text-orange-500 <%= activeMenu === 'orders' ? 'text-orange-500' : 'text-gray-500' %>"></i>
+        <a href="/user/pesanan" class="flex items-center px-4 py-3 rounded-xl text-gray-700 font-medium transition-all duration-200 hover:bg-orange-50 hover:text-orange-700 group <%= activeMenu === 'pesanan' ? 'bg-orange-50 text-orange-700' : '' %>">
+          <i class="fas fa-shopping-cart w-5 text-center group-hover:text-orange-500 <%= activeMenu === 'pesanan' ? 'text-orange-500' : 'text-gray-500' %>"></i>
           <span class="ml-4">Pesanan Saya</span>
           <% if (activeMenu === 'orders') { %>
             <span class="ml-auto w-2 h-2 rounded-full bg-orange-500"></span>

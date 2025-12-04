@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard Pengguna | Cemilan Ceria</title>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
   <!-- 🔗 Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -113,52 +114,87 @@
   </div>
 
   <script>
-    // Initialize data if not present
-    if (!localStorage.getItem('userOrders')) {
-      const initialUserOrders = [
-        { id: 1, items: ['Puding Cokelat', 'Cireng Ayam Suir'], total: 9000, status: 'completed', date: new Date().toISOString().split('T')[0] },
-        { id: 2, items: ['Puding Stroberi'], total: 6000, status: 'pending', date: new Date().toISOString().split('T')[0] }
-      ];
-      localStorage.setItem('userOrders', JSON.stringify(initialUserOrders));
+    // Fetch user statistics from API
+    async function fetchStats() {
+      try {
+        const response = await fetch('/api/user/stats');
+        const result = await response.json();
+        
+        if (result.success) {
+          const { totalOrders, totalSpending, pendingOrders } = result.data;
+          document.getElementById('totalPesanan').textContent = totalOrders;
+          document.getElementById('totalPengeluaran').textContent = 'Rp ' + totalSpending.toLocaleString('id-ID');
+          document.getElementById('pesananPending').textContent = pendingOrders;
+        }
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      }
     }
 
-    // Update stats
-    function updateStats() {
-      const orders = JSON.parse(localStorage.getItem('userOrders') || '[]');
+    // Fetch recent orders from API
+    async function fetchRecentOrders() {
+      try {
+        const response = await fetch('/api/user/orders/recent');
+        const result = await response.json();
+        
+        if (result.success) {
+          const orders = result.data;
+          const recentOrdersContainer = document.getElementById('recentOrders');
+          recentOrdersContainer.innerHTML = '';
 
-      const totalOrders = orders.length;
-      const totalSpent = orders.filter(o => o.status === 'completed').reduce((sum, o) => sum + o.total, 0);
-      const pendingOrders = orders.filter(o => o.status === 'pending').length;
+          if (orders.length === 0) {
+            recentOrdersContainer.innerHTML = '<p class="text-gray-500 text-center">Belum ada pesanan</p>';
+            return;
+          }
 
-      document.getElementById('totalPesanan').textContent = totalOrders;
-      document.getElementById('totalPengeluaran').textContent = 'Rp ' + totalSpent.toLocaleString('id-ID');
-      document.getElementById('pesananPending').textContent = pendingOrders;
-
-      // Populate recent orders
-      const recentOrdersContainer = document.getElementById('recentOrders');
-      recentOrdersContainer.innerHTML = '';
-
-      orders.slice(0, 5).forEach(order => {
-        const orderElement = document.createElement('div');
-        orderElement.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg';
-        orderElement.innerHTML = `
-          <div>
-            <p class="font-medium text-gray-800">Pesanan #${order.id}</p>
-            <p class="text-sm text-gray-500">${order.items.join(', ')}</p>
-            <p class="text-xs text-gray-400">${order.date}</p>
-          </div>
-          <div class="text-right">
-            <p class="font-bold text-gray-800">Rp ${order.total.toLocaleString('id-ID')}</p>
-            <span class="inline-block px-2 py-1 text-xs rounded-full ${order.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
-              ${order.status === 'completed' ? 'Selesai' : 'Pending'}
-            </span>
-          </div>
-        `;
-        recentOrdersContainer.appendChild(orderElement);
-      });
+          orders.forEach(order => {
+            const orderElement = document.createElement('div');
+            orderElement.className = 'flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer';
+            orderElement.onclick = () => window.location.href = `/pesanan/${order.orderNumber}`;
+            
+            const itemsList = order.orderItems.map(item => item.product.name).join(', ');
+            const date = new Date(order.createdAt).toLocaleDateString('id-ID', { 
+              year: 'numeric', 
+              month: 'long', 
+              day: 'numeric' 
+            });
+            
+            const statusMap = {
+              'PENDING': { class: 'bg-yellow-100 text-yellow-800', text: 'Pending' },
+              'CONFIRMED': { class: 'bg-blue-100 text-blue-800', text: 'Dikonfirmasi' },
+              'PROCESSING': { class: 'bg-purple-100 text-purple-800', text: 'Diproses' },
+              'SHIPPED': { class: 'bg-indigo-100 text-indigo-800', text: 'Dikirim' },
+              'DELIVERED': { class: 'bg-green-100 text-green-800', text: 'Selesai' },
+              'CANCELLED': { class: 'bg-red-100 text-red-800', text: 'Dibatalkan' }
+            };
+            
+            const status = statusMap[order.status] || statusMap['PENDING'];
+            
+            orderElement.innerHTML = `
+              <div>
+                <p class="font-medium text-gray-800">${order.orderNumber}</p>
+                <p class="text-sm text-gray-500">${itemsList}</p>
+                <p class="text-xs text-gray-400">${date}</p>
+              </div>
+              <div class="text-right">
+                <p class="font-bold text-gray-800">Rp ${order.totalAmount.toLocaleString('id-ID')}</p>
+                <span class="inline-block px-2 py-1 text-xs rounded-full ${status.class}">
+                  ${status.text}
+                </span>
+              </div>
+            `;
+            recentOrdersContainer.appendChild(orderElement);
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching recent orders:', error);
+        document.getElementById('recentOrders').innerHTML = '<p class="text-red-500 text-center">Gagal memuat pesanan</p>';
+      }
     }
 
-    updateStats();
+    // Initialize
+    fetchStats();
+    fetchRecentOrders();
   </script>
 
 </body>

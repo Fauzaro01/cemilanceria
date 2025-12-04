@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Profil Pengguna | Cemilan Ceria</title>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
   <!-- 🔗 Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -28,6 +29,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
     body {
@@ -41,7 +43,12 @@
 
   <div class="flex min-h-screen">
     <!-- Sidebar (include partial) -->
-    <%- include('../partials/user-sidebar.ejs', {activeMenu: 'profile'}) %>
+    <% if (typeof user !== 'undefined' && user && user.role === 'ADMIN') { %>
+      <%- include('../partials/sidebars.ejs', {activeMenu: 'profile'}) %>
+    <% } else { %>
+      <%- include('../partials/user-sidebar.ejs', {activeMenu: 'profile'}) %>
+    <% } %>
+    
 
     <!-- Main Content -->
     <div class="flex flex-col flex-1">
@@ -62,9 +69,6 @@
                 <div class="bg-gradient-to-br from-orange-400 to-orange-600 w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-2xl">
                   <%= typeof user !== 'undefined' && user && user.name ? user.name.charAt(0).toUpperCase() : 'U' %>
                 </div>
-                <button class="absolute bottom-0 right-0 bg-orange-500 text-white p-2 rounded-full hover:bg-orange-600 transition">
-                  <i class="fas fa-camera text-sm"></i>
-                </button>
               </div>
               <div class="flex-1">
                 <h2 class="text-2xl font-bold text-gray-800">
@@ -82,23 +86,19 @@
           <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <h3 class="text-xl font-bold text-gray-800 mb-6">Informasi Pribadi</h3>
             <form id="profileForm" class="space-y-6">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
-                  <input type="text" id="fullName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" value="<%= typeof user !== 'undefined' && user ? user.name : '' %>">
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                  <input type="email" id="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" value="<%= typeof user !== 'undefined' && user ? user.email : '' %>">
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Telepon</label>
-                  <input type="tel" id="phone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" placeholder="+62">
-                </div>
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-2">Tanggal Lahir</label>
-                  <input type="date" id="birthDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500">
-                </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap</label>
+                <input type="text" id="fullName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" value="<%= typeof user !== 'undefined' && user ? user.name : '' %>">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                <input type="email" id="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" value="<%= typeof user !== 'undefined' && user ? user.email : '' %>">
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Telepon</label>
+                <input type="tel" id="phone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500" placeholder="+62">
               </div>
 
               <div>
@@ -146,45 +146,119 @@
   </div>
 
   <script>
-    // Load user data from localStorage
+    // Load user data
     function loadUserData() {
-      const userData = JSON.parse(localStorage.getItem('currentUser') || '{}');
-      if (userData.name) document.getElementById('fullName').value = userData.name;
-      if (userData.email) document.getElementById('email').value = userData.email;
-      if (userData.phone) document.getElementById('phone').value = userData.phone;
-      if (userData.birthDate) document.getElementById('birthDate').value = userData.birthDate;
-      if (userData.address) document.getElementById('address').value = userData.address;
+      const user = <%- JSON.stringify(user) %>;
+      if (user) {
+        document.getElementById('fullName').value = user.name || '';
+        document.getElementById('email').value = user.email || '';
+        document.getElementById('phone').value = user.phone || '';
+        document.getElementById('address').value = user.address || '';
+      }
     }
 
     // Save profile changes
-    document.getElementById('profileForm').addEventListener('submit', function(e) {
+    document.getElementById('profileForm').addEventListener('submit', async function(e) {
       e.preventDefault();
-      const userData = {
+      
+      const formData = {
         name: document.getElementById('fullName').value,
         email: document.getElementById('email').value,
         phone: document.getElementById('phone').value,
-        birthDate: document.getElementById('birthDate').value,
         address: document.getElementById('address').value
       };
-      localStorage.setItem('currentUser', JSON.stringify(userData));
-      alert('Profil berhasil diperbarui!');
+
+      try {
+        const response = await fetch('/api/user/profile', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: result.message,
+            confirmButtonColor: '#FF7F00'
+          }).then(() => {
+            window.location.reload();
+          });
+        } else {
+          throw new Error(result.error || 'Gagal memperbarui profil');
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal!',
+          text: error.message,
+          confirmButtonColor: '#FF7F00'
+        });
+      }
     });
 
     // Change password
-    document.getElementById('passwordForm').addEventListener('submit', function(e) {
+    document.getElementById('passwordForm').addEventListener('submit', async function(e) {
       e.preventDefault();
+      
       const oldPassword = document.getElementById('oldPassword').value;
       const newPassword = document.getElementById('newPassword').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
 
       if (newPassword !== confirmPassword) {
-        alert('Konfirmasi kata sandi tidak cocok!');
+        Swal.fire({
+          icon: 'warning',
+          title: 'Perhatian!',
+          text: 'Konfirmasi kata sandi tidak cocok!',
+          confirmButtonColor: '#FF7F00'
+        });
         return;
       }
 
-      // In a real app, you'd verify the old password and update it
-      alert('Kata sandi berhasil diubah!');
-      this.reset();
+      if (newPassword.length < 6) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Perhatian!',
+          text: 'Password minimal 6 karakter!',
+          confirmButtonColor: '#FF7F00'
+        });
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/user/change-password', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ oldPassword, newPassword })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: result.message,
+            confirmButtonColor: '#FF7F00'
+          });
+          this.reset();
+        } else {
+          throw new Error(result.error || 'Gagal mengubah password');
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Gagal!',
+          text: error.message,
+          confirmButtonColor: '#FF7F00'
+        });
+      }
     });
 
     // Cancel changes

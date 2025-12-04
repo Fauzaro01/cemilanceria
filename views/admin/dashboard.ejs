@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Dashboard | Cemilan Ceria</title>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 
   <!-- 🔗 Tailwind CSS via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -28,6 +29,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
     body {
@@ -97,7 +99,7 @@
           <!-- Card 3 -->
           <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <div class="flex items-center">
-              <div class="p-3 rounded-lg bg-red-100 text-red-600">
+              <div class="p-3 rounded-lg bg-orange-100 text-orange-600">
                 <i class="fas fa-coins text-xl"></i>
               </div>
               <div class="ml-4">
@@ -108,48 +110,120 @@
           </div>
         </div>
 
-        <!-- Isi dashboard lain bisa ditambah di sini -->
+        <!-- Recent Activities -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+          <!-- Recent Orders -->
+          <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Pesanan Terbaru</h3>
+            <div id="recentOrders" class="space-y-3">
+              <!-- Loading... -->
+            </div>
+          </div>
+
+          <!-- Low Stock Alert -->
+          <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Stok Menipis</h3>
+            <div id="lowStockProducts" class="space-y-3">
+              <!-- Loading... -->
+            </div>
+          </div>
+        </div>
       </main>
 
       <script>
-        // Initialize data if not present
-        if (!localStorage.getItem('products')) {
-          const initialProducts = [
-            { id: 1, name: 'Puding Cokelat', price: 6000, stock: 50, active: true },
-            { id: 2, name: 'Puding Stroberi', price: 6000, stock: 40, active: true },
-            { id: 3, name: 'Cireng Ayam Suir', price: 3000, stock: 30, active: true }
-          ];
-          localStorage.setItem('products', JSON.stringify(initialProducts));
+        // Fetch statistics from API
+        async function fetchStats() {
+          try {
+            const response = await fetch('/api/admin/stats');
+            const result = await response.json();
+            
+            if (result.success) {
+              const { activeProducts, todayOrders, todayRevenue, totalUsers, pendingOrders } = result.data;
+              
+              document.getElementById('produkAktif').textContent = activeProducts;
+              document.getElementById('pesananHariIni').textContent = todayOrders;
+              document.getElementById('pendapatanHariIni').textContent = 'Rp ' + todayRevenue.toLocaleString('id-ID');
+            }
+          } catch (error) {
+            console.error('Error fetching stats:', error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'Gagal memuat statistik'
+            });
+          }
         }
 
-        if (!localStorage.getItem('orders')) {
-          const initialOrders = [
-            { id: 1, customer: 'John Doe', email: 'john@example.com', total: 25000, status: 'pending', date: new Date().toISOString().split('T')[0] },
-            { id: 2, customer: 'Jane Smith', email: 'jane@example.com', total: 18000, status: 'completed', date: new Date().toISOString().split('T')[0] }
-          ];
-          localStorage.setItem('orders', JSON.stringify(initialOrders));
+        // Fetch recent activities
+        async function fetchActivities() {
+          try {
+            const response = await fetch('/api/admin/activities');
+            const result = await response.json();
+            
+            if (result.success) {
+              const { recentOrders, lowStockProducts } = result.data;
+              
+              // Render recent orders
+              const ordersContainer = document.getElementById('recentOrders');
+              if (recentOrders.length === 0) {
+                ordersContainer.innerHTML = '<p class="text-gray-500 text-sm">Belum ada pesanan</p>';
+              } else {
+                ordersContainer.innerHTML = recentOrders.map(order => {
+                  const statusColors = {
+                    'PENDING': 'bg-yellow-100 text-yellow-800',
+                    'CONFIRMED': 'bg-blue-100 text-blue-800',
+                    'PROCESSING': 'bg-purple-100 text-purple-800',
+                    'SHIPPED': 'bg-indigo-100 text-indigo-800',
+                    'DELIVERED': 'bg-green-100 text-green-800',
+                    'CANCELLED': 'bg-red-100 text-red-800'
+                  };
+                  
+                  return `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div>
+                        <p class="font-medium text-gray-800">${order.orderNumber}</p>
+                        <p class="text-sm text-gray-500">${order.user ? order.user.name : 'Guest'}</p>
+                      </div>
+                      <div class="text-right">
+                        <p class="font-semibold text-gray-800">Rp ${order.totalAmount.toLocaleString('id-ID')}</p>
+                        <span class="inline-block px-2 py-1 text-xs rounded-full ${statusColors[order.status] || statusColors['PENDING']}">
+                          ${order.status}
+                        </span>
+                      </div>
+                    </div>
+                  `;
+                }).join('');
+              }
+              
+              // Render low stock products
+              const stockContainer = document.getElementById('lowStockProducts');
+              if (lowStockProducts.length === 0) {
+                stockContainer.innerHTML = '<p class="text-gray-500 text-sm">Semua produk stok aman</p>';
+              } else {
+                stockContainer.innerHTML = lowStockProducts.map(product => {
+                  return `
+                    <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                      <div>
+                        <p class="font-medium text-gray-800">${product.name}</p>
+                        <p class="text-sm text-gray-500">Rp ${product.price.toLocaleString('id-ID')}</p>
+                      </div>
+                      <div class="text-right">
+                        <p class="font-bold text-red-600">${product.stock} unit</p>
+                        <p class="text-xs text-red-500">Stok menipis!</p>
+                      </div>
+                    </div>
+                  `;
+                }).join('');
+              }
+            }
+          } catch (error) {
+            console.error('Error fetching activities:', error);
+          }
         }
 
-
-
-        // Update stats
-        function updateStats() {
-          const products = JSON.parse(localStorage.getItem('products') || '[]');
-          const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-          const users = JSON.parse(localStorage.getItem('users') || '[]');
-
-          const activeProducts = products.filter(p => p.active).length;
-          const todayOrders = orders.filter(o => o.date === new Date().toISOString().split('T')[0]).length;
-          const newUsers = users.filter(u => u.joined === new Date().toISOString().split('T')[0]).length;
-          const todayRevenue = orders.filter(o => o.date === new Date().toISOString().split('T')[0] && o.status === 'completed').reduce((sum, o) => sum + o.total, 0);
-
-          document.getElementById('produkAktif').textContent = activeProducts;
-          document.getElementById('pesananHariIni').textContent = todayOrders;
-          document.getElementById('pelangganBaru').textContent = newUsers;
-          document.getElementById('pendapatanHariIni').textContent = 'Rp ' + todayRevenue.toLocaleString('id-ID');
-        }
-
-        updateStats();
+        // Initialize
+        fetchStats();
+        fetchActivities();
       </script>
 
       <!-- Footer -->
