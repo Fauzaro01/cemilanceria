@@ -1,0 +1,40 @@
+# Dependencies
+node_modules
+
+# Development files
+.env.local
+.env.development
+.env.test
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Testing
+coverage
+.nyc_output
+
+# Temporary files
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+
+# README and docs (optional, exclude if you want)
+README.md
+LICENSE
+
+# Prisma migrations (keep migration history but ignore lock files during deployment)
+prisma/migrations/**/*.lock

@@ -3,17 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cemilan Ceria - Cita Rasa Yang Tak Terlupakan</title>
+  
+  <!-- SEO Meta Tags -->
+  <title>Cemilan Ceria - Puding & Cemilan Enak, Sehat, Berkualitas | Jakarta</title>
+  <meta name="description" content="Cemilan Ceria menyediakan puding segar, cireng gurih, dan berbagai cemilan berkualitas tinggi dengan bahan alami terbaik. Pesan online sekarang untuk pengalaman cemilan yang tak terlupakan!">
+  <meta name="keywords" content="cemilan sehat, puding enak, cireng gurih, jajanan Jakarta, snack berkualitas, cemilan online, makanan ringan, puding segar, cemilan ceria">
+  <meta name="author" content="Cemilan Ceria">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://cemilanceria.web.id/">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://cemilanceria.web.id/">
+  <meta property="og:title" content="Cemilan Ceria - Puding & Cemilan Enak, Sehat, Berkualitas">
+  <meta property="og:description" content="Nikmati berbagai pilihan puding segar dan cemilan berkualitas tinggi. Pesan online mudah dan cepat!">
+  <meta property="og:image" content="https://cemilanceria.web.id/img/og-image.jpg">
+  <meta property="og:locale" content="id_ID">
+  <meta property="og:site_name" content="Cemilan Ceria">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://cemilanceria.web.id/">
+  <meta name="twitter:title" content="Cemilan Ceria - Puding & Cemilan Enak, Sehat, Berkualitas">
+  <meta name="twitter:description" content="Nikmati berbagai pilihan puding segar dan cemilan berkualitas tinggi. Pesan online mudah dan cepat!">
+  <meta name="twitter:image" content="https://cemilanceria.web.id/img/og-image.jpg">
+  
+  <!-- Favicon -->
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  
+  <!-- Preconnect for Performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
+  <%- include('partials/gtag') %>
+
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   
@@ -52,6 +89,67 @@
             transition: opacity 0.7s ease-in-out;
         }
     </style>
+  
+  <!-- Structured Data / JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Cemilan Ceria",
+    "image": "https://cemilanceria.web.id/img/logo.jpg",
+    "@id": "https://cemilanceria.web.id",
+    "url": "https://cemilanceria.web.id",
+    "telephone": "+62-821-1209-8585",
+    "priceRange": "Rp 5.000 - Rp 50.000",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Jl. Raya Pasar Minggu No. 10",
+      "addressLocality": "Jakarta Selatan",
+      "postalCode": "12510",
+      "addressCountry": "ID"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -6.2854,
+      "longitude": 106.8455
+    },
+    "openingHoursSpecification": [
+      {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday"
+        ],
+        "opens": "08:00",
+        "closes": "20:00"
+      }
+    ],
+    "sameAs": [
+      "https://www.instagram.com/cemilanceria",
+      "https://www.facebook.com/cemilanceria"
+    ],
+    "description": "Cemilan Ceria menyediakan puding segar, cireng gurih, dan berbagai cemilan berkualitas tinggi dengan bahan alami terbaik."
+  }
+  </script>
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Cemilan Ceria",
+    "url": "https://cemilanceria.web.id",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://cemilanceria.web.id/products?search={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
 </head>
 <body class="text-gray-800">
 
