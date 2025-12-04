@@ -1,0 +1,21 @@
+# Cemilan Ceria - Robots.txt
+User-agent: *
+Allow: /
+Allow: /products
+Allow: /about
+Allow: /css/
+Allow: /img/
+
+Disallow: /admin
+Disallow: /api/
+Disallow: /user/
+Disallow: /cart
+Disallow: /checkout
+Disallow: /login
+Disallow: /register
+
+# Sitemap
+Sitemap: https://cemilanceria.web.id/sitemap.xml
+
+# Crawl-delay (optional, untuk mencegah overload)
+Crawl-delay: 1
