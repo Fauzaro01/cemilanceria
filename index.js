@@ -5,7 +5,7 @@ const path = require('path');
 const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('./config/passport');
-const { ensureAuthenticated, ensureNotAuthenticated } = require('./middleware/auth');
+const { ensureAuthenticated } = require('./middleware/auth');
 const { PrismaClient } = require('./generated/prisma');
 
 const app = express();
