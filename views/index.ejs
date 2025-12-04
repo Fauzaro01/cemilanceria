@@ -6,6 +6,7 @@
   <title>Cemilan Ceria - Cita Rasa Yang Tak Terlupakan</title>
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -44,11 +45,8 @@
             font-family: 'Poppins', sans-serif;
         }
         .carousel-slide {
-            /* Perubahan: Mengganti transition menjadi properti opacity saja */
             transition: opacity 0.7s ease-in-out;
         }
-        /* Tambahkan warna kustom 'primary' jika Anda ingin menggunakan `text-primary` di navbar/footer */
-        /* Anda bisa menambahkan konfigurasi Tailwind di sini, atau langsung menggantinya di kode menjadi text-amber-500/600 */
     </style>
 </head>
 <body class="text-gray-800">
@@ -147,10 +145,6 @@
                     <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group flex flex-col h-full border border-gray-100">
                         <div class="relative overflow-hidden h-56">
                             <img src="https://i.pinimg.com/1200x/2a/8b/4c/2a8b4c995f0cce056d5240cbb6d94744.jpg" alt="Cireng Ayam Suir Pedas" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
-                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center shadow-sm">
-                                <i class="fa-solid fa-star text-yellow-400 mr-1 text-sm"></i>
-                                <span class="text-sm font-bold text-gray-700">4.8</span>
-                            </div>
                         </div>
                         <div class="p-6 flex-grow flex flex-col">
                             <h3 class="text-xl font-bold text-gray-800 mb-2">Cireng Ayam Suir</h3>
@@ -164,7 +158,7 @@
                                 </div>
                                 <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl transition-colors shadow-md flex items-center gap-2" onclick="addToCart({id: 1, product: 'Cireng Ayam Suir', price: 3000, image: 'https://i.pinimg.com/1200x/2a/8b/4c/2a8b4c995f0cce056d5240cbb6d94744.jpg', qty: 1})">
                                     <i class="fa-solid fa-bag-shopping"></i>
-                                    <span class="font-medium text-sm">Beli</span>
+                                    <span class="font-medium text-sm">Tambahkan Ke Keranjang</span>
                                 </button>
                             </div>
                         </div>
@@ -173,10 +167,6 @@
                     <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group flex flex-col h-full border border-gray-100">
                         <div class="relative overflow-hidden h-56">
                             <img src="https://i.pinimg.com/736x/cf/95/2c/cf952c0bb7fee5b59c8bb0a94ac8b58b.jpg" alt="Pudding Coklat" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
-                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center shadow-sm">
-                                <i class="fa-solid fa-star text-yellow-400 mr-1 text-sm"></i>
-                                <span class="text-sm font-bold text-gray-700">5.0</span>
-                            </div>
                         </div>
                         <div class="p-6 flex-grow flex flex-col">
                             <h3 class="text-xl font-bold text-gray-800 mb-2">Pudding Coklat</h3>
@@ -190,7 +180,7 @@
                                 </div>
                                 <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl transition-colors shadow-md flex items-center gap-2" onclick="addToCart({id: 2, product: 'Pudding Coklat', price: 7000, image: 'https://i.pinimg.com/736x/cf/95/2c/cf952c0bb7fee5b59c8bb0a94ac8b58b.jpg', qty: 1})">
                                     <i class="fa-solid fa-bag-shopping"></i>
-                                    <span class="font-medium text-sm">Beli</span>
+                                    <span class="font-medium text-sm">Tambahkan Ke Keranjang<span>
                                 </button>
                             </div>
                         </div>
@@ -199,10 +189,6 @@
                     <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group flex flex-col h-full border border-gray-100">
                         <div class="relative overflow-hidden h-56">
                             <img src="https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg" alt="Puding Strawberry" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
-                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center shadow-sm">
-                                <i class="fa-solid fa-star text-yellow-400 mr-1 text-sm"></i>
-                                <span class="text-sm font-bold text-gray-700">4.7</span>
-                            </div>
                         </div>
                         <div class="p-6 flex-grow flex flex-col">
                             <h3 class="text-xl font-bold text-gray-800 mb-2">Puding Strawberry</h3>
@@ -216,7 +202,7 @@
                                 </div>
                                 <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl transition-colors shadow-md flex items-center gap-2" onclick="addToCart({id: 3, product: 'Puding Strawberry', price: 15000, image: 'https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg', qty: 1})">
                                     <i class="fa-solid fa-bag-shopping"></i>
-                                    <span class="font-medium text-sm">Beli</span>
+                                    <span class="font-medium text-sm">Tambahkan Ke Keranjang<span>
                                 </button>
                             </div>
                         </div>
@@ -246,8 +232,8 @@
                                 <div>
                                     <h4 class="font-semibold text-gray-800">Alamat</h4>
                                     <p class="text-gray-600 mt-1">
-                                        Jl. Cemilan Raya No. 123<br />
-                                        Jakarta Selatan, DKI Jakarta 12345
+                                        Jl. Baladewa Gang Mushola Alhikmah<br />
+                                        Cikampek Barat, Kab. Karawang, Jawa Barat 41373
                                     </p>
                                 </div>
                             </div>
@@ -258,7 +244,7 @@
                                 </div>
                                 <div>
                                     <h4 class="font-semibold text-gray-800">Telepon / WA</h4>
-                                    <p href class="text-gray-600 mt-1">+62 813-1696-1559</p>
+                                    <p href class="text-gray-600 mt-1">+62 856-9251-7903</p>
                                 </div>
                             </div>
 
@@ -299,9 +285,10 @@
 
         </main>
 
-        <%- include('partials/footer') %>
-
+        
     </div>
+    
+    <%- include('partials/footer') %>
 
     <script>
         // Logika Carousel

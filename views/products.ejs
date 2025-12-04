@@ -124,10 +124,10 @@
         <% if (categories && categories.length > 0) { %>
           <div class="flex justify-center kugap-2 flex-wrap">
             <a href="/products" class="px-4 py-2 rounded-full text-sm font-medium transition <%= !category ? 'bg-amber-500 text-white' : 'bg-white text-gray-700 hover:bg-amber-100' %>">
-              Semua
-            %</a>
+              Semua %
+            </a>
             <% categories.forEach(cat => { %>
-              <a href="/products?category=<= cat %>" class="px-4 py-2 rounded-full text-sm font-medium transition <%= category === cat ? 'bg-amber-500 text-white' : 'bg-white text-gray-700 hover:bg-amber-100' %>">
+              <a href="/products?category=<%= cat %>" class="px-4 py-2 rounded-full text-sm font-medium transition <%= category === cat ? 'bg-amber-500 text-white' : 'bg-white text-gray-700 hover:bg-amber-100' %>">
                 <%= cat %>
               </a>
             <% }) %>

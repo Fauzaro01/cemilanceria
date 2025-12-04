@@ -52,12 +52,41 @@
                             <div class="text-yellow-500">
                                 <i class="bi bi-clock-history text-4xl"></i>
                             </div>
-                        <% } else if (order.status === 'CONFIRMED') { %>
+                        <% } else if (order.status === 'CONFIRMED' || order.status === 'DELIVERED') { %>
                             <div class="text-green-500">
                                 <i class="bi bi-check-circle text-4xl"></i>
                             </div>
+                        <% } else if (order.status === 'SHIPPED') { %>
+                            <div class="text-blue-500">
+                                <i class="bi bi-truck text-4xl"></i>
+                            </div>
+                        <% } else if (order.status === 'CANCELLED') { %>
+                            <div class="text-red-500">
+                                <i class="bi bi-x-circle text-4xl"></i>
+                            </div>
                         <% } %>
                     </div>
+                    <% if (order.status === 'PENDING') { %>
+                            <div class="text-gray-600">
+                                Silahkan selesaikan pembayaran untuk memproses pesanan Anda.
+                            </div>
+                        <% } else if (order.status === 'CONFIRMED') { %>
+                            <div class="text-gray-600">
+                                Pesanan Anda telah dikonfirmasi dan akan segera diproses.
+                            </div>
+                        <% } else if (order.status === 'SHIPPED') { %>
+                            <div class="text-gray-600">
+                                Pesanan Anda sedang dalam pengiriman.
+                            </div>
+                        <% } else if (order.status === 'DELIVERED') { %>
+                            <div class="text-gray-600">
+                                Pesanan Anda telah diterima.
+                            </div>
+                        <% } else if (order.status === 'CANCELLED') { %>
+                            <div class="text-gray-600">
+                                Pesanan Anda telah dibatalkan.
+                            </div>
+                        <% } %>
                 </div>
 
                 <!-- Customer Info -->
@@ -130,25 +159,37 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="flex gap-3">
-                    <% if (order.status === 'PENDING') { %>
-                        <button id="payButton" 
-                            class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-medium py-3 rounded-lg transition duration-300 flex items-center justify-center gap-2">
-                            <i class="bi bi-credit-card"></i>
-                            Bayar Sekarang
-                        </button>
-                    <% } %>
+                <div class="space-y-3">
+                    <!-- Primary Actions Row -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <% if (order.status === 'PENDING') { %>
+                            <button id="payButton" 
+                                class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:-translate-y-1 group">
+                                <i class="bi bi-credit-card-fill text-xl group-hover:scale-110 transition-transform"></i>
+                                <span>Bayar Sekarang</span>
+                            </button>
+                        <% } %>
+                        
+                        <a href="https://wa.me/6285692517903?text=Halo,%20saya%20butuh%20bantuan%20dengan%20pesanan%20<%= order.orderNumber %>" 
+                            target="_blank"
+                            class="<%= order.status === 'PENDING' ? 'w-full' : 'md:col-span-2' %> bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:-translate-y-1 group">
+                            <i class="bi bi-whatsapp text-xl group-hover:scale-110 transition-transform"></i>
+                            <span>Hubungi Kami via WhatsApp</span>
+                        </a>
+                    </div>
+
+                    <!-- Secondary Action -->
                     <% if (typeof user !== 'undefined' && user) { %>
                         <a href="/dashboard" 
-                            class="<%= order.status === 'PENDING' ? 'flex-1' : 'w-full' %> text-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 rounded-lg transition duration-300 flex items-center justify-center gap-2">
-                            <i class="bi bi-speedometer2"></i>
-                            Dashboard
+                            class="w-full text-center bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 border-2 border-gray-200 hover:border-amber-400 shadow-sm hover:shadow-md group">
+                            <i class="bi bi-speedometer2 text-lg group-hover:text-amber-500 transition-colors"></i>
+                            <span>Lihat Dashboard</span>
                         </a>
                     <% } else { %>
                         <a href="/" 
-                            class="<%= order.status === 'PENDING' ? 'flex-1' : 'w-full' %> text-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-3 rounded-lg transition duration-300 flex items-center justify-center gap-2">
-                            <i class="bi bi-house"></i>
-                            Kembali ke Beranda
+                            class="w-full text-center bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 border-2 border-gray-200 hover:border-amber-400 shadow-sm hover:shadow-md group">
+                            <i class="bi bi-house-door text-lg group-hover:text-amber-500 transition-colors"></i>
+                            <span>Kembali ke Beranda</span>
                         </a>
                     <% } %>
                 </div>
