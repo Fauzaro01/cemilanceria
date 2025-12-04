@@ -42,8 +42,33 @@ app.use('/api', require('./route/api'));
 app.use('/user', require('./route/user'));
 app.use('/admin', require('./route/admin'));
 
-app.get('/', (req, res) => {
-    res.render('index');
+app.get('/', async (req, res) => {
+    try {
+        // Fetch all active products with stock
+        const allProducts = await prisma.product.findMany({
+            where: { 
+                isActive: true,
+                stock: { gt: 0 }
+            }
+        });
+        
+        // Shuffle array to get random products
+        const shuffled = allProducts.sort(() => 0.5 - Math.random());
+        
+        // Take 3 random products for carousel and featured section
+        const randomProducts = shuffled.slice(0, 3);
+        
+        res.render('index', { 
+            carouselProducts: randomProducts,
+            featuredProducts: randomProducts
+        });
+    } catch (error) {
+        console.error('Error fetching products for homepage:', error);
+        res.render('index', { 
+            carouselProducts: [],
+            featuredProducts: []
+        });
+    }
 });
 
 app.get('/products', async (req, res) => {

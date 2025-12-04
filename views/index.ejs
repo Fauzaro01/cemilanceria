@@ -13,6 +13,10 @@
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
   <script>
     tailwind.config = {
       theme: {
@@ -61,60 +65,49 @@
                 <div class="relative h-64 md:h-96 w-full overflow-hidden rounded-2xl shadow-xl group">
                     <div id="carousel-container">
                         
-                        <div class="carousel-slide absolute inset-0 w-full h-full opacity-100">
-                            <img src="https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQzSt_aUbiiPW9GV0qWXIYOUBZRe9FGz_PFrXxuipUcXGyjK0v0VMRuaGGMx4WCbn32_66ZVKLKJ1fQ37vUrAA4Fp8iEG46hK3lgcP6gjspiT0UdGM"
-                                class="w-full h-full object-cover" 
-                                alt="Promo Puding Varian Baru" />
-                            <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-8">
-                                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
-                                    Puding Coklat
-                                </h2>
-                                <p class="text-white text-lg md:text-xl font-medium max-w-2xl drop-shadow-sm">
-                                Manis & segar untuk cerahkan harimu!
-
-                                </p>
-                                <button class="mt-6 px-6 py-2 bg-white text-amber-600 font-bold rounded-full hover:bg-gray-100 transition shadow-lg">
-                                    Lihat Detail
-                                </button>
+                        <% if (carouselProducts && carouselProducts.length > 0) { %>
+                            <% carouselProducts.forEach((product, index) => { %>
+                                <div class="carousel-slide absolute inset-0 w-full h-full <%= index === 0 ? 'opacity-100' : 'opacity-0' %>">
+                                    <img src="<%= product.imageUrl || 'https://via.placeholder.com/800x400?text=' + encodeURIComponent(product.name) %>"
+                                        class="w-full h-full object-cover" 
+                                        alt="<%= product.name %>" 
+                                        onerror="this.src='https://via.placeholder.com/800x400?text=<%= encodeURIComponent(product.name) %>'" />
+                                    <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-8">
+                                        <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
+                                            <%= product.name %>
+                                        </h2>
+                                        <p class="text-white text-lg md:text-xl font-medium max-w-2xl drop-shadow-sm">
+                                            <%= product.description || 'Produk berkualitas untuk Anda!' %>
+                                        </p>
+                                        <a href="/products" class="mt-6 px-6 py-2 bg-white text-amber-600 font-bold rounded-full hover:bg-gray-100 transition shadow-lg">
+                                            Lihat Detail
+                                        </a>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <!-- Fallback jika tidak ada produk -->
+                            <div class="carousel-slide absolute inset-0 w-full h-full opacity-100">
+                                <img src="https://via.placeholder.com/800x400?text=Cemilan+Ceria"
+                                    class="w-full h-full object-cover" 
+                                    alt="Cemilan Ceria" />
+                                <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-8">
+                                    <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
+                                        Selamat Datang di Cemilan Ceria
+                                    </h2>
+                                    <p class="text-white text-lg md:text-xl font-medium max-w-2xl drop-shadow-sm">
+                                        Nikmati berbagai cemilan lezat kami!
+                                    </p>
+                                    <a href="/products" class="mt-6 px-6 py-2 bg-white text-amber-600 font-bold rounded-full hover:bg-gray-100 transition shadow-lg">
+                                        Lihat Produk
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="carousel-slide absolute inset-0 w-full h-full opacity-0">
-                            <img src="https://encrypted-tbn1.gstatic.com/licensed-image?q=tbn:ANd9GcRNq42XzoN6hXZiTotxBviTrHE8RtitU1waPcLUPQkHjiazMO5VdzzEa77wWVKBXVasfidOqZd4Q9JRzP4mPgUWV03zr3XdThA2K_XemEKiFoj8r6U" 
-                                class="w-full h-full object-cover" 
-                                alt="Cireng Ayam Suir Pedas" />
-                            <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-8">
-                                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
-                                    Cireng Ayam Suir Pedas
-                                </h2>
-                                <p class="text-white text-lg md:text-xl font-medium max-w-2xl drop-shadow-sm">
-                                    Pedasnya nampol, gurihnya bikin nagih!
-                                </p>
-                                <button class="mt-6 px-6 py-2 bg-white text-orange-600 font-bold rounded-full hover:bg-gray-100 transition shadow-lg">
-                                    Lihat Detail
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="carousel-slide absolute inset-0 w-full h-full opacity-0">
-                            <img src="https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg"
-                                class="w-full h-full object-cover" 
-                                alt="Puding Strawberry Segar" />
-                            <div class="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-center p-8">
-                                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
-                                    Puding Strawberry Segar!
-                                </h2>
-                                <p class="text-white text-lg md:text-xl font-medium max-w-2xl drop-shadow-sm">
-                                    Manis & segar untuk cerahkan harimu!
-                                </p>
-                                <button class="mt-6 px-6 py-2 bg-white text-yellow-600 font-bold rounded-full hover:bg-gray-100 transition shadow-lg">
-                                    Lihat Detail
-                                </button>
-                            </div>
-                        </div>
+                        <% } %>
 
                     </div>
 
+                    <% if (carouselProducts && carouselProducts.length > 1) { %>
                     <button id="prevBtn"
                         class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/50 p-3 rounded-full text-white backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 z-10">
                         <i class="fa-solid fa-chevron-left fa-lg"></i>
@@ -126,10 +119,15 @@
                     </button>
 
                     <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10" id="indicators">
-                        <button class="w-6 h-3 rounded-full bg-white transition-all" data-index="0" aria-label="Slide 1"></button>
-                        <button class="w-3 h-3 rounded-full bg-white/50 transition-all" data-index="1" aria-label="Slide 2"></button>
-                        <button class="w-3 h-3 rounded-full bg-white/50 transition-all" data-index="2" aria-label="Slide 3"></button>
+                        <% if (carouselProducts && carouselProducts.length > 0) { %>
+                            <% carouselProducts.forEach((product, index) => { %>
+                                <button class="<%= index === 0 ? 'w-6' : 'w-3' %> h-3 rounded-full <%= index === 0 ? 'bg-white' : 'bg-white/50' %> transition-all" data-index="<%= index %>" aria-label="Slide <%= index + 1 %>"></button>
+                            <% }) %>
+                        <% } else { %>
+                            <button class="w-6 h-3 rounded-full bg-white transition-all" data-index="0" aria-label="Slide 1"></button>
+                        <% } %>
                     </div>
+                    <% } %>
                 </div>
             </section>
 
@@ -142,71 +140,64 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     
-                    <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group flex flex-col h-full border border-gray-100">
-                        <div class="relative overflow-hidden h-56">
-                            <img src="https://i.pinimg.com/1200x/2a/8b/4c/2a8b4c995f0cce056d5240cbb6d94744.jpg" alt="Cireng Ayam Suir Pedas" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
-                        </div>
-                        <div class="p-6 flex-grow flex flex-col">
-                            <h3 class="text-xl font-bold text-gray-800 mb-2">Cireng Ayam Suir</h3>
-                            <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
-                                Cireng Ayam Suwir Pedas: Pedasnya Menggigit, Gurihnya Menggoda! Tekstur kenyal dengan isian ayam melimpah.
-                            </p>
-                            <div class="mt-auto flex justify-between items-center pt-4 border-t border-gray-100">
-                                <div class="flex flex-col">
-                                    <span class="text-xs text-gray-500">Harga</span>
-                                    <span class="text-xl font-bold text-amber-600">Rp 3.000</span>
+                    <% if (featuredProducts && featuredProducts.length > 0) { %>
+                        <% featuredProducts.forEach(product => { %>
+                            <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group flex flex-col h-full border border-gray-100">
+                                <div class="relative overflow-hidden h-56">
+                                    <% if (product.imageUrl) { %>
+                                        <img src="<%= product.imageUrl %>" alt="<%= product.name %>" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" 
+                                        onerror="this.src='https://via.placeholder.com/400x300?text=<%= encodeURIComponent(product.name) %>'" />
+                                    <% } else { %>
+                                        <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-100 to-amber-200">
+                                            <i class="bi bi-image text-6xl text-amber-400"></i>
+                                        </div>
+                                    <% } %>
                                 </div>
-                                <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl transition-colors shadow-md flex items-center gap-2" onclick="addToCart({id: 1, product: 'Cireng Ayam Suir', price: 3000, image: 'https://i.pinimg.com/1200x/2a/8b/4c/2a8b4c995f0cce056d5240cbb6d94744.jpg', qty: 1})">
-                                    <i class="fa-solid fa-bag-shopping"></i>
-                                    <span class="font-medium text-sm">Tambahkan Ke Keranjang</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group flex flex-col h-full border border-gray-100">
-                        <div class="relative overflow-hidden h-56">
-                            <img src="https://i.pinimg.com/736x/cf/95/2c/cf952c0bb7fee5b59c8bb0a94ac8b58b.jpg" alt="Pudding Coklat" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
-                        </div>
-                        <div class="p-6 flex-grow flex flex-col">
-                            <h3 class="text-xl font-bold text-gray-800 mb-2">Pudding Coklat</h3>
-                            <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
-                                Pudding lembut dengan rasa coklat premium yang nikmat. Disajikan dingin lebih nikmat.
-                            </p>
-                            <div class="mt-auto flex justify-between items-center pt-4 border-t border-gray-100">
-                                <div class="flex flex-col">
-                                    <span class="text-xs text-gray-500">Harga</span>
-                                    <span class="text-xl font-bold text-amber-600">Rp 7.000</span>
+                                <div class="p-6 flex-grow flex flex-col">
+                                    <% if (product.category) { %>
+                                        <span class="text-xs font-semibold text-amber-500 uppercase tracking-wider mb-1 inline-block">
+                                            <%= product.category %>
+                                        </span>
+                                    <% } %>
+                                    <h3 class="text-xl font-bold text-gray-800 mb-2"><%= product.name %></h3>
+                                    <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
+                                        <%= product.description || 'Produk berkualitas untuk Anda!' %>
+                                    </p>
+                                    <div class="mt-auto flex justify-between items-center pt-4 border-t border-gray-100">
+                                        <div class="flex flex-col">
+                                            <span class="text-xs text-gray-500">Harga</span>
+                                            <span class="text-xl font-bold text-amber-600">Rp <%= product.price.toLocaleString('id-ID') %></span>
+                                        </div>
+                                        <% if (product.stock > 0) { %>
+                                            <button class="add-to-cart bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl transition-colors shadow-md flex items-center gap-2" 
+                                                data-product-id="<%= product.id %>"
+                                                data-product-name="<%= product.name %>" 
+                                                data-price="<%= product.price %>"
+                                                data-image="<%= product.imageUrl || '' %>">
+                                                <i class="fa-solid fa-bag-shopping"></i>
+                                                <span class="font-medium text-sm">Tambah</span>
+                                            </button>
+                                        <% } else { %>
+                                            <button class="bg-gray-400 text-white px-4 py-2 rounded-xl cursor-not-allowed flex items-center gap-2" disabled>
+                                                <i class="fa-solid fa-times"></i>
+                                                <span class="font-medium text-sm">Habis</span>
+                                            </button>
+                                        <% } %>
+                                    </div>
                                 </div>
-                                <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl transition-colors shadow-md flex items-center gap-2" onclick="addToCart({id: 2, product: 'Pudding Coklat', price: 7000, image: 'https://i.pinimg.com/736x/cf/95/2c/cf952c0bb7fee5b59c8bb0a94ac8b58b.jpg', qty: 1})">
-                                    <i class="fa-solid fa-bag-shopping"></i>
-                                    <span class="font-medium text-sm">Tambahkan Ke Keranjang<span>
-                                </button>
                             </div>
+                        <% }) %>
+                    <% } else { %>
+                        <!-- Fallback jika tidak ada produk -->
+                        <div class="col-span-full text-center py-12">
+                            <i class="bi bi-emoji-frown text-6xl text-amber-400 mb-4 block"></i>
+                            <h3 class="text-2xl font-bold text-gray-700 mb-2">Belum ada produk</h3>
+                            <p class="text-gray-500 mb-4">Produk akan segera hadir!</p>
+                            <a href="/products" class="inline-block bg-amber-500 text-white px-6 py-3 rounded-lg hover:bg-amber-600 transition">
+                                Lihat Semua Produk
+                            </a>
                         </div>
-                    </div>
-
-                    <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group flex flex-col h-full border border-gray-100">
-                        <div class="relative overflow-hidden h-56">
-                            <img src="https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg" alt="Puding Strawberry" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
-                        </div>
-                        <div class="p-6 flex-grow flex flex-col">
-                            <h3 class="text-xl font-bold text-gray-800 mb-2">Puding Strawberry</h3>
-                            <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
-                                Pudding segar dengan rasa buah strawberry asli. Manis dan sedikit asam, cocok untuk cuaca panas.
-                            </p>
-                            <div class="mt-auto flex justify-between items-center pt-4 border-t border-gray-100">
-                                <div class="flex flex-col">
-                                    <span class="text-xs text-gray-500">Harga</span>
-                                    <span class="text-xl font-bold text-amber-600">Rp 15.000</span>
-                                </div>
-                                <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl transition-colors shadow-md flex items-center gap-2" onclick="addToCart({id: 3, product: 'Puding Strawberry', price: 15000, image: 'https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg', qty: 1})">
-                                    <i class="fa-solid fa-bag-shopping"></i>
-                                    <span class="font-medium text-sm">Tambahkan Ke Keranjang<span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    <% } %>
 
                 </div>
             </section>
@@ -366,45 +357,91 @@
             startAutoSlide(); // Mulai auto-slide
         });
 
-       // Logika Keranjang (Simulasi Penambahan Item)
-        function addToCart(product) {
-            let cart = JSON.parse(localStorage.getItem('cart') || "[]");
-            const existingItemIndex = cart.findIndex(item => item.id === product.id);
+        // Logika Keranjang - Sama seperti di products.ejs
+        document.addEventListener('DOMContentLoaded', function () {
+            const addToCartButtons = document.querySelectorAll('.add-to-cart');
 
-            if (existingItemIndex > -1) {
-                cart[existingItemIndex].qty = (cart[existingItemIndex].qty || 1) + 1;
-            } else {
-                cart.push({...product, qty: 1});
-            }
+            addToCartButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const productId = parseInt(this.getAttribute('data-product-id'));
+                    const productName = this.getAttribute('data-product-name');
+                    const price = parseInt(this.getAttribute('data-price'));
+                    const image = this.getAttribute('data-image');
+                    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-            localStorage.setItem('cart', JSON.stringify(cart));
-            
-            // Panggil fungsi update dari navbar
-            if (window.updateCart) {
-                window.updateCart();
-            }
+                    // Jika produk sudah ada (cek berdasarkan productId), tambahkan qty
+                    const existing = cart.find(item => item.productId === productId);
+                    
+                    if (existing) {
+                        existing.qty = (existing.qty || 1) + 1;
+                    } else {
+                        cart.push({ productId, product: productName, price, image, qty: 1 });
+                    }
 
-            // Notifikasi berhasil
-            Swal.fire({
-                toast: true,
-                icon: 'success',
-                title: `${product.product} ditambahkan.`,
-                showConfirmButton: false,
-                timer: 1800,
-                position: 'bottom-end', // <-- DIUBAH ke pojok bawah kanan
-                width: 300,
-                padding: '0.75em',
-                background: '#f59e0b',
-                color: '#fff',
-                iconColor: '#fff',
-                customClass: {
-                    title: 'text-sm font-semibold',
-                    container: 'items-center'
-                },
+                    // Simpan ke localStorage
+                    localStorage.setItem('cart', JSON.stringify(cart));
+
+                    // Update navbar cart jika fungsi tersedia
+                    if (typeof window.updateCart === 'function') {
+                        window.updateCart();
+                    }
+
+                    // Efek klik halus
+                    button.classList.add('scale-95');
+                    setTimeout(() => {
+                        button.classList.remove('scale-95');
+                    }, 150);
+
+                    // SweetAlert2 Toast
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'bottom-end',
+                        showConfirmButton: false,
+                        timer: 2200,
+                        timerProgressBar: true,
+                        customClass: {
+                            popup: 'colored-toast'
+                        }
+                    });
+
+                    const currentQty = existing ? existing.qty : 1;
+                    
+                    Toast.fire({
+                        icon: 'success',
+                        title: `${productName} ditambahkan (${currentQty}x)`
+                    });
+                });
             });
-        }
-        window.addToCart = addToCart;
+        });
 
     </script>
+    
+    <style>
+        /* SweetAlert2 Toast Custom Style - sama seperti products.ejs */
+        .colored-toast.swal2-icon-success {
+            background-color: #f0f0f0 !important;
+        }
+        .colored-toast .swal2-title {
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            color: #975b00 !important;
+        }
+        .colored-toast .swal2-icon {
+            width: 32px !important;
+            height: 32px !important;
+            border-width: 2px !important;
+            margin: 0 8px 0 0 !important;
+        }
+        .colored-toast .swal2-icon .swal2-icon-content {
+            font-size: 18px !important;
+        }
+        .colored-toast {
+            padding: 10px 16px !important;
+            min-width: auto !important;
+        }
+        .colored-toast .swal2-timer-progress-bar {
+            background-color: rgba(226, 109, 0, 0.911) !important;
+        }
+    </style>
 </body>
 </html>
