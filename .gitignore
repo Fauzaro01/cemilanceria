@@ -1,5 +1,7 @@
 node_modules/
 .env
+.env.production
 package-lock.json
 /generated/prisma/
 public/img/uploads/
+.vercel

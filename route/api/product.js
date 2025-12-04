@@ -2,25 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { PrismaClient } = require('../../generated/prisma');
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const { cloudinary, storage } = require('../../config/cloudinary');
 
 const prisma = new PrismaClient();
 
-const uploadDir = 'public/img/uploads/';
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'public/img/uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
-    }
-});
-
+// Configure multer with Cloudinary storage
 const upload = multer({ 
     storage: storage,
     limits: {
@@ -34,6 +20,23 @@ const upload = multer({
         }
     }
 });
+
+// Helper function to extract public_id from Cloudinary URL
+const getPublicIdFromUrl = (url) => {
+    if (!url || !url.includes('cloudinary')) return null;
+    // Extract public_id from Cloudinary URL
+    // Example: https://res.cloudinary.com/xxx/image/upload/v123/cemilanceria/products/abc.jpg
+    const parts = url.split('/');
+    const uploadIndex = parts.indexOf('upload');
+    if (uploadIndex !== -1 && uploadIndex + 2 < parts.length) {
+        // Get the path after version number
+        const pathParts = parts.slice(uploadIndex + 2);
+        // Remove file extension and join
+        const publicId = pathParts.join('/').replace(/\.[^/.]+$/, '');
+        return publicId;
+    }
+    return null;
+};
 
 // Middleware to handle multer errors
 const handleMulterError = (err, req, res, next) => {
@@ -68,7 +71,7 @@ router.post('/products', upload.single('image'), handleMulterError, async (req, 
             description: description || null,
             stock: parseInt(stock) || 0,
             category: category || null,
-            imageUrl: req.file ? `/img/uploads/${req.file.filename}` : null,
+            imageUrl: req.file ? req.file.path : null, // Cloudinary URL
             isActive: isActive === 'false' ? false : true
         };
 
@@ -114,13 +117,20 @@ router.put('/products/:id', upload.single('image'), handleMulterError, async (re
             isActive: isActive === 'false' ? false : true
         };
         
+        // If new image is uploaded
         if (req.file) {
-            productData.imageUrl = `/img/uploads/${req.file.filename}`;
+            productData.imageUrl = req.file.path; // Cloudinary URL
             
-            if (existingProduct.imageUrl) {
-                const oldImagePath = path.join('public', existingProduct.imageUrl);
-                if (fs.existsSync(oldImagePath)) {
-                    fs.unlinkSync(oldImagePath);
+            // Delete old image from Cloudinary if exists
+            if (existingProduct.imageUrl && existingProduct.imageUrl.includes('cloudinary')) {
+                const publicId = getPublicIdFromUrl(existingProduct.imageUrl);
+                if (publicId) {
+                    try {
+                        await cloudinary.uploader.destroy(publicId);
+                        console.log('Old image deleted from Cloudinary:', publicId);
+                    } catch (error) {
+                        console.error('Error deleting old image from Cloudinary:', error);
+                    }
                 }
             }
         }
@@ -158,11 +168,16 @@ router.delete('/products/:id', async (req, res) => {
             });
         }
         
-        // Delete image file if exists
-        if (existingProduct.imageUrl) {
-            const imagePath = path.join('public', existingProduct.imageUrl);
-            if (fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath);
+        // Delete image from Cloudinary if exists
+        if (existingProduct.imageUrl && existingProduct.imageUrl.includes('cloudinary')) {
+            const publicId = getPublicIdFromUrl(existingProduct.imageUrl);
+            if (publicId) {
+                try {
+                    await cloudinary.uploader.destroy(publicId);
+                    console.log('Image deleted from Cloudinary:', publicId);
+                } catch (error) {
+                    console.error('Error deleting image from Cloudinary:', error);
+                }
             }
         }
         
