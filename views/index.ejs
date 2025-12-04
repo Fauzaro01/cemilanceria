@@ -1,667 +1,394 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cemilan Ceria - Cita Rasa Yang Tak Terlupakan</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            'primary': '#f59e0b',
-            'primary-dark': '#d97706',
-            'secondary': '#1e293b',
-          },
-          fontFamily: {
-            'poppins': ['Poppins', 'sans-serif'],
-          },
-          animation: {
-            'float': 'float 3s ease-in-out infinite',
-            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-          },
-          keyframes: {
-            float: {
-              '0%, 100%': { transform: 'translateY(0px)' },
-              '50%': { transform: 'translateY(-10px)' },
-            }
-          }
-        }
-      }
-    }
-  </script>
-
-  <style>
-    body {
-      font-family: 'Poppins', sans-serif;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cemilan Ceria - Cita Rasa Yang Tak Terlupakan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     
-    /* --- Animasi untuk transisi --- */
-    @keyframes fadeSlideDown {
-      0% { opacity: 0; transform: translateY(-20px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeSlideUp {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes pulse-glow {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
-      50% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); }
-    }
-
-    .animate-fade-slide-down {
-      animation: fadeSlideDown 0.5s ease-out forwards;
-    }
-
-    .animate-fade-slide-up {
-      animation: fadeSlideUp 0.5s ease-out forwards;
-    }
-
-    .animate-pulse-glow {
-      animation: pulse-glow 2s infinite;
-    }
-
-    /* Hover underline */
-    .link-underline {
-      position: relative;
-    }
-    .link-underline::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0%;
-      height: 2px;
-      background-color: #f59e0b;
-      transition: width 0.3s ease;
-    }
-    .link-underline:hover::after {
-      width: 100%;
-    }
-
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 10px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #f59e0b;
-      border-radius: 5px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #d97706;
-    }
-
-    /* Gradient text */
-    .gradient-text {
-      background: linear-gradient(to right, #f59e0b, #d97706);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* Card hover effect */
-    .card-hover {
-      transition: all 0.3s ease;
-    }
-    .card-hover:hover {
-      transform: translateY(-5px);
-    }
-
-    /* Carousel dots */
-    .carousel-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background-color: rgba(255, 255, 255, 0.5);
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .carousel-dot.active {
-      background-color: white;
-      width: 30px;
-      border-radius: 5px;
-    }
-  </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        body {
+            background-color: #fffbeb; amber-50
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .carousel-slide {
+            /* Perubahan: Mengganti transition menjadi properti opacity saja */
+            transition: opacity 0.7s ease-in-out;
+        }
+        /* Tambahkan warna kustom 'primary' jika Anda ingin menggunakan `text-primary` di navbar/footer */
+        /* Anda bisa menambahkan konfigurasi Tailwind di sini, atau langsung menggantinya di kode menjadi text-amber-500/600 */
+    </style>
 </head>
+<body class="text-gray-800">
 
-<body class="bg-gray-50">
-  <!-- Navbar -->
-  <%- include('partials/navbar') %>
+    <%- include('partials/navbar') %>
 
-  <!-- Hero Section -->
-  <section class="relative overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50">
-    <!-- Background Pattern -->
-    <div class="absolute inset-0 opacity-5">
-      <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23000000" fill-opacity="0.1"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+    <div class="max-w-7xl mx-auto flex flex-col min-h-screen">
+
+        <main class="flex-grow space-y-12 pb-12 w-full px-4">
+            
+            <section class="mt-6">
+                <div class="relative h-64 md:h-96 w-full overflow-hidden rounded-2xl shadow-xl group">
+                    <div id="carousel-container">
+                        
+                        <div class="carousel-slide absolute inset-0 w-full h-full opacity-100">
+                            <img src="https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcQzSt_aUbiiPW9GV0qWXIYOUBZRe9FGz_PFrXxuipUcXGyjK0v0VMRuaGGMx4WCbn32_66ZVKLKJ1fQ37vUrAA4Fp8iEG46hK3lgcP6gjspiT0UdGM"
+                                class="w-full h-full object-cover" 
+                                alt="Promo Puding Varian Baru" />
+                            <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-8">
+                                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
+                                    Puding Coklat
+                                </h2>
+                                <p class="text-white text-lg md:text-xl font-medium max-w-2xl drop-shadow-sm">
+                                Manis & segar untuk cerahkan harimu!
+
+                                </p>
+                                <button class="mt-6 px-6 py-2 bg-white text-amber-600 font-bold rounded-full hover:bg-gray-100 transition shadow-lg">
+                                    Lihat Detail
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="carousel-slide absolute inset-0 w-full h-full opacity-0">
+                            <img src="https://encrypted-tbn1.gstatic.com/licensed-image?q=tbn:ANd9GcRNq42XzoN6hXZiTotxBviTrHE8RtitU1waPcLUPQkHjiazMO5VdzzEa77wWVKBXVasfidOqZd4Q9JRzP4mPgUWV03zr3XdThA2K_XemEKiFoj8r6U" 
+                                class="w-full h-full object-cover" 
+                                alt="Cireng Ayam Suir Pedas" />
+                            <div class="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-8">
+                                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
+                                    Cireng Ayam Suir Pedas
+                                </h2>
+                                <p class="text-white text-lg md:text-xl font-medium max-w-2xl drop-shadow-sm">
+                                    Pedasnya nampol, gurihnya bikin nagih!
+                                </p>
+                                <button class="mt-6 px-6 py-2 bg-white text-orange-600 font-bold rounded-full hover:bg-gray-100 transition shadow-lg">
+                                    Lihat Detail
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="carousel-slide absolute inset-0 w-full h-full opacity-0">
+                            <img src="https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg"
+                                class="w-full h-full object-cover" 
+                                alt="Puding Strawberry Segar" />
+                            <div class="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-center p-8">
+                                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 drop-shadow-md">
+                                    Puding Strawberry Segar!
+                                </h2>
+                                <p class="text-white text-lg md:text-xl font-medium max-w-2xl drop-shadow-sm">
+                                    Manis & segar untuk cerahkan harimu!
+                                </p>
+                                <button class="mt-6 px-6 py-2 bg-white text-yellow-600 font-bold rounded-full hover:bg-gray-100 transition shadow-lg">
+                                    Lihat Detail
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <button id="prevBtn"
+                        class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/50 p-3 rounded-full text-white backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 z-10">
+                        <i class="fa-solid fa-chevron-left fa-lg"></i>
+                    </button>
+
+                    <button id="nextBtn"
+                        class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/30 hover:bg-white/50 p-3 rounded-full text-white backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100 z-10">
+                        <i class="fa-solid fa-chevron-right fa-lg"></i>
+                    </button>
+
+                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 z-10" id="indicators">
+                        <button class="w-6 h-3 rounded-full bg-white transition-all" data-index="0" aria-label="Slide 1"></button>
+                        <button class="w-3 h-3 rounded-full bg-white/50 transition-all" data-index="1" aria-label="Slide 2"></button>
+                        <button class="w-3 h-3 rounded-full bg-white/50 transition-all" data-index="2" aria-label="Slide 3"></button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="produk" class="py-4">
+                <div class="text-center mb-12">
+                    <span class="text-amber-600 font-semibold tracking-wider uppercase text-sm">Menu Favorit</span>
+                    <h2 class="text-4xl font-bold text-gray-800 mt-2">Produk Unggulan</h2>
+                    <div class="w-24 h-1 bg-amber-500 mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group flex flex-col h-full border border-gray-100">
+                        <div class="relative overflow-hidden h-56">
+                            <img src="https://i.pinimg.com/1200x/2a/8b/4c/2a8b4c995f0cce056d5240cbb6d94744.jpg" alt="Cireng Ayam Suir Pedas" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center shadow-sm">
+                                <i class="fa-solid fa-star text-yellow-400 mr-1 text-sm"></i>
+                                <span class="text-sm font-bold text-gray-700">4.8</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Cireng Ayam Suir</h3>
+                            <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
+                                Cireng Ayam Suwir Pedas: Pedasnya Menggigit, Gurihnya Menggoda! Tekstur kenyal dengan isian ayam melimpah.
+                            </p>
+                            <div class="mt-auto flex justify-between items-center pt-4 border-t border-gray-100">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-gray-500">Harga</span>
+                                    <span class="text-xl font-bold text-amber-600">Rp 3.000</span>
+                                </div>
+                                <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl transition-colors shadow-md flex items-center gap-2" onclick="addToCart({id: 1, product: 'Cireng Ayam Suir', price: 3000, image: 'https://i.pinimg.com/1200x/2a/8b/4c/2a8b4c995f0cce056d5240cbb6d94744.jpg', qty: 1})">
+                                    <i class="fa-solid fa-bag-shopping"></i>
+                                    <span class="font-medium text-sm">Beli</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group flex flex-col h-full border border-gray-100">
+                        <div class="relative overflow-hidden h-56">
+                            <img src="https://i.pinimg.com/736x/cf/95/2c/cf952c0bb7fee5b59c8bb0a94ac8b58b.jpg" alt="Pudding Coklat" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center shadow-sm">
+                                <i class="fa-solid fa-star text-yellow-400 mr-1 text-sm"></i>
+                                <span class="text-sm font-bold text-gray-700">5.0</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Pudding Coklat</h3>
+                            <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
+                                Pudding lembut dengan rasa coklat premium yang nikmat. Disajikan dingin lebih nikmat.
+                            </p>
+                            <div class="mt-auto flex justify-between items-center pt-4 border-t border-gray-100">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-gray-500">Harga</span>
+                                    <span class="text-xl font-bold text-amber-600">Rp 7.000</span>
+                                </div>
+                                <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl transition-colors shadow-md flex items-center gap-2" onclick="addToCart({id: 2, product: 'Pudding Coklat', price: 7000, image: 'https://i.pinimg.com/736x/cf/95/2c/cf952c0bb7fee5b59c8bb0a94ac8b58b.jpg', qty: 1})">
+                                    <i class="fa-solid fa-bag-shopping"></i>
+                                    <span class="font-medium text-sm">Beli</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group flex flex-col h-full border border-gray-100">
+                        <div class="relative overflow-hidden h-56">
+                            <img src="https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg" alt="Puding Strawberry" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" />
+                            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-lg flex items-center shadow-sm">
+                                <i class="fa-solid fa-star text-yellow-400 mr-1 text-sm"></i>
+                                <span class="text-sm font-bold text-gray-700">4.7</span>
+                            </div>
+                        </div>
+                        <div class="p-6 flex-grow flex flex-col">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Puding Strawberry</h3>
+                            <p class="text-gray-600 text-sm mb-4 line-clamp-3 flex-grow">
+                                Pudding segar dengan rasa buah strawberry asli. Manis dan sedikit asam, cocok untuk cuaca panas.
+                            </p>
+                            <div class="mt-auto flex justify-between items-center pt-4 border-t border-gray-100">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-gray-500">Harga</span>
+                                    <span class="text-xl font-bold text-amber-600">Rp 15.000</span>
+                                </div>
+                                <button class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-xl transition-colors shadow-md flex items-center gap-2" onclick="addToCart({id: 3, product: 'Puding Strawberry', price: 15000, image: 'https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg', qty: 1})">
+                                    <i class="fa-solid fa-bag-shopping"></i>
+                                    <span class="font-medium text-sm">Beli</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+            
+            <hr class="border-amber-100"/>
+
+            <section id="lokasi" class="py-4">
+                <div class="text-center mb-12">
+                    <span class="text-amber-600 font-semibold tracking-wider uppercase text-sm">Lokasi Kami</span>
+                    <h2 class="text-4xl font-bold text-gray-800 mt-2">Kunjungi Toko Kami</h2>
+                    <div class="w-24 h-1 bg-amber-500 mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <div class="flex flex-col lg:flex-row gap-8 lg:gap-12 bg-amber-50 rounded-3xl overflow-hidden shadow-xl border border-amber-100">
+                    <div class="lg:w-1/3 p-8 lg:p-12 flex flex-col justify-center space-y-8">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2">Informasi Kontak</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-amber-100 p-3 rounded-full text-amber-600">
+                                    <i class="fa-solid fa-location-dot fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Alamat</h4>
+                                    <p class="text-gray-600 mt-1">
+                                        Jl. Cemilan Raya No. 123<br />
+                                        Jakarta Selatan, DKI Jakarta 12345
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-amber-100 p-3 rounded-full text-amber-600">
+                                    <i class="fa-solid fa-phone fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Telepon / WA</h4>
+                                    <p href class="text-gray-600 mt-1">+62 813-1696-1559</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start space-x-4">
+                                <div class="bg-amber-100 p-3 rounded-full text-amber-600">
+                                    <i class="fa-solid fa-clock fa-lg"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Jam Operasional</h4>
+                                    <p class="text-gray-600 mt-1">Senin - Sabtu: 09.00 - 21.00</p>
+                                    <p class="text-gray-600">Sabtu-Minggu: Tutup</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="https://maps.app.goo.gl/wwYPgEtSHhRJo3657" target="_blank" class="bg-amber-500 text-white text-center py-3 rounded-xl font-semibold hover:bg-amber-600 transition shadow-lg flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            Buka di Google Maps
+                        </a>
+                    </div>
+
+                    <div class="lg:w-2/3 h-80 lg:h-auto min-h-[400px] relative bg-gray-200">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15858.971277158376!2d107.45209705!3d-6.3951566!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e693b482312b6b5%3A0xc3f15c542a498007!2sJln%20Baladewa%2C%20Cikampek%20Barat%2C%20Kab.%20Karawang%2C%20Jawa%20Barat!5e0!3m2!1sen!2sid!4v1701620000000!5m2!1sen!2sid" 
+                            width="100%" 
+                            height="100%" 
+                            style="border:0;" 
+                            allowfullscreen="" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade"
+                            class="absolute inset-0 w-full h-full"
+                            title="Lokasi Toko Kami di Jakarta Selatan"
+                        ></iframe>
+                    </div>
+                </div>
+            </section>
+            <hr class="border-amber-100"/>
+
+        </main>
+
+        <%- include('partials/footer') %>
+
     </div>
 
-    <div class="container mx-auto px-6 py-20 lg:py-32 relative z-10">
-      <div class="flex flex-col lg:flex-row items-center justify-between">
-        <!-- Bagian teks -->
-        <div class="text-center lg:text-left lg:w-1/2 animate-fade-slide-down">
-          <div class="inline-flex items-center bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
-            <i class="bi bi-star-fill mr-2"></i>
-            Cemilan Favorit Keluarga Indonesia
-          </div>
-          <h1 class="text-4xl lg:text-6xl font-bold text-gray-800 mb-6 leading-tight">
-            Cita Rasa <span class="gradient-text">Yang Tak Terlupakan</span>
-          </h1>
-          <p class="text-lg text-gray-600 mb-8 max-w-lg">
-            Setiap gigitan membawa kebahagiaia. Dibuat dengan bahan alami dan cinta untuk menciptakan pengalaman kuliner yang tak terlupakan.
-          </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            <a href="#produk" class="bg-primary text-white px-8 py-4 rounded-full hover:bg-primary-dark transition-all duration-300 transform hover:scale-105 hover:shadow-lg font-medium inline-flex items-center justify-center">
-              <i class="bi bi-basket2-fill mr-2"></i>
-              Coba Sekarang
-            </a>
-            <a href="#tentang" class="border-2 border-primary text-primary px-8 py-4 rounded-full hover:bg-primary hover:text-white transition-all duration-300 font-medium inline-flex items-center justify-center">
-              <i class="bi bi-play-circle mr-2"></i>
-              Pelajari Lebih Lanjut
-            </a>
-          </div>
-        </div>
+    <script>
+        // Logika Carousel
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.carousel-slide');
+            const indicators = document.querySelectorAll('#indicators button');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            let currentSlide = 0;
+            let slideInterval;
+            const slideDuration = 5000; // 5 detik
 
-        <!-- Bagian gambar carousel -->
-        <div class="relative mt-12 lg:mt-0 lg:w-1/2 flex justify-center">
-          <div class="relative">
-            <!-- Glow effect -->
-            <div class="absolute -inset-4 bg-gradient-to-r from-amber-400 to-orange-500 rounded-2xl blur-xl opacity-30 animate-pulse-slow"></div>
+            function showSlide(index) {
+                const newIndex = (index + slides.length) % slides.length;
+                
+                slides.forEach((slide, i) => {
+                    if (i === newIndex) {
+                        slide.classList.remove('opacity-0');
+                        slide.classList.add('opacity-100');
+                    } else {
+                        slide.classList.remove('opacity-100');
+                        slide.classList.add('opacity-0');
+                    }
+                });
+
+                indicators.forEach((ind, i) => {
+                    if (i === newIndex) {
+                        ind.classList.remove('bg-white/50', 'w-3');
+                        ind.classList.add('bg-white', 'w-6');
+                    } else {
+                        ind.classList.remove('bg-white', 'w-6');
+                        ind.classList.add('bg-white/50', 'w-3');
+                    }
+                });
+                currentSlide = newIndex;
+            }
+
+            function next() {
+                showSlide(currentSlide + 1);
+            }
+
+            function prev() {
+                showSlide(currentSlide - 1);
+            }
+
+            function startAutoSlide() {
+                slideInterval = setInterval(next, slideDuration);
+            }
+
+            function resetAutoSlide() {
+                clearInterval(slideInterval);
+                startAutoSlide();
+            }
+
+            // Event Listeners Carousel
+            nextBtn.addEventListener('click', () => {
+                next();
+                resetAutoSlide();
+            });
+
+            prevBtn.addEventListener('click', () => {
+                prev();
+                resetAutoSlide();
+            });
+
+            indicators.forEach((ind, i) => {
+                ind.addEventListener('click', () => {
+                    showSlide(i);
+                    resetAutoSlide();
+                });
+            });
+
+            // Inisialisasi Carousel
+            showSlide(0); // Tampilkan slide pertama
+            startAutoSlide(); // Mulai auto-slide
+        });
+
+       // Logika Keranjang (Simulasi Penambahan Item)
+        function addToCart(product) {
+            let cart = JSON.parse(localStorage.getItem('cart') || "[]");
+            const existingItemIndex = cart.findIndex(item => item.id === product.id);
+
+            if (existingItemIndex > -1) {
+                cart[existingItemIndex].qty = (cart[existingItemIndex].qty || 1) + 1;
+            } else {
+                cart.push({...product, qty: 1});
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
             
-            <!-- Carousel container -->
-            <div class="relative overflow-hidden w-80 lg:w-96 rounded-2xl shadow-2xl">
-              <div id="carousel" class="flex transition-transform duration-700 ease-in-out">
-                <img src="https://i.pinimg.com/736x/cf/95/2c/cf952c0bb7fee5b59c8bb0a94ac8b58b.jpg" class="w-full aspect-square object-cover flex-shrink-0">
-                <img src="https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg" class="w-full aspect-square object-cover flex-shrink-0">
-                <img src="https://i.pinimg.com/1200x/2a/8b/4c/2a8b4c995f0cce056d5240cbb6d94744.jpg" class="w-full aspect-square object-cover flex-shrink-0">
-              </div>
-              
-              <!-- Carousel controls -->
-              <button id="prev" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-3 transition-all duration-300 shadow-lg">
-                <i class="bi bi-chevron-left"></i>
-              </button>
-              <button id="next" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-gray-800 rounded-full p-3 transition-all duration-300 shadow-lg">
-                <i class="bi bi-chevron-right"></i>
-              </button>
-              
-              <!-- Carousel dots -->
-              <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-                <div class="carousel-dot active" data-index="0"></div>
-                <div class="carousel-dot" data-index="1"></div>
-                <div class="carousel-dot" data-index="2"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+            // Panggil fungsi update dari navbar
+            if (window.updateCart) {
+                window.updateCart();
+            }
 
-  <!-- Features Section -->
-  <section class="py-16 bg-white">
-    <div class="container mx-auto px-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="text-center card-hover">
-          <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-            <i class="bi bi-truck text-primary text-2xl"></i>
-          </div>
-          <h3 class="text-xl font-semibold text-gray-800 mb-2">Pengiriman Cepat</h3>
-          <p class="text-gray-600">Pesanan Anda akan tiba dalam waktu singkat dengan pengemasan yang aman.</p>
-        </div>
-        <div class="text-center card-hover">
-          <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-            <i class="bi bi-shield-check text-primary text-2xl"></i>
-          </div>
-          <h3 class="text-xl font-semibold text-gray-800 mb-2">Kualitas Terjamin</h3>
-          <p class="text-gray-600">Produk kami dibuat dengan bahan berkualitas tinggi dan proses yang higienis.</p>
-        </div>
-        <div class="text-center card-hover">
-          <div class="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4">
-            <i class="bi bi-heart text-primary text-2xl"></i>
-          </div>
-          <h3 class="text-xl font-semibold text-gray-800 mb-2">Dibuat dengan Cinta</h3>
-          <p class="text-gray-600">Setiap produk dibuat dengan perhatian khusus untuk memberikan pengalaman terbaik.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Products Section -->
-  <section id="produk" class="py-16 bg-gradient-to-br from-gray-50 to-gray-100">
-    <div class="container mx-auto px-6">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Produk Unggulan Kami</h2>
-        <p class="text-gray-500 max-w-2xl mx-auto">
-          Nikmati berbagai pilihan cemilan lezat dan segar dari 
-          <span class="font-semibold text-primary">Cemilan Ceria</span>.
-        </p>
-      </div>
-
-      <!-- Filter Tabs -->
-      <div class="flex justify-center mb-8">
-          <button class="px-4 py-2 rounded-md text-white bg-primary :text-primary font-medium transition-all duration-300">Terlaris</button>
-        </div>
-      </div>
-
-      <!-- Grid Produk -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-
-        
-        <!-- PRODUK 1 -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover group">
-          <!-- Label Promo -->
-          <div class="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10 animate-pulse">
-            <i class="bi bi-lightning-fill mr-1"></i>
-            Promo!
-          </div>
-
-          <!-- Gambar -->
-          <div class="relative overflow-hidden h-56">
-            <img src="https://i.pinimg.com/1200x/2a/8b/4c/2a8b4c995f0cce056d5240cbb6d94744.jpg" alt="Cireng Ayam Suir"
-                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-            
-            <!-- Quick view button -->
-            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-              <button class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 p-3 rounded-full transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
-                <i class="bi bi-eye-fill"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Isi -->
-          <div class="p-5">
-            <span class="text-xs font-semibold text-primary uppercase tracking-wider mb-1 inline-block">Cemilan Ceria</span>
-            <h3 class="text-xl font-bold text-gray-900 mb-2">Cireng Ayam Suir</h3>
-
-            <!-- Rating -->
-            <div class="flex items-center mb-3">
-              <div class="flex text-yellow-400">
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-              </div>
-              <span class="text-xs text-gray-500 ml-2">(90 ulasan)</span>
-            </div>
-
-            <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-              Cireng Ayam Suwir Pedas: Pedasnya Menggigit, Gurihnya Menggoda!
-            </p>
-
-            <!-- Harga -->
-            <div class="flex items-center justify-between mb-4">
-              <div>
-                <span class="text-xl font-bold text-gray-800">Rp 3.000</span>
-                <span class="text-sm text-gray-500 line-through ml-2">Rp 4.000</span>
-              </div>
-              <span class="bg-red-100 text-red-600 text-xs font-semibold px-2 py-1 rounded">25% OFF</span>
-            </div>
-
-            <!-- Tombol -->
-            <button class="add-to-cart w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105" data-product="Cireng Ayam Suir" data-price="3000">
-              <i class="bi bi-cart-plus-fill"></i>
-              Tambah ke Keranjang
-            </button>
-          </div>
-        </div>
-
-        <!-- PRODUK 2 -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover group">
-          <!-- Label Baru -->
-          <div class="absolute top-4 left-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
-            <i class="bi bi-patch-check-fill mr-1"></i>
-            Baru!
-          </div>
-
-          <!-- Gambar -->
-          <div class="relative overflow-hidden h-56">
-            <img src="https://i.pinimg.com/736x/cf/95/2c/cf952c0bb7fee5b59c8bb0a94ac8b58b.jpg" alt="Pudding coklat"
-                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-            
-            <!-- Quick view button -->
-            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-              <button class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 p-3 rounded-full transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
-                <i class="bi bi-eye-fill"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Isi -->
-          <div class="p-5">
-            <span class="text-xs font-semibold text-primary uppercase tracking-wider mb-1 inline-block">Cemilan Ceria</span>
-            <h3 class="text-xl font-bold text-gray-900 mb-2">Pudding Coklat</h3>
-
-            <!-- Rating -->
-            <div class="flex items-center mb-3">
-              <div class="flex text-yellow-400">
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star"></i>
-              </div>
-              <span class="text-xs text-gray-500 ml-2">(Belum ada ulasan)</span>
-            </div>
-
-            <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-              Pudding lembut dengan rasa coklat premium yang nikmat
-            </p>
-
-            <!-- Harga -->
-            <div class="flex items-center justify-between mb-4">
-              <span class="text-xl font-bold text-gray-800">Rp 7.000</span>
-            </div>
-
-            <!-- Tombol -->
-            <button class="add-to-cart w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105" data-product="Lumpia Kering" data-price="15000">
-              <i class="bi bi-cart-plus-fill"></i>
-              Tambah ke Keranjang
-            </button>
-          </div>
-        </div>
-
-        <!-- PRODUK 3 -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover group">
-          <!-- Label Baru -->
-          <div class="absolute top-4 left-4 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
-            <i class="bi bi-patch-check-fill mr-1"></i>
-            Baru!
-          </div>
-
-          <!-- Gambar -->
-          <div class="relative overflow-hidden h-56">
-            <img src="https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg" alt="Pudding Strawberry"
-                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-            
-            <!-- Quick view button -->
-            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
-              <button class="opacity-0 group-hover:opacity-100 bg-white text-gray-800 p-3 rounded-full transform translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-lg">
-                <i class="bi bi-eye-fill"></i>
-              </button>
-            </div>
-          </div>
-
-          <!-- Isi -->
-          <div class="p-5">
-            <span class="text-xs font-semibold text-primary uppercase tracking-wider mb-1 inline-block">Cemilan Ceria</span>
-            <h3 class="text-xl font-bold text-gray-900 mb-2">Pudding Strawberry</h3>
-
-            <!-- Rating -->
-            <div class="flex items-center mb-3">
-              <div class="flex text-yellow-400">
-               <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star"></i>
-              </div>
-              <span class="text-xs text-gray-500 ml-2"></span>
-            </div>
-
-            <p class="text-gray-600 text-sm mb-4 line-clamp-2">
-              Pudding segar dengan rasa strawberry asli
-            </p>
-
-            <!-- Harga -->
-            <div class="flex items-center justify-between mb-4">
-              <span class="text-xl font-bold text-gray-800">Rp 7.000</span>
-            </div>
-
-            <!-- Tombol -->
-            <button class="add-to-cart w-full flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white font-medium py-2.5 rounded-lg transition-all duration-300 transform hover:scale-105" data-product="Basreng" data-price="10000">
-              <i class="bi bi-cart-plus-fill"></i>
-              Tambah ke Keranjang
-            </button>
-          </div>
-        </div>
-
-      </div>
-  </section>
-
-  <!-- Testimonials Section -->
-  <section class="py-16 bg-white">
-    <div class="container mx-auto px-6">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Apa Kata Pelanggan Kami</h2>
-        <p class="text-gray-500 max-w-2xl mx-auto">
-          Kepuasan pelanggan adalah prioritas utama kami. Dengarkan apa kata mereka tentang produk kami.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-        <!-- Testimonial 1 -->
-        <div class="bg-gray-50 rounded-xl p-6 shadow-md">
-          <div class="flex items-center mb-4">
-            <img src="https://i.pravatar.cc/150?img=1" alt="Customer" class="w-12 h-12 rounded-full mr-4">
-            <div>
-              <h4 class="font-semibold text-gray-800">Sarah Putri</h4>
-              <div class="flex text-yellow-400 text-sm">
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-              </div>
-            </div>
-          </div>
-          <p class="text-gray-600 italic">"Cemilan Ceria adalah favorit keluarga kami! Rasanya enak dan harganya terjangkau. Anak-anak sangat suka cirengnya."</p>
-        </div>
-
-        <!-- Testimonial 2 -->
-        <div class="bg-gray-50 rounded-xl p-6 shadow-md">
-          <div class="flex items-center mb-4">
-            <img src="https://i.pravatar.cc/150?img=2" alt="Customer" class="w-12 h-12 rounded-full mr-4">
-            <div>
-              <h4 class="font-semibold text-gray-800">Budi Santoso</h4>
-              <div class="flex text-yellow-400 text-sm">
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-              </div>
-            </div>
-          </div>
-          <p class="text-gray-600 italic">"Kualitas produk sangat baik dan pengiriman cepat. Saya sudah memesan berkali-kali dan tidak pernah kecewa!"</p>
-        </div>
-
-        <!-- Testimonial 3 -->
-        <div class="bg-gray-50 rounded-xl p-6 shadow-md">
-          <div class="flex items-center mb-4">
-            <img src="https://i.pravatar.cc/150?img=3" alt="Customer" class="w-12 h-12 rounded-full mr-4">
-            <div>
-              <h4 class="font-semibold text-gray-800">Maya Indah</h4>
-              <div class="flex text-yellow-400 text-sm">
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star-fill"></i>
-                <i class="bi bi-star"></i>
-              </div>
-            </div>
-          </div>
-          <p class="text-gray-600 italic">"Lumpia keringnya enak sekali! Renyah dan tidak terlalu manis. Cocok untuk camilan saat nonton film."</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  
-
-  <!-- Footer -->
-  <%- include('partials/footer') %>
-
-  <!-- Back to Top Button -->
-  <button id="back-to-top" class="fixed bottom-6 left-6 bg-white text-primary p-3 rounded-full shadow-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-110 opacity-0 invisible">
-    <i class="bi bi-arrow-up"></i>
-  </button>
-  
-  <script>
-    // Carousel functionality
-    const carousel = document.getElementById('carousel');
-    const totalSlides = carousel.children.length;
-    const dots = document.querySelectorAll('.carousel-dot');
-    let index = 0;
-    let intervalId;
-
-    function showSlide() {
-      carousel.style.transform = `translateX(-${index * 100}%)`;
-      
-      // Update dots
-      dots.forEach((dot, i) => {
-        if (i === index) {
-          dot.classList.add('active');
-        } else {
-          dot.classList.remove('active');
+            // Notifikasi berhasil
+            Swal.fire({
+                toast: true,
+                icon: 'success',
+                title: `${product.product} ditambahkan.`,
+                showConfirmButton: false,
+                timer: 1800,
+                position: 'bottom-end', // <-- DIUBAH ke pojok bawah kanan
+                width: 300,
+                padding: '0.75em',
+                background: '#f59e0b',
+                color: '#fff',
+                iconColor: '#fff',
+                customClass: {
+                    title: 'text-sm font-semibold',
+                    container: 'items-center'
+                },
+            });
         }
-      });
-    }
+        window.addToCart = addToCart;
 
-    function startAutoSlide() {
-      intervalId = setInterval(() => {
-        index = (index + 1) % totalSlides;
-        showSlide();
-      }, 4000);
-    }
-
-    function stopAutoSlide() {
-      clearInterval(intervalId);
-    }
-
-    // Button controls
-    document.getElementById('next').onclick = () => {
-      index = (index + 1) % totalSlides;
-      showSlide();
-      stopAutoSlide();
-      startAutoSlide();
-    };
-
-    document.getElementById('prev').onclick = () => {
-      index = (index - 1 + totalSlides) % totalSlides;
-      showSlide();
-      stopAutoSlide();
-      startAutoSlide();
-    };
-
-    // Dot controls
-    dots.forEach((dot, i) => {
-      dot.addEventListener('click', () => {
-        index = i;
-        showSlide();
-        stopAutoSlide();
-        startAutoSlide();
-      });
-    });
-
-    // Start auto slide
-    startAutoSlide();
-
-    // Add to cart functionality
-    const cartCount = document.getElementById('cart-count');
-    let count = 0;
-
-    document.querySelectorAll('.add-to-cart').forEach(button => {
-      button.addEventListener('click', function() {
-        count++;
-        cartCount.textContent = count;
-        
-        // Add animation to cart button
-        const cartButton = document.getElementById('cart-button');
-        cartButton.classList.add('animate-pulse-glow');
-        setTimeout(() => {
-          cartButton.classList.remove('animate-pulse-glow');
-        }, 2000);
-        
-        // Show notification
-        const productName = this.getAttribute('data-product');
-        showNotification(`${productName} telah ditambahkan ke keranjang!`);
-      });
-    });
-
-    // Notification function
-    function showNotification(message) {
-      const notification = document.createElement('div');
-      notification.className = 'fixed top-20 right-6 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-slide-down';
-      notification.innerHTML = `
-        <div class="flex items-center">
-          <i class="bi bi-check-circle-fill mr-2"></i>
-          <span>${message}</span>
-        </div>
-      `;
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.classList.add('opacity-0');
-        setTimeout(() => {
-          document.body.removeChild(notification);
-        }, 300);
-      }, 3000);
-    }
-
-    // Back to top button
-    const backToTopButton = document.getElementById('back-to-top');
-    
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 300) {
-        backToTopButton.classList.remove('opacity-0', 'invisible');
-        backToTopButton.classList.add('opacity-100', 'visible');
-      } else {
-        backToTopButton.classList.add('opacity-0', 'invisible');
-        backToTopButton.classList.remove('opacity-100', 'visible');
-      }
-    });
-    
-    backToTopButton.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-          target.scrollIntoView({
-            behavior: 'smooth'
-          });
-        }
-      });
-    });
-
-    // Animate elements on scroll
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver(function(entries) {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-fade-slide-up');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, observerOptions);
-
-    document.querySelectorAll('.card-hover').forEach(el => {
-      observer.observe(el);
-    });
-  </script>
+    </script>
 </body>
 </html>

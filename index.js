@@ -161,6 +161,10 @@ app.get('/pesanan', (req, res) => {
   res.render('pesanan');
 });
 
+app.get('/about', (req, res) => {
+  res.render('about');
+});
+
 app.listen(process.env.PORT, () => {
     console.log(`[🚀] Server sudah berjalan pada http://localhost:${process.env.PORT}`);
 });

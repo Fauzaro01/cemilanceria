@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tentang Kami | Cemilan Ceria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        body {
+            background-color: #fffbeb; /* amber-50 */
+        }
+        /* Definisikan warna primary jika belum didefinisikan di config tailwind*/
+        .text-primary { color: #f59e0b; } /* Menggunakan amber-500 sebagai primary */
+        .bg-primary { background-color: #f59e0b; }
+    </style>
+</head>
+<body class="text-gray-800 flex flex-col min-h-screen">
+
+    <%- include('partials/navbar') %>
+
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+
+        <section class="text-center mb-16 pt-8">
+            <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 mb-4">
+                Tentang <span class="text-amber-500">Cemilan Ceria</span>
+            </h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                Kami hadir untuk menyajikan momen kebahagiaan melalui cemilan yang lezat, sehat, dan dibuat dengan hati.
+            </p>
+            <div class="w-20 h-1 bg-amber-500 mx-auto mt-6 rounded-full"></div>
+        </section>
+
+        <section class="bg-white rounded-3xl shadow-2xl p-8 md:p-12 lg:p-16 mb-16 border border-amber-100">
+            <div class="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
+                <div class="mb-8 lg:mb-0">
+                    <span class="text-sm font-semibold text-amber-600 tracking-wider uppercase">Dari Hati ke Dapur</span>
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mt-2 mb-4">
+                        Kisah di Balik Setiap Gigitan
+                    </h2>
+                    <p class="text-gray-700 leading-relaxed mb-4">
+                        Cemilan Ceria dimulai dari sebuah dapur kecil dengan satu misi sederhana: menyebarkan kebahagiaan. Kami percaya bahwa cemilan terbaik adalah yang tidak hanya enak, tetapi juga dibuat dengan bahan-bahan berkualitas dan penuh cinta.
+                    </p>
+                    <p class="text-gray-600 leading-relaxed">
+                        Kami fokus pada inovasi resep tradisional dengan sentuhan modern, memastikan setiap produk yang Anda santap aman, halal, dan layak dibagikan bersama keluarga tercinta.
+                    </p>
+                </div>
+                <div>
+                    <img src="/img/favicon.webp" 
+                         alt="pict about" 
+                         class="w-full h- 30 object-cover rounded-2xl shadow-xl transition-transform duration-500 hover:scale-[1.02]" />
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-800">Nilai Inti Kami</h2>
+                <p class="text-gray-600 mt-2">Prinsip yang kami junjung dalam setiap proses produksi.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 text-center border-t-4 border-amber-500">
+                    <div class="text-amber-500 text-4xl mb-4">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Kualitas Premium</h3>
+                    <p class="text-gray-600 text-sm">
+                        Kami hanya menggunakan bahan-bahan terbaik, segar, dan tanpa pengawet berbahaya untuk menjamin rasa dan kesehatan.
+                    </p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 text-center border-t-4 border-amber-500">
+                    <div class="text-amber-500 text-4xl mb-4">
+                        <i class="fas fa-face-laugh-beam"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Ceria & Inovasi</h3>
+                    <p class="text-gray-600 text-sm">
+                        Kami berdedikasi untuk terus berinovasi, menciptakan cemilan baru yang membangkitkan senyum dan semangat ceria.
+                    </p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition duration-300 text-center border-t-4 border-amber-500">
+                    <div class="text-amber-500 text-4xl mb-4">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Komitmen Pelanggan</h3>
+                    <p class="text-gray-600 text-sm">
+                        Kepuasan Anda adalah prioritas kami. Kami menjamin pelayanan terbaik dan produk yang selalu fresh.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-amber-600 rounded-2xl p-8 md:p-12 text-center text-white shadow-xl">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                Siap Mencoba Cemilan Ceria Hari Ini?
+            </h2>
+            <p class="text-amber-100 max-w-3xl mx-auto mb-8">
+                Jelajahi berbagai pilihan cemilan kami, mulai dari yang manis, gurih, hingga pedas. Ada sesuatu untuk setiap selera!
+            </p>
+            <a href="/products" class="inline-flex items-center bg-white text-amber-600 px-8 py-3 rounded-full font-bold text-lg hover:bg-gray-100 transition shadow-lg transform hover:scale-105">
+                Lihat Semua Produk
+                <i class="fas fa-arrow-right ml-2 text-sm"></i>
+            </a>
+        </section>
+
+    </main>
+
+    <%- include('partials/footer') %>
+    
+</body>
+</html>
