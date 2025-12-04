@@ -167,6 +167,10 @@ app.use((req, res, next) => {
     });
 });
 
+app.get('/about', (req, res) => {
+  res.render('about');
+});
+
 app.listen(process.env.PORT, () => {
     console.log(`[🚀] Server sudah berjalan pada http://localhost:${process.env.PORT}`);
 });
