@@ -75,29 +75,29 @@ async function createProduct() {
         const products = await prisma.product.createMany({
             data: [
                 {
-                    name: 'Pudding Coklat',
-                    description: 'Pudding lembut dengan rasa coklat premium yang nikmat',
+                    name: 'Puding Coklat',
+                    description: 'Puding lembut dengan rasa coklat premium yang nikmat',
                     price: 15000,
                     stock: 50,
-                    category: 'Pudding',
+                    category: 'Puding',
                     imageUrl: 'https://i.pinimg.com/736x/cf/95/2c/cf952c0bb7fee5b59c8bb0a94ac8b58b.jpg',
                     isActive: true
                 },
                 {
-                    name: 'Pudding Strawberry',
-                    description: 'Pudding segar dengan rasa strawberry asli',
+                    name: 'Puding Strawberry',
+                    description: 'Puding segar dengan rasa strawberry asli',
                     price: 15000,
                     stock: 45,
-                    category: 'Pudding',
+                    category: 'Puding',
                     imageUrl: 'https://i.pinimg.com/1200x/09/ed/d1/09edd1af0af9acc6620736297148101e.jpg',
                     isActive: true
                 },
                 {
-                    name: 'Pudding Mangga',
-                    description: 'Pudding klasik dengan rasa mangga yang lembut',
+                    name: 'Puding Mangga',
+                    description: 'Puding klasik dengan rasa mangga yang lembut',
                     price: 12000,
                     stock: 60,
-                    category: 'Pudding',
+                    category: 'Puding',
                     imageUrl: 'https://i.pinimg.com/736x/0a/fc/ec/0afcec3b9110d0fa793b911464f5f2fb.jpg',
                     isActive: true
                 },
